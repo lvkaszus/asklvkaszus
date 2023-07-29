@@ -1,0 +1,76 @@
+{
+    "loadingscreen": "Ładowanie...",
+
+
+    "navbar-homepage": "główna",
+    "navbar-informations": "informacje",
+
+
+    "home-pagetitle": "Wyślij anonimowe pytanie do",
+    "home-pagetitleend": "! 😸",
+
+
+    "home-qf-yourquestion": "Twoje pytanie:",
+
+    "home-qf-textbox": "Kliknij tutaj i napisz cokolwiek!",
+    "home-qf-button": "Wyślij anonimową wiadomość!",
+
+    "home-qf-bbcodeinfo": "BBCode jest włączone!",
+    "home-qf-whatisbbcode": "Co to jest?",
+
+
+    "home-bbc-howtobbcode": "Jak używać BBCode w pytaniach?",
+
+    "home-bbc-whatisbbcode": "Czym jest BBCode?",
+    "home-bbc-bbcodeoverview": "- BBCode to prosty sposób na formatowanie tekstu np. podkreślając go, pogrubiając go lub pochylając, oraz pozwala w przypadku tej strony na wstawianie filmów z YouTube oraz lokalizacji na mapach w postaci koordynatów geograficznych.",
+
+    "home-bbc-bbcodeexamples": "Przykłady użycia BBCode w pytaniach",
+    "home-bbc-boldtext": "Pogrubiony tekst",
+    "home-bbc-boldtextoverview": "Pogrubia tekst w pytaniu mieszczący się w tagach [b] oraz [/b].",
+
+    "home-bbc-underlinetext": "Podkreślony tekst",
+    "home-bbc-underlinetextoverview": "Podkreśla tekst w pytaniu mieszczący się w tagach [u] oraz [/u].",
+
+    "home-bbc-italictext": "Pochylony tekst",
+    "home-bbc-italictextoverview": "Pochyla tekst w pytaniu mieszczący się w tagach [i] oraz [/i].",
+
+    
+    "home-bbc-yttext": "Link do filmu z YouTube",
+    "home-bbc-yttextoverview": "Wstawia film z YouTube w pytaniu mieszczący się w tagach [yt] oraz [/yt].",
+
+    "home-bbc-locationtext": "Szerokość,Wysokość",
+    "home-bbc-locationtextoverview": "Wstawia lokalizację na mapach podając szerokość i wysokość geograficzną w tagu [location].",
+
+
+    "home-ql-questions": "Pytania:",
+    "home-ql-questionsoverview": "Przewijaj w dół, aby zobaczyć starsze pytania!",
+
+
+    "info-title": "Informacje - Ask",
+
+    "info-pagetitle": "Ask",
+    "info-description": "Pytania i odpowiedzi bardzo podobne do aplikacji NGL! 😸",
+
+    "info-authorquote": "Nienawidzę NGL za automatyczne wiadomości które po wyłączeniu nadal przychodzą i również za brak wielu funkcji.",
+
+    "info-sclink": "Zobacz kod źródłowy tej strony! 😄",
+
+    "info-pageauthors": "Autorzy strony, komponentów, grafiki oraz design:",
+    "info-author1-work": "Cała strona od zera aż do końca wraz z oskryptowaniem itp.",
+    "info-author2-work": "Konfiguracja i wdrożenie",
+
+
+    "notfound-pagetitle": "404: Nie znaleziono!",
+    "notfound-backtohomepage": "Powróć do strony głównej",
+
+
+    "msg-sent": "Wiadomość została wysłana!",
+    "msg-empty": "Wiadomość nie może być pusta!",
+    "msg-senderr": "Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie później!",
+
+    "msg-fetchqerr": "Wystąpił błąd w trakcie pobierania anonimowych pytań! Skontaktuj się z",
+    "msg-fetchqerr2": ", aby rozwiązać ten problem.",
+    "msg-neterr": "Błąd sieci",
+    "msg-noquestionsyet": "Nie ma jeszcze żadnych pytań. Zadaj je! 😁",
+    "msg-notanswered": "jeszcze nie odpowiedział na to pytanie!"
+}
