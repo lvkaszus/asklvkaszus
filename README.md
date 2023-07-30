@@ -40,7 +40,7 @@ If you want to deploy this project on your own server, you have two options:
 
 ## Common problems
 
-If you experience any problems during installation, feel free to <a href="https://github.com/lvkaszus/asklvkaszus-react/wiki/Common-problems-during-Installation">visit this Wiki page here!</a>
+If you experience any problems after installation, feel free to <a href="https://github.com/lvkaszus/asklvkaszus-react/wiki/Common-problems-after-Installation">visit this Wiki page here!</a>
 
 ## Wiki
 
