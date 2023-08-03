@@ -1,7 +1,12 @@
 # Ask @lvkaszus! - Python + React
 
 - Anonymous questions and answers pretty much like <a href="https://ngl.link">NGL App</a> or <a href="https://tellonym.me/">Tellonym</a>, with Backend written in Python, very simple user interface, support for i18n and also BBCode!
-<br><br>
+
+<div style="display: flex;">
+  <img src="asklvkaszus-frontend.png" alt="Ask @lvkaszus! - Frontend" style="width: 49%;">
+  <img src="asklvkaszus-admin_panel.png" alt="Ask @lvkaszus! - Admin Panel" style="width: 49%;">
+</div>
+
 ⚠️ WARNING! - You must have domain name and SSL/TLS certificate to use this application without any modifications to the source code! This is needed for your security. ⚠️
 
 ## Why this was created?
