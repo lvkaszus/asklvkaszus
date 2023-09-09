@@ -26,8 +26,8 @@ import sys
 
 # ----- BEGINNING OF CONFIGURATION -----
 
-FRONTEND_HOST = "https://your-frontend.host"        # Domain Name of your Frontend part of this application (Example: "ask.lvkasz.us" or "ask.lvkasz.us:3100")
-ADMIN_HOST    = "https://your-backend.host"         # Domain Name of your Admin Panel part of this application (Example: "admin-ask.lvkasz.us" or "admin-ask.lvkasz.us:3200")
+FRONTEND_HOST = "your-frontend.host"        # Domain Name of your Frontend part of this application (Example: "ask.lvkasz.us" or "ask.lvkasz.us:3100")
+ADMIN_HOST    = "your-backend.host"         # Domain Name of your Admin Panel part of this application (Example: "admin-ask.lvkasz.us" or "admin-ask.lvkasz.us:3200")
 
 SENDMSG_LIMIT = "10 per hour"                       # Send Question Rate-limiting: How many requests are allowed in what period of time for sending questions? - '10 per hour' is default.
 ADMIN_LIMIT   = "50 per hour"                       # Admin Rate-limiting: How many requests are allowed in what period of time for an administrator? - '50 per hour' is default.
