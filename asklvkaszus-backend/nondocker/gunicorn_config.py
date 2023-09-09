@@ -13,9 +13,9 @@ bind = '0.0.0.0:3030'
 timeout = 120
 
 # Set the location of the access log file
-accesslog = '/var/log/asklvkaszus/backend/access.log'
-# accesslog = '-'
+#accesslog = '/var/log/asklvkaszus/backend/access.log'
+accesslog = '-'
 
 # Set the location of the error log file
-errorlog = '/var/log/asklvkaszus/backend/error.log'
-# errorlog = '-'
+#errorlog = '/var/log/asklvkaszus/backend/error.log'
+errorlog = '-'
