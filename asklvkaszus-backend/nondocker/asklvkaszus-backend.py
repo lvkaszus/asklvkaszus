@@ -32,12 +32,12 @@ ADMIN_HOST    = "https://your-backend.host"         # Domain Name of your Admin 
 SENDMSG_LIMIT = "10 per hour"                       # Send Question Rate-limiting: How many requests are allowed in what period of time for sending questions? - '10 per hour' is default.
 ADMIN_LIMIT   = "50 per hour"                       # Admin Rate-limiting: How many requests are allowed in what period of time for an administrator? - '50 per hour' is default.
 
-API_KEY       = "qwertyuiopasdfghjklzxcvb"                          # Your secret API Authentication Key for Authorization by using API or Admin Panel (replying to questions, deleting them etc.) Please change it from 'changeme' and set it to something that has ideally +24 characters.
+API_KEY       = "changeme"                          # Your secret API Authentication Key for Authorization by using API or Admin Panel (replying to questions, deleting them etc.) Please change it from 'changeme' and set it to something that has ideally +24 characters.
 
 SQL_HOST      = 'localhost'                         # Hostname or IP Address to your MySQL/MariaDB Server where your Q&A data will be saved (questions, answers) - 'localhost' is default.
 SQL_PORT      = 3306                                # Port number of your MySQL/MariaDB Server. - 3306 is default.
 SQL_USER      = 'asklvkaszus'                       # Username in your MySQL/MariaDB Server for this application. If you didn't created a new user yet, please do this.
-SQL_PASSWORD  = 'qwertyuiopasdfgh'                             # Password of your MySQL/MariaDB User that you provided above. Please change it from 'admin' and set it to something that has ideally +16 characters.
+SQL_PASSWORD  = 'admin'                             # Password of your MySQL/MariaDB User that you provided above. Please change it from 'admin' and set it to something that has ideally +16 characters.
 SQL_DATABASE  = 'asklvkaszus'                       # Database name that will be used by your selected MySQL/MariaDB User. - If you didn't created a new database yet, please do this.
 
 # !DEPRECATED! : redisurl = "redis://localhost:6379"
