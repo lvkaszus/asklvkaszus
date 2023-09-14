@@ -114,12 +114,12 @@ const QuestionsList = () => {
             <p className="text-xl"><FontAwesomeIcon icon={faCircleExclamation} className='mr-2' />{t('msg-noquestionsyet')}</p>
           ) : (
             data.map(({ answer, date, question, id }) => (
-              <div key={id} className="rounded-lg p-3 my-2">
-                <p className="bg-gradient-to-br from-stPrimary to-stSecondary text-white font-light text-xl py-2 rounded-t-lg">{decodeAndFormatText(question)}</p>
+              <div key={id} className="rounded-lg p-3 my-2 break-words">
+                <p className="bg-gradient-to-br from-stPrimary to-stSecondary text-white font-light text-xl p-2 rounded-t-lg">{decodeAndFormatText(question)}</p>
                 {answer === 'TODO' ? (
-                  <p className="bg-bgStickerBot text-gray-400 text-xl px-4 pt-2 pb-6">{yourNickname + ' ' + t('msg-notanswered')}</p>
+                  <p className="bg-bgStickerBot text-gray-400 text-xl p-4 pb-6">{yourNickname + ' ' + t('msg-notanswered')}</p>
                 ) : (
-                  <p className="bg-bgStickerBot text-black text-xl px-2 pt-2 pb-6">{decodeAndFormatText(answer)}</p>
+                  <p className="bg-bgStickerBot text-black font-light text-xl px-2 pt-4 pb-6">{decodeAndFormatText(answer)}</p>
                 )}
 
                 <AnswerQuestion questionId={id} questionText={question} />

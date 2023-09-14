@@ -13,8 +13,4 @@ export default defineConfig({
       includeAssets: ['/main_icon.png']
     })
   ],
-  server: {
-    host: '10.30.1.38',
-    port: 3006
-  },
 })
