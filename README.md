@@ -1,5 +1,9 @@
 # Ask @lvkaszus! - Python + React
 
+**3.0 Update Soon! Much things will change and some useful features will be added!** (Markdown instead of BBCode that will be free of `setDangerouslyInnerHTML()`, Password authentication with session + CSRF tokens and encryption, API Key with regenerate key option, approving questions before showing them on main page, theme changer, notifications with PWA and/or Telegram Bot API, sender blocking and much more - stay tuned!
+
+<br><br>
+
 - Anonymous questions and answers pretty much like <a href="https://ngl.link">NGL App</a> or <a href="https://tellonym.me/">Tellonym</a>, with Backend written in Python, very simple user interface, support for i18n and also BBCode!
 
 <div style="display: flex;">
