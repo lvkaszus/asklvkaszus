@@ -1,6 +1,6 @@
 # Ask @lvkaszus! - Python + React
 
-**3.0 Update Soon! Much things will change and some useful features will be added!** (Markdown instead of BBCode that will be free of `setDangerouslyInnerHTML()`, Password authentication with session + CSRF tokens and encryption, API Key with regenerate key option, approving questions before showing them on main page, theme changer, notifications with PWA and/or Telegram Bot API, sender blocking and much more - stay tuned!
+**3.0 Update Soon! Much things will change and some useful features will be added! - Backend and User Panel finished, only Admin Panel is left! So around several weeks and version 3.0 will be available!** (Markdown instead of BBCode that will be free of `setDangerouslyInnerHTML()`, Password authentication with session + CSRF tokens and encryption, API Key with regenerate key option, approving questions before showing them on main page, theme changer, notifications with PWA and/or Telegram Bot API, sender blocking and much more - stay tuned!
 
 <br><br>
 
