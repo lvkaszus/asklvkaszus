@@ -1,8 +1,28 @@
-# Ask @lvkaszus! - Python + React
-
-**3.0 Update Soon! Much things will change and some useful features will be added! - Backend and User Panel finished, only Admin Panel is left! So around several weeks and version 3.0 will be available!** (Markdown instead of BBCode that will be free of `setDangerouslyInnerHTML()`, Password authentication with session + CSRF tokens and encryption, API Key with regenerate key option, approving questions before showing them on main page, theme changer, notifications with PWA and/or Telegram Bot API, sender blocking and much more - stay tuned!
-
+**Big 3.0 Update Info: Much things will change, some useful features will be added and it will be available very soon!**
 <br><br>
+About Upcoming v3.0:
+- Completely re-written and re-designed Backend
+- `.env` Environment Variable File with generator written in bash for Backend Settings
+- Using JSON Body to send and receive data (instead of HTTP Headers) to fix other problems with encoding/decoding when sending messages/displaying current messages
+- Sender Blocking based on sender's IP address blacklisting in one of the database tables (IP Addresses of Users around the internet are public after all, so sender's anonymity/privacy has not been lost!)
+- Authorization System that consists of Register + Login + Change Password + Logout features working with JSON Web Tokens (JWT) that are stored in cookies with `HttpOnly=True`, `Secure=True` and `SameSite=Strict` parameters for enhanced protection against XSS and other attacks
+- Cross-Site Request Forgery (CSRF) Protection by Flask-WTF
+- Separate Rate-limiting for Authorization System, User Frontend Endpoints, Admin Frontend Enpoints, User RESTful API Endpoints and Admin RESTful API Endpoints to enhance rate-limiting options customization
+- SQLAlchemy instead of pure SQL Queries
+- User/Admin Frontend API
+- RESTful User/Admin API with option to restrict CORS Access-Control-Allow-Origin header in .env file
+- Feature to completely disable/enable turning on application RESTful User/Admin API by changing Global API setting in application global settings
+- User Frontend and Admin Frontend are in one package now (because of CSRF Protection issues when User Frontend was on second domain and when Admin Frontend was on some other domain)
+- Update Checker
+- 'Approve Questions First' Mode
+- Added feature to hide/show all questions or hide/show single question
+- Telegram Notifications
+- Integrated Backend Tools for recovering/changing administrator password, deleting administrator account or restoring factory default settings
+- Re-designed User Interface with Material UI library
+<br>
+and many more...
+
+# Ask @lvkaszus! - Python + React
 
 - Anonymous questions and answers pretty much like <a href="https://ngl.link">NGL App</a> or <a href="https://tellonym.me/">Tellonym</a>, with Backend written in Python, very simple user interface, support for i18n and also BBCode!
 
