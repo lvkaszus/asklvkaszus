@@ -1,71 +1,80 @@
-# **Hello! Project is not dead! 😄️ In the upcoming 3.0 version, much things will change. Some useful features will be added and update will be available in several days!**
-<br><br>
-About Upcoming v3.0:
-- Completely re-written and re-designed Backend
-- `.env` Environment Variable File with generator written in bash for Backend Settings
-- Using JSON Body to send and receive data (instead of HTTP Headers) to fix other problems with encoding/decoding when sending messages/displaying current messages
-- Sender Blocking based on sender's IP address blacklisting in one of the database tables (IP Addresses of Users around the internet are public after all, so sender's anonymity/privacy has not been lost!)
-- Authorization System that consists of Register + Login + Change Password + Logout features working with JSON Web Tokens (JWT) that are stored in cookies with `HttpOnly=True`, `Secure=True` and `SameSite=Strict` parameters for enhanced protection against XSS and other attacks
-- Cross-Site Request Forgery (CSRF) Protection by Flask-WTF
-- Separate Rate-limiting for Authorization System, User Frontend Endpoints, Admin Frontend Enpoints, User RESTful API Endpoints and Admin RESTful API Endpoints to enhance rate-limiting options customization
-- SQLAlchemy instead of pure SQL Queries
-- User/Admin Frontend API
-- RESTful User/Admin API with option to restrict CORS Access-Control-Allow-Origin header in .env file
-- Feature to completely disable/enable turning on application RESTful User/Admin API by changing Global API setting in application global settings
-- User Frontend and Admin Frontend are in one package now (because of CSRF Protection issues when User Frontend was on second domain and when Admin Frontend was on some other domain)
-- Update Checker
-- 'Approve Questions First' Mode
-- Added feature to hide/show all questions or hide/show single question
-- Telegram Notifications
-- Integrated Backend Tools for recovering/changing administrator password, deleting administrator account or restoring factory default settings
-- Re-designed User Interface with Material UI library
-<br>
-and many more...
-
-## Ask @lvkaszus! - Python + React
-
-- Anonymous questions and answers pretty much like <a href="https://ngl.link">NGL App</a> or <a href="https://tellonym.me/">Tellonym</a>, with Backend written in Python, very simple user interface, support for i18n and also BBCode!
-
-<div style="display: flex;">
-  <img src="asklvkaszus-frontend.png" alt="Ask @lvkaszus! - Frontend" style="width: 49%;">
-  <img src="asklvkaszus-admin_panel.png" alt="Ask @lvkaszus! - Admin Panel" style="width: 49%;">
+<div align="center">
+<h1>Ask @lvkaszus!</h1>
+<h3>Anonymous questions and answers application, pretty much like Ngl or Tellonym, but better!</h3>
 </div>
 
-⚠️ WARNING! - You must have domain name and SSL/TLS certificate to use this application without any modifications to the source code! This is needed for your security. ⚠️
+| ![Alt Text](screenshots/home-dark.png)  | ![Alt Text](screenshots/admin-dark.png)  |
+|-----------------------------------------|------------------------------------------|
+| ![Alt Text](screenshots/home-light.png) | ![Alt Text](screenshots/admin-light.png) |
 
-## Why this was created?
+<div align="center">
+<h2>Why this was created?</h2>
+<p>I pretty much like the conception of NGL App or Tellonym, but I didn't like overall application operation. So, I created my own alternative to them with some added features and no analytics inside source code.</p>
+</div>
 
-I pretty much like the conception of <a href="https://ngl.link">NGL App</a> or <a href="https://tellonym.me/">Tellonym</a>, but I didn't like overall application operation. So, I created my own alternative to them with some added features and no analytics inside source code.
+<h2 align="center">Features</h2>
 
+- Receiving anonymous questions from people that have sent a message on main page with notifications (by using Telegram Bot API Integration)
+- Replying to anonymous questions with use of Markdown formatting system that not only can **format** ~~text~~ but also embed an YouTube video or OpenStreetMap geolocation
+- Show/Hide all questions with a single click
+- Manually show/hide single question
+- Multiple Sender Blocking based on sender's IP address blacklisting in one of the database tables (IP Addresses of Users around the internet are public after all, so sender's anonymity/privacy has not been lost!)
+- Protected Administrator REST API
+- Public User REST API
+- Secure authorization/authentication system
+- SQL Injection / XSS / CSRF Protection
+- Completely refreshed User Interface
+- Integrated Backend Tools for recovering/changing administrator password, deleting administrator account or for restoring factory default application settings
+- Rate-limiting to prevent abusive actions
+- Application update alerts
 
-### Features
-- You can change nickname viewed on Frontend and Backend from "@lvkaszus" to for example "@MyNickname"
-  
-- Separated Backend, Frontend and Admin Panel
-  
-- i18n support for internationalization
-  
-- BBCode support for bold, italic and underlined text but also with YouTube video embed support and Map Location embed by OpenStreetMap (currently by `dangerouslySetInnerHTML` and sanitization in backend, but this will change in next release)
-  
-- Rate-limiting by Flask-Limiter and Redis
-  
-- Database powered by MariaDB
-  
-- Admin Panel with options like deleting all questions, replying to questions and also deleting single questions
-  
-- Very basic authentication system by using API Auth Key specified by you during installation of Backend of this App and Cookies with expiration time of 30 minutes by default
+<h2 align="center">Comparison</h2>
 
+|                                       | Ask @lvkaszus!       | Tellonym               | Ngl App             |
+|---------------------------------------|----------------------|------------------------|---------------------|
+| **Open Source?**                      | ✅ Open Source       | ❌ Open Source         | ❌ Open Source      |
+| **Data Tracking?**                    | ✅ No data tracking  | ❌ No data tracking    | ❌ No data tracking |
+| **Ads?**                              | ✅ Ad-free           | ❌ Ad-free             | ❌ Ad-free          |
+| **Automatic Questions?**              | ✅ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions |
+| **Text Formatting?**                  | ✅ Offers text formatting (as well as placing videos or location inside questions/answers!) | ⚠️ Only offers placing photos | ⚠️ Only offers placing photos in the background |
+| **Notifications?**                    | ✅ Notifications (by Telegram) | ✅ Notifications | ✅ Notifications |
+| **Available On?**                     | ✅ Desktop and Mobile (PWA) | ✅ Desktop and Mobile | ⚠️ Only on Mobile |
 
-### Do you want to contribute?
+<div align="center">
+<h2>Installation</h2>
 
-If you want to add new feature to this project or improve something, you can contribute without any problems!
+If you want to give this project a try and install it on your server, then please visit
 
+[Full installation guide available here](documentation/Installation.md)!
 
-### Credits
-- This project uses Python libraries like Flask, Flask-Limiter, Flask-CORS, mysql-connector-python, bleach and others. 
-- This project uses React library. (https://github.com/facebook/react)
-- This project uses Vite library. (https://github.com/vitejs/vite)
-- This project uses Axios library. (https://github.com/axios/axios)
-- This project uses i18n for React library. (https://github.com/i18next/react-i18next)
-- This project uses Font Awesome for React library. (https://github.com/FortAwesome/react-fontawesome)
-- This project uses Fira Code font. (https://github.com/tonsky/FiraCode)
+Application is available to install in Docker image or if you don't want to install it with using Docker, you can also install it manually step-by-step as described in the guide linked above.
+</div>
+
+<div align="center">
+<h2>Documentation</h2>
+
+Entire documentation for this project is inside the `documentation` directory in the root path of this project repository.
+
+[Full documentation available here](documentation/Main.md)!
+</div>
+
+<div align="center">
+<h2>Contributions</h2>
+
+<p>Project is fully open for contributions! 😁️</p>
+
+<p>Several steps you MUST do when want to contribute:</p>
+</div>
+
+- Fork this repository: https://github.com/lvkaszus/asklvkaszus/fork
+- Clone your forked repository: `git clone https://github.com/<USERNAME>/<REPOSITORY_NAME>`
+- Make your desired changes to the code.
+- Create new branch with your new feature that you want to apply: `git checkout -b <NEW_FEATURE_NAME>`
+- Apply your changes: `git add .`
+- Commit your changes: `git commit -m "<NEW_FEATURE_DESCRIPTION>"`
+- Push your changes to your forked repository: `git push origin <NEW_FEATURE_NAME>`
+- Create a new pull request with it's changes description.
+
+<p align="center">
+And next, i will check and test your pull request. If eveything will be good, i will merge it. When there be any problems, i will notify you about them.
+</p>

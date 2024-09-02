@@ -1,0 +1,12 @@
+[Unit]
+Description=Ask @lvkaszus! - Application Frontend
+After=network.target
+
+[Service]
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/asklvkaszus/asklvkaszus-frontend
+ExecStart=/home/YOUR_USER/asklvkaszus/asklvkaszus-frontend/start.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

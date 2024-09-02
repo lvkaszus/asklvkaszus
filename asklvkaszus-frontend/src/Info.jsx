@@ -1,41 +1,76 @@
-import { Helmet } from 'react-helmet';
-
-import './Main.css';
-
-import Navbar from './Components/Navbar.jsx';
-
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet';
+import Navbar from './components/Navbar.jsx';
+import { Card, CardContent, Typography, Link, Box, List, ListItem } from '@mui/material';
+import { SendVersionCheckRequest } from './components/requests/SendVersionCheckRequest.jsx';
 
-const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || 'me';
+const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const Info = () => {
+const Info = () =>{
   const { t } = useTranslation();
 
+  const { frontendVersion, backendVersion, latestGitVersion, isLatestGitVersion } = SendVersionCheckRequest();
+
   return (
-    <div className='font-roboto font-bold text-center p-2 w-450px fade-in'>
-      <Helmet>
-        <title>{t('info-title') + ' ' + yourNickname + '!'}</title>
-      </Helmet>
+    <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
+      <Box sx={{ padding: '8px' }}>
+        <Helmet>
+          <title>{t('info-pagetitle')} - Ask {yourNickname}!</title>
 
-      <Navbar />
+          <meta name="robots" content="index, follow" />
+        </Helmet>
 
-      <div className='bg-white rounded-lg bg-opacity-20'>
-      <p className='font-bold text-xl mb-10px mt-6 sm:text-2xl sm:mt-20px sm:mb-0'>{t('info-pagetitle') + ' ' + yourNickname + '!'}</p>
-        <p className='font-normal text-xs sm:text-base mb-4'>{t('info-description')}</p>
+        <Navbar />
 
-        <p className='font-light text-xs sm:text-base mb-2'>&quot;{t('info-authorquote')}&quot; <span className='font-bold'>- @lvkaszus 2023</span></p>
+        <Card variant="outlined" sx={{ marginBottom: '16px', maxWidth: '450px' }}>
+          <CardContent>
+            <Typography variant='h1' component='h1' sx={{ padding: '8px' }}>Ask {yourNickname}!</Typography>
+            <Typography component='p'>{t('info-description')}</Typography>
 
-        <div className='mt-1 sm:mt-4'>
-            <a className='text-sky-600 text-xs sm:text-base underline' href="https://github.com/lvkaszus/asklvkaszus-react" target='_blank' rel='noreferrer'>{t('info-sclink')}</a>
-        </div>
+            <Box sx={{ marginY: '32px' }}>
+              <Link href="https://github.com/lvkaszus/asklvkaszus-react" target="_blank" rel="noreferrer noopener">{t('info-sourcecodelink')}</Link>
+            </Box>
 
-        <p className='font-normal text-xs sm:text-base text-left mt-2 sm:mt-8 mb-1 ml-2'>{t('info-pageauthors')}</p>
-        
-        <li className='font-light text-xs sm:text-base text-left mt-2 sm:mt-4 ml-6'>lvkaszus <span className='font-normal'>({t('info-author1-work')})</span></li>
-        <li className='font-light text-xs sm:text-base text-left mt-2 sm:mt-4 ml-6'>{yourNickname} <span className='font-normal'>({t('info-author2-work')})</span></li>
-      </div>
+            <Box sx={{ textAlign: 'left' }}>
+              <Typography component='p'>{t('info-authors-title')}:</Typography>
 
-    </div>
+              <List sx={{ padding: 0 }}>
+                <ListItem sx={{ display: 'list-item', listStyleType: 'disc', marginLeft: '16px', paddingLeft: '4px' }}>
+                  <Typography component="span">
+                    @lvkaszus -{' '}
+                  </Typography>
+                  <Typography component="span" fontWeight={300}>
+                    {t('info-author1-work')}
+                  </Typography>
+                </ListItem>
+                <ListItem sx={{ display: 'list-item', listStyleType: 'disc', marginLeft: '16px', paddingLeft: '4px' }}>
+                  <Typography component="span">
+                    {yourNickname} -{' '}
+                  </Typography>
+                  <Typography component="span" fontWeight={300}>
+                    {t('info-author2-work')}
+                  </Typography>
+                </ListItem>
+              </List>
+            </Box>
+
+            <Box sx={{ textAlign: 'left' }}>
+              <Box sx={{ marginTop: '48px' }}>
+                <Typography variant='h6' component='h6'>{t('info-frontendversion')}: {frontendVersion || t('loading')}</Typography>
+                <Typography variant='h6' component='h6'>{t('info-backendversion')}: {backendVersion || t('loading')}</Typography>
+
+                {!isLatestGitVersion && (
+                  <Box>
+                    <Typography variant='h6' component='h6' color="aqua">{t('info-newupdateavailable', { new_version: latestGitVersion || t('loading') })}</Typography>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
   )
 }
 

@@ -1,9 +1,11 @@
-FROM node:current-alpine3.18
+FROM node:lts-slim
 
 WORKDIR /asklvkaszus/frontend
 
-ENV API_DOMAIN_NAME="127.0.0.1"
-ENV YOUR_NICKNAME="me"
+ENV TZ="Europe/Warsaw"
+
+ENV DOMAIN="https://ask.lvkasz.us"
+ENV YOUR_NICKNAME="@me"
 
 COPY package*.json ./
 

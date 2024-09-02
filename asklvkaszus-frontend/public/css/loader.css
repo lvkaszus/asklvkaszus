@@ -1,0 +1,140 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: white;
+    color: black;
+}
+
+.app-main-hide {
+    display: none;
+}
+
+@keyframes fadeInAndScale {
+    0% {
+      opacity: 0;
+      transform: scale(0.75);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1.50);
+    }
+}
+
+@keyframes fadeOutAndScale {
+    0% {
+        opacity: 1;
+        transform: scale(1.50);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.50);
+    }
+}
+
+@keyframes loaderFadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+#loader-main {
+    position: relative;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+}
+
+#loader-title {
+    font-size: 24px;
+    font-weight: 400;
+    opacity: 0;
+}
+
+#loader-noscript {
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 50px;
+    opacity: 0;
+}
+
+@keyframes dotsAnimation {
+    0% {
+        left: -10px;
+    }
+    49% {
+        left: 49%;
+    }
+    50% {
+        left: 50%;
+    }
+    100% {
+        left: 110%;
+    }
+}
+
+.dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px;
+    width: 100%;
+    display: none;
+}
+
+.dots-visible {
+    display: block;
+}
+
+.dots .dot {
+    width: 5px;
+    height: 5px;
+    background-color: black;
+    border-radius: 25px;
+    position: absolute;
+    left: -10px;
+    animation: dotsAnimation 2.5s ease infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: black;
+        color: white;
+    }
+    .dots .dot {
+        background-color: white;
+    }
+}
+
+.dot:nth-child(1){
+    animation-delay: 0s;
+}
+.dot:nth-child(2){
+    animation-delay: 0.3s;
+}
+.dot:nth-child(3){
+    animation-delay: 0.6s;
+}
+.dot:nth-child(4){
+    animation-delay: 0.9s;
+}
+
+.loader-fade-in {
+    animation: fadeInAndScale 2s ease-in-out forwards;
+}
+
+.loader-fade-out {
+    animation: fadeOutAndScale 1s ease-in-out forwards;
+}
+
+.loader-main-fade-out {
+    animation: loaderFadeOut 1s ease-in-out forwards;
+}

@@ -1,0 +1,13 @@
+[Unit]
+Description=Ask @lvkaszus! - Application Backend
+After=network.target
+
+[Service]
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend
+Environment="PATH=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend/bin"
+ExecStart=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend/start.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,66 @@
+volumes:
+  asklvkaszus_mariadb_data:
+  asklvkaszus_config_data:
+
+networks:
+  asklvkaszus-network:
+    driver: bridge
+
+services:
+  asklvkaszus-mariadb:
+    image: mariadb:latest
+    container_name: asklvkaszus-mariadb
+    networks:
+      - asklvkaszus-network
+    environment:
+      MYSQL_USER: asklvkaszus
+      MYSQL_PASSWORD: ChangeMePlease # Update that with strong MySQL user password!
+      MYSQL_ROOT_PASSWORD: ChangeMePlease # Update that with strong MySQL root password!
+      MYSQL_DATABASE: asklvkaszus
+    volumes:
+      - asklvkaszus_mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+
+  asklvkaszus-redis:
+    image: redis:latest
+    container_name: asklvkaszus-redis
+    networks:
+      - asklvkaszus-network
+    volumes:
+      - /etc/redis/asklvkaszus:/usr/local/etc/redis
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: unless-stopped
+
+  asklvkaszus-backend:
+    image: lvkaszus/asklvkaszus-backend:latest
+    container_name: asklvkaszus-backend
+    networks:
+      - asklvkaszus-network
+    ports:
+      - "127.0.0.1:3030:3030"
+    environment:
+      TZ: "Europe/Warsaw" # Update that with your current timezone!
+      GUNICORN_WORKERS: 1
+      GUNICORN_THREADS: 4
+      GUNICORN_TIMEOUT: 60
+    volumes:
+      - asklvkaszus_config_data:/asklvkaszus/backend/config
+    depends_on:
+      - asklvkaszus-mariadb
+      - asklvkaszus-redis
+    restart: unless-stopped
+
+  asklvkaszus-frontend:
+    image: lvkaszus/asklvkaszus-frontend:latest
+    container_name: asklvkaszus-frontend
+    networks:
+      - asklvkaszus-network
+    ports:
+      - "127.0.0.1:3031:3031"
+    environment:
+      TZ: "Europe/Warsaw" # Update that with your current timezone!
+      DOMAIN: "https://domain.tld" # Update that with your application domain name!
+      YOUR_NICKNAME: "@yourNickname" # Update that with your nickname that will be displayed in the application!
+    depends_on:
+      - asklvkaszus-backend
+    restart: unless-stopped

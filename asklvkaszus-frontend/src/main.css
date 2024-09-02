@@ -1,0 +1,90 @@
+:root {
+  text-rendering: optimizeLegibility;
+
+  scrollbar-width: thin;
+  scrollbar-color: black white;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: black;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    color: black;
+}
+  
+@media (prefers-color-scheme: dark) {
+    :root {
+      scrollbar-color: white black;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: black;
+    }
+  
+    ::-webkit-scrollbar-thumb {
+      background-color: white;
+    }
+
+    body {
+      background-color: black;
+      color: white;
+    }
+}
+
+@keyframes fadeAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeAnimation ease 1s;
+  animation-fill-mode: forwards;
+}
+
+.fade-out {
+  animation: fadeAnimation ease 1s;
+  animation-fill-mode: backwards;
+}
+
+
+#app-main {
+  background-image: url("/backgrounds/light.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+@media (prefers-color-scheme: dark) {
+  #app-main {
+    background-image: url("/backgrounds/dark.jpg");
+  }
+}
+
+
+p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}

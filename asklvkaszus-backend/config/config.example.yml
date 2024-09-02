@@ -1,0 +1,34 @@
+debug: true
+logfile: ""
+
+secret_key: "ChangeMeAsSoonAsPossible"
+jwt_secret_key: "ChangeMeAsSoonAsPossible"
+
+mysql:
+  host: "localhost"
+  port: "3306"
+  username: "asklvkaszus"
+  password: "asklvkaszus"
+  database: "asklvkaszus"
+
+redis:
+  host: "localhost"
+  port: "6379"
+  username: "asklvkaszus"
+  password: "asklvkaszus"
+  rate_limiting_db: "0"
+  blacklisted_tokens_db: "1"
+
+your_nickname: "@lvkaszus"
+
+server_url: "https://ask.lvkasz.us"
+api_allowed_clients_url: "*"
+
+cookies_secure: true
+
+rate_limits:
+  auth: "35 per hour"
+  admin: "250 per hour"
+  api_admin: "250 per hour"
+  user: "10 per hour"
+  api_user: "10 per hour"
