@@ -5,7 +5,6 @@ from ....models.app_settings import AppSettings
 from ....models.questions import Questions
 from ....models.registered_users import RegisteredUsers
 from ....modules.get_remote_address import get_remote_address
-from ....modules.check_sender_block import is_blocked
 import uuid
 from datetime import datetime
 import urllib.parse
@@ -20,7 +19,7 @@ def api_user_submit_question():
             return jsonify(error='Sending question failed. Empty messages are not allowed!'), 400
 
         senders_ip_address = get_remote_address()
-        is_senders_ip_blocked = is_blocked(senders_ip_address)
+        is_senders_ip_blocked = BlockedSenders.query.filter_by(ip_address=senders_ip_address).first()
 
         if is_senders_ip_blocked == True:
             return jsonify(error='Sending question failed. You have been blocked!'), 403
