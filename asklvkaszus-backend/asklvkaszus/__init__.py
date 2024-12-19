@@ -6,9 +6,11 @@ from logging.handlers import TimedRotatingFileHandler
 from .errors import register_error_handlers
 from .extensions import sql, csrf, limiter, cors
 from .models.app_settings import AppSettings
-from .models.registered_users import RegisteredUsers
 from .models.blocked_senders import BlockedSenders
+from .models.notifications_subscribers import NotificationsSubscribers
+from .models.notifications_vapid_keys import NotificationsVapidKeys
 from .models.questions import Questions
+from .models.registered_users import RegisteredUsers
 
 from .routes.root_routes import root_bp
 
