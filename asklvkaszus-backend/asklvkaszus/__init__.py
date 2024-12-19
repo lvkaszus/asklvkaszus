@@ -37,8 +37,13 @@ def create_app():
 
     if app.config['LOGFILE']:
         log_file = app.config['LOGFILE']
-        os.makedirs(os.path.dirname(log_file), exist_ok=True)
-        
+
+        if not os.path.isabs(log_file):
+            log_file = os.path.join(os.getcwd(), log_file)
+
+        log_dir = os.path.dirname(log_file)
+        os.makedirs(log_dir, exist_ok=True)
+
         file_handler = TimedRotatingFileHandler(log_file, when='W0', backupCount=1)
         file_handler.setFormatter(formatter)
         file_handler.setLevel(log_level)
