@@ -5,6 +5,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 from .errors import register_error_handlers
 from .extensions import sql, csrf, limiter, cors
+from flask_migrate import Migrate
 from .models.app_settings import AppSettings
 from .models.blocked_senders import BlockedSenders
 from .models.notifications_subscribers import NotificationsSubscribers
@@ -57,6 +58,8 @@ def create_app():
     register_error_handlers(app)
     
     sql.init_app(app)
+    migrate = Migrate(app, sql)
+
     csrf.init_app(app)
     limiter.init_app(app)
 
