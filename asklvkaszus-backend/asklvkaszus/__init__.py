@@ -21,6 +21,8 @@ from .routes.admin_routes import admin_bp
 
 from .routes.rest_routes import rest_bp
 
+from .modules.vapid_core import check_vapid_keys
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -79,6 +81,8 @@ def create_app():
 
     with app.app_context():
         sql.create_all()
+
+        check_vapid_keys()
 
         if not AppSettings.query.filter_by(username="asklvkaszus").first():
             default_global_settings = AppSettings(username="asklvkaszus")

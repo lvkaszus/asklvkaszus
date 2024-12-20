@@ -12,9 +12,11 @@ from ..actions.admin.configure_notifications import admin_configure_notification
 from ..actions.admin.fetch_all_questions import admin_fetch_all_questions
 from ..actions.admin.fetch_blocked_senders import admin_fetch_blocked_senders
 from ..actions.admin.fetch_updates import admin_fetch_updates
+from ..actions.admin.fetch_vapid_public_key import admin_fetch_vapid_public_key
 from ..actions.admin.purge_all_questions import admin_purge_all_questions
 from ..actions.admin.purge_question import admin_purge_question
 from ..actions.admin.refresh_api_token import admin_refresh_api_token
+from ..actions.admin.subscribe_to_push_notifications import admin_subscribe_to_push_notifications
 from ..actions.admin.toggle_admin_api import admin_toggle_admin_api
 from ..actions.admin.toggle_all_questions_visibility import admin_toggle_all_questions_visibility
 from ..actions.admin.toggle_question_visibility import admin_toggle_question_visibility
@@ -84,6 +86,12 @@ def admin_fetch_blocked_senders_route(identity):
 def admin_fetch_updates_route(identity):
     return admin_fetch_updates(identity)
 
+@admin_bp.route('/fetch_vapid_public_key', methods=['POST'])
+@limiter.limit(Config.ADMIN_RATELIMIT)
+@token_required
+def admin_fetch_vapid_public_key_route(identity):
+    return admin_fetch_vapid_public_key(identity)
+
 @admin_bp.route('/purge_all_questions', methods=['DELETE'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
 @token_required
@@ -101,6 +109,12 @@ def admin_purge_question_route(identity):
 @token_required
 def admin_refresh_api_token_route(identity):
     return admin_refresh_api_token(identity)
+
+@admin_bp.route('/subscribe_to_push_notifications', methods=['POST'])
+@limiter.limit(Config.ADMIN_RATELIMIT)
+@token_required
+def admin_subscribe_to_push_notifications_route(identity):
+    return admin_subscribe_to_push_notifications(identity)
 
 @admin_bp.route('/toggle_admin_api', methods=['POST'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
