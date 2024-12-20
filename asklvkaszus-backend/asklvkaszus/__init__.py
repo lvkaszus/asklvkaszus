@@ -91,9 +91,6 @@ def create_app():
             default_global_settings = AppSettings(username="asklvkaszus")
             sql.session.add(default_global_settings)
 
-        if not PushNotificationsKeys.query.first():
-            default_push_notifications_settings = PushNotificationsKeys(enabled=False)
-
         sql.session.commit()
         sql.session.close()
     

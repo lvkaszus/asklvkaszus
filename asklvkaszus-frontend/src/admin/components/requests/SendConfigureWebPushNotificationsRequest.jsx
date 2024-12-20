@@ -6,24 +6,22 @@ import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendConfigureNotificationsRequest = (telegramEnabled, telegramBotToken, telegramBotChatId) => {
+export const SendConfigureWebPushNotificationsRequest = (WebpushEnabled) => {
   const { t } = useTranslation();
 
-  const [configureNotificationsError, setConfigureNotificationsError] = useState(false);
-  const [configureNotificationsResponse, setConfigureNotificationsResponse] = useState('');
+  const [configureWebPushNotificationsError, setConfigureWebPushNotificationsError] = useState(false);
+  const [configureWebPushNotificationsResponse, setConfigureWebPushNotificationsResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitConfigureNotificationsRequest = async () => {
+  const submitConfigureWebPushNotificationsRequest = async () => {
     try {
       const csrfToken = await SendFetchCsrfTokenRequest();
 
         const response = await axios.put(
           `${domain}/api/app/admin/configure_notifications`,
           {
-            telegram_enabled: telegramEnabled,
-            telegram_bot_token: telegramBotToken,
-            telegram_bot_chat_id: telegramBotChatId
+            webpush_enabled: WebpushEnabled,
           },
           {
             headers: {
@@ -34,8 +32,8 @@ export const SendConfigureNotificationsRequest = (telegramEnabled, telegramBotTo
         
         const { success } = response.data;
 
-        setConfigureNotificationsResponse(success);
-        setConfigureNotificationsError(false);
+        setConfigureWebPushNotificationsResponse(success);
+        setConfigureWebPushNotificationsError(false);
 
     } catch (error) {
         if (error.response) {
@@ -45,33 +43,33 @@ export const SendConfigureNotificationsRequest = (telegramEnabled, telegramBotTo
             responseError.includes("Token") ||
             responseError.includes("CSRF")
           ) {
-            setConfigureNotificationsResponse('Please login again!');
-            setConfigureNotificationsError(true);
+            setConfigureWebPushNotificationsResponse('Please login again!');
+            setConfigureWebPushNotificationsError(true);
 
 
             navigate('/admin/login');
 
           } else {
-            setConfigureNotificationsResponse(responseError);
-            setConfigureNotificationsError(true);
+            setConfigureWebPushNotificationsResponse(responseError);
+            setConfigureWebPushNotificationsError(true);
 
           }
         } else {
-          setConfigureNotificationsResponse('');
-          setConfigureNotificationsError(true);
+          setConfigureWebPushNotificationsResponse('');
+          setConfigureWebPushNotificationsError(true);
 
           console.error(`${t('admin-error-configurenotifications')} ${error}`)
         }
     }
   };
 
-  const handleConfigureNotificationsRequest = async () => {
-    await submitConfigureNotificationsRequest();
+  const handleConfigureWebPushNotificationsRequest = async () => {
+    await submitConfigureWebPushNotificationsRequest();
   };
 
   return {
-    configureNotificationsError,
-    configureNotificationsResponse,
-    handleConfigureNotificationsRequest,
+    configureWebPushNotificationsError,
+    configureWebPushNotificationsResponse,
+    handleConfigureWebPushNotificationsRequest,
   };
 };

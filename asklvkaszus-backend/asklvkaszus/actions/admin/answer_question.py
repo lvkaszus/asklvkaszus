@@ -24,7 +24,7 @@ def admin_answer_question(identity):
         return jsonify(success='Your answer has been updated successfully!'), 200
 
     except Exception as e:
-        current_app.logging.error(f"An error occured inside asklvkaszus/actions/admin/answer_question module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/answer_question module: {e}")
         
         return jsonify(error='An error occurred while updating answer to selected question! Try again later.'), 500
 

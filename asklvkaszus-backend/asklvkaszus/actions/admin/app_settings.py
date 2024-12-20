@@ -21,7 +21,7 @@ def admin_app_settings(identity):
                 return jsonify(error="App Settings are not set yet!"), 404
 
         except Exception as e:
-            current_app.logging.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type GET: {e}")
+            current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type GET: {e}")
 
             return jsonify(error='An error occured while loading application settings! Try again later.'), 500
 
@@ -74,7 +74,7 @@ def admin_app_settings(identity):
             return jsonify(success='Application Settings have been updated.'), 200
 
         except Exception as e:
-            current_app.logging.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type POST: {e}")
+            current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type POST: {e}")
 
             return jsonify(error='An error occurred while updating application settings! Try again later.'), 500
 

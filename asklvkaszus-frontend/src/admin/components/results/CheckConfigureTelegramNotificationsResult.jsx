@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Snackbar, Alert } from '@mui/material';
 
-const CheckConfigureNotificationsResult = ({ open, error, response, onClose }) => {
+const CheckConfigureTelegramNotificationsResult = ({ open, error, response, onClose }) => {
     const { t } = useTranslation();
 
     return (
@@ -67,4 +67,4 @@ const CheckConfigureNotificationsResult = ({ open, error, response, onClose }) =
     );
 };
 
-export default CheckConfigureNotificationsResult;
+export default CheckConfigureTelegramNotificationsResult;

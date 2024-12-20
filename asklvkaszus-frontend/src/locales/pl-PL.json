@@ -162,6 +162,7 @@
     "admin-us-adminapienabled": "API administratora włączone?",
     "admin-us-userapienabled": "API użytkownika włączone?",
     "admin-us-adminapikey": "Klucz API administratora",
+    "admin-us-pushnotifications-enabled": "Powiadomienia Push (PWA) włączone?",
     "admin-us-telegramnotifications-enabled": "Powiadomienia Telegram włączone?",
     "admin-us-telegramnotifications-bottoken": "Powiadomienia Telegram - Token bota",
     "admin-us-telegramnotifications-botchatid": "Powiadomienia Telegram - ID konwersacji bota",
@@ -189,9 +190,13 @@
     "admin-raa-dialog-refreshed-copyadminapikey": "Skopiuj klucz API administratora",
 
     "admin-cn-editnotificationssettings": "Edytuj ustawienia powiadomień",
-    "admin-cn-configurenotifications": "Skonfiguruj powiadomienia",
     "admin-cn-notificationsmanagement": "Zarządzanie powiadomieniami",
     "admin-cn-notificationsconfiguration": "Konfiguracja powiadomień",
+    "admin-cn-notifications-provider": "Wybierz dostawcę powiadomień",
+
+    "telegram": "Telegram",
+    "pwa": "PWA (Web Push)",
+
     "admin-cn-telegramnotifications-enabled": "Powiadomienia Telegram włączone?",
     "admin-cn-telegramnotifications-bottoken": "Token bota Telegram",
     "admin-cn-telegramnotifications-chatid": "ID konwersacji bota Telegram",

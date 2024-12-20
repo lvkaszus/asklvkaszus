@@ -1,5 +1,6 @@
 from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
+from datetime import datetime
 from ...models.push_notifications_subscribers import PushNotificationsSubscribers
 
 def admin_subscribe_to_push_notifications(identity):
@@ -15,10 +16,20 @@ def admin_subscribe_to_push_notifications(identity):
         if not endpoint or not auth or not p256dh:
             return jsonify(error="Invalid subscription data!"), 400
 
-        subscription = PushNotificationsSubscribers(endpoint=endpoint, keys_auth=auth, keys_p256dh=p256dh)
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        subscription = PushNotificationsSubscribers(endpoint=endpoint, keys_auth=auth, keys_p256dh=p256dh, subscribed_date=now)
         
-        db.session.add(subscription)
-        db.session.commit()
+        sql.session.add(subscription)
+
+        subscribers_count = sql.session.query(PushNotificationsSubscribers).count()
+
+        if subscribers_count > 25:
+            oldest_subscriber = sql.session.query(PushNotificationsSubscribers).order_by(PushNotificationsSubscribers.subscribed_date.asc()).first()
+            if oldest_subscriber:
+                sql.session.delete(oldest_subscriber)
+
+        sql.session.commit()
 
         return jsonify(success="Subscribed successfully!"), 201
 

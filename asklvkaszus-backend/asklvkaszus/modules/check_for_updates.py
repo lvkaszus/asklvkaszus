@@ -6,7 +6,7 @@ def check_for_updates():
     appRepositoryApiUrl = "https://api.github.com/repos/lvkaszus/asklvkaszus/releases/latest"
 
     try:
-        response = requests.get(appRepositoryApiUrl)
+        response = requests.get(appRepositoryApiUrl, timeout=5)
 
         if response.status_code == 200:
             data = response.json()
@@ -26,6 +26,6 @@ def check_for_updates():
             return {"error": "Failed to fetch data from the GitHub API! Try again later."}
 
     except Exception as e:
-        current_app.logging.error(f"An error occured inside asklvkaszus/modules/check_for_updates module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/modules/check_for_updates module: {e}")
 
         return {"error": "Failed to check for application updates! Try again later."}

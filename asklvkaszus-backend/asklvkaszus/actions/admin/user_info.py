@@ -15,6 +15,7 @@ def admin_user_info(identity):
             'api_admin_enabled': user.api_admin_enabled,
             'api_user_enabled': user.api_user_enabled,
             'api_key': user.api_key,
+            'push_notifications_enabled': user.push_enabled,
             'telegram_enabled': user.telegram_enabled,
             'telegram_bot_token': user.telegram_bot_token,
             'telegram_bot_chat_id': user.telegram_bot_chat_id

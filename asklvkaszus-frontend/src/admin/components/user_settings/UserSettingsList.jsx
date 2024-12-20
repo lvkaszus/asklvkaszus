@@ -7,7 +7,8 @@ import CheckToggleUserApiResult from "../results/CheckToggleUserApiResult";
 import RefreshAdminApiKey from "./RefreshAdminApiKey";
 import CheckRefreshAdminApiKeyResult from "../results/CheckRefreshAdminApiKeyResult";
 import ConfigureNotifications from "./ConfigureNotifications";
-import CheckConfigureNotificationsResult from "../results/CheckConfigureNotificationsResult";
+import CheckConfigureTelegramNotificationsResult from "../results/CheckConfigureTelegramNotificationsResult";
+import CheckConfigureWebPushNotificationsResult from "../results/CheckConfigureWebPushNotificationsResult";
 import ChangePassword from "./ChangePassword";
 import CheckChangePasswordResult from "../results/CheckChangePasswordResult";
 import ShowAdminApiKey from "./ShowAdminApiKey";
@@ -30,9 +31,13 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
     const [refreshAdminApiKeyResponse, setRefreshAdminApiKeyResponse] = useState('');
     const [isRefreshAdminApiKeyNotifyOpen, setRefreshAdminApiKeyNotifyOpen] = useState(false);
 
-    const [configureNotificationsStatus, setConfigureNotificationsStatus] = useState('');
-    const [configureNotificationsResponse, setConfigureNotificationsResponse] = useState('');
-    const [isConfigureNotificationsNotifyOpen, setConfigureNotificationsNotifyOpen] = useState(false);
+    const [configureWebPushNotificationsStatus, setConfigureWebPushNotificationsStatus] = useState('');
+    const [configureWebPushNotificationsResponse, setConfigureWebPushNotificationsResponse] = useState('');
+    const [isConfigureWebPushNotificationsNotifyOpen, setConfigureWebPushNotificationsNotifyOpen] = useState(false);
+
+    const [configureTelegramNotificationsStatus, setConfigureTelegramNotificationsStatus] = useState('');
+    const [configureTelegramNotificationsResponse, setConfigureTelegramNotificationsResponse] = useState('');
+    const [isConfigureTelegramNotificationsNotifyOpen, setConfigureTelegramNotificationsNotifyOpen] = useState(false);
 
     const [changePasswordStatus, setChangePasswordStatus] = useState('');
     const [changePasswordResponse, setChangePasswordResponse] = useState('');
@@ -66,13 +71,22 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
         setRefreshAdminApiKeyNotifyOpen(false);
     };
 
-    const configureNotificationsOutputData = (status, response) => {
-        setConfigureNotificationsStatus(status);
-        setConfigureNotificationsResponse(response);
+    const configureWebPushNotificationsOutputData = (status, response) => {
+        setConfigureWebPushNotificationsStatus(status);
+        setConfigureWebPushNotificationsResponse(response);
     };
 
-    const handleConfigureNotificationsNotifyClose = () => {
-        setConfigureNotificationsNotifyOpen(false);
+    const handleConfigureWebPushNotificationsNotifyClose = () => {
+        setConfigureWebPushNotificationsNotifyOpen(false);
+    };
+
+    const configureTelegramNotificationsOutputData = (status, response) => {
+        setConfigureTelegramNotificationsStatus(status);
+        setConfigureTelegramNotificationsResponse(response);
+    };
+
+    const handleConfigureTelegramNotificationsNotifyClose = () => {
+        setConfigureTelegramNotificationsNotifyOpen(false);
     };
 
     const changePasswordOutputData = (status, response) => {
@@ -124,6 +138,10 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
 
                     <Divider sx={{ marginY: '16px' }} />
 
+                    <ChangePassword changePasswordOutputData={changePasswordOutputData} setChangePasswordNotifyOpen={setChangePasswordNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
+
+                    <Divider sx={{ marginY: '16px' }} />
+
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
                         <Typography sx={{ fontWeight: 500 }}>
                             {t('admin-us-adminapienabled')}
@@ -165,6 +183,21 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
                         </Box>
                     </Box>
 
+                    {userData.api_key && (
+                        <ShowAdminApiKey adminApiKey={userData.api_key} />
+                    )}
+
+                    <Divider sx={{ marginY: '16px' }} />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <Typography sx={{ fontWeight: 500 }}>
+                            {t('admin-us-pushnotifications-enabled')}
+                        </Typography>
+                        <Typography>
+                            {userData.push_notifications_enabled ? t('yes') : t('no')}
+                        </Typography>
+                    </Box>
+
                     <Divider sx={{ marginY: '16px' }} />
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
@@ -196,15 +229,7 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
                         </Typography>
                     </Box>
 
-                    <ConfigureNotifications userData={userData} configureNotificationsOutputData={configureNotificationsOutputData} setConfigureNotificationsNotifyOpen={setConfigureNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
-
-                    <Divider sx={{ marginY: '16px' }} />
-
-                    {userData.api_key && (
-                        <ShowAdminApiKey adminApiKey={userData.api_key} />
-                    )}
-
-                    <ChangePassword changePasswordOutputData={changePasswordOutputData} setChangePasswordNotifyOpen={setChangePasswordNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
+                    <ConfigureNotifications userData={userData} configureTelegramNotificationsOutputData={configureTelegramNotificationsOutputData} setConfigureTelegramNotificationsNotifyOpen={setConfigureTelegramNotificationsNotifyOpen} configureWebPushNotificationsOutputData={configureWebPushNotificationsOutputData} setConfigureWebPushNotificationsNotifyOpen={setConfigureWebPushNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
                 </CardContent>
             </Card>
 
@@ -214,7 +239,9 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
 
             <CheckRefreshAdminApiKeyResult open={isRefreshAdminApiKeyNotifyOpen} error={refreshAdminApiKeyStatus} response={refreshAdminApiKeyResponse} onClose={handleRefreshAdminApiKeyNotifyClose} />
 
-            <CheckConfigureNotificationsResult open={isConfigureNotificationsNotifyOpen} error={configureNotificationsStatus} response={configureNotificationsResponse} onClose={handleConfigureNotificationsNotifyClose} />
+            <CheckConfigureWebPushNotificationsResult open={isConfigureWebPushNotificationsNotifyOpen} error={configureWebPushNotificationsStatus} response={configureWebPushNotificationsResponse} onClose={handleConfigureWebPushNotificationsNotifyClose} />
+
+            <CheckConfigureTelegramNotificationsResult open={isConfigureTelegramNotificationsNotifyOpen} error={configureTelegramNotificationsStatus} response={configureTelegramNotificationsResponse} onClose={handleConfigureTelegramNotificationsNotifyClose} />
 
             <CheckChangePasswordResult open={isChangePasswordNotifyOpen} error={changePasswordStatus} response={changePasswordResponse} onClose={handleChangePasswordNotifyClose} />
         </>

@@ -153,6 +153,12 @@ const Core = () => {
 
       const [updateChecks, setUpdateChecks] = useState(0);
 
+      useEffect(() => {
+        const userLang = navigator.language || navigator.userLanguage;
+        const lang = userLang.startsWith('pl') ? 'pl' : 'en';
+        document.documentElement.lang = lang;
+      }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

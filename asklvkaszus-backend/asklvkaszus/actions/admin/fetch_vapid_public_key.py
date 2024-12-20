@@ -1,5 +1,6 @@
 from flask import current_app, jsonify
 from ...extensions import csrf, sql
+from ...models.registered_users import RegisteredUsers
 from ...models.push_notifications_keys import PushNotificationsKeys
 from ...modules.vapid_core import check_vapid_keys
 
@@ -7,6 +8,8 @@ def admin_fetch_vapid_public_key(identity):
     csrf.protect()
 
     try:
+        user = RegisteredUsers.query.filter_by(username=identity).first()
+        
         vapid_keys_entry = PushNotificationsKeys.query.first()
 
         if not vapid_keys_entry:
@@ -16,7 +19,7 @@ def admin_fetch_vapid_public_key(identity):
 
             vapid_keys_entry = PushNotificationsKeys.query.first()
 
-        if not vapid_keys_entry.enabled:
+        if not user.push_enabled:
             return jsonify(message="Push Notifications are turned off."), 200
 
         if not vapid_keys_entry.public_key or not vapid_keys_entry.private_key:
