@@ -9,6 +9,7 @@ import uuid
 from datetime import datetime
 import urllib.parse
 from ...modules.telegram_notify import send_telegram_notification
+from ...modules.push_notify import send_push_notification
 
 def user_submit_question():
     data = request.get_json()
@@ -46,13 +47,15 @@ def user_submit_question():
             new_question = Questions(id=new_id, question=question, date=now, answer='Not answered yet!', hidden=False, ip_address=senders_ip_address)
             response_text = "Your message has been sent successfully!"
 
-
         sql.session.add(new_question)
         sql.session.commit()
 
-        notify_user = RegisteredUsers.query.filter_by(telegram_enabled=True).first()
-        if notify_user:
-            send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+
+        notify_user = RegisteredUsers.query.first()
+
+        send_push_notification(question, now, senders_ip_address)
+        send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+
 
         current_app.logger.info("asklvkaszus/functions/submit_question module: Some user sent an anonymous message!")
 

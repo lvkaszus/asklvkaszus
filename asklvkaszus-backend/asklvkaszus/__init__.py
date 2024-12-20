@@ -8,8 +8,8 @@ from .extensions import sql, csrf, limiter, cors
 from flask_migrate import Migrate
 from .models.app_settings import AppSettings
 from .models.blocked_senders import BlockedSenders
-from .models.notifications_subscribers import NotificationsSubscribers
-from .models.notifications_vapid_keys import NotificationsVapidKeys
+from .models.push_notifications_keys import PushNotificationsKeys
+from .models.push_notifications_subscribers import PushNotificationsSubscribers
 from .models.questions import Questions
 from .models.registered_users import RegisteredUsers
 
@@ -90,7 +90,11 @@ def create_app():
         if not AppSettings.query.filter_by(username="asklvkaszus").first():
             default_global_settings = AppSettings(username="asklvkaszus")
             sql.session.add(default_global_settings)
-            sql.session.commit()
-            sql.session.close()
+
+        if not PushNotificationsKeys.query.first():
+            default_push_notifications_settings = PushNotificationsKeys(enabled=False)
+
+        sql.session.commit()
+        sql.session.close()
     
     return app

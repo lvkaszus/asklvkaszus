@@ -9,8 +9,6 @@ class RegisteredUsers(sql.Model):
     api_admin_enabled = sql.Column(sql.Boolean, default=False)
     api_user_enabled = sql.Column(sql.Boolean, default=False)
     api_key = sql.Column(sql.String(36))
-    
-    push_notifications_enabled = sql.Column(sql.Boolean, default=False)
 
     telegram_enabled = sql.Column(sql.Boolean, default=False)
     telegram_bot_token = sql.Column(sql.String(64))

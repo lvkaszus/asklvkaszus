@@ -1,7 +1,8 @@
 import ecdsa
 import base64
 from ..extensions import sql
-from ..models.notifications_vapid_keys import NotificationsVapidKeys
+from ..models.push_notifications_keys import PushNotificationsKeys
+from ..models.push_notifications_subscribers import PushNotificationsSubscribers
 from flask import current_app
 
 def generate_vapid_keys():
@@ -21,42 +22,48 @@ def generate_vapid_keys():
 
 def check_vapid_keys():
     try:
-        existing_vapid_keys = NotificationsVapidKeys.query.first()
+        existing_vapid_keys = PushNotificationsKeys.query.first()
 
         if not existing_vapid_keys:
-            current_app.logger.warning("VAPID Keypair not found! Generating new VAPID Keypair...")
+            current_app.logger.warning("VAPID Keypair Database Entry not found! Creating new Database Entry with default settings...")
 
-            result = generate_vapid_keys()
-            if "error" in result:
-                return {"error": result["error"]}
-
-            private_key, public_key = result
-
-            new_keys = NotificationsVapidKeys(public_key=public_key, private_key=private_key)
+            new_keys = PushNotificationsKeys(enabled=False)
 
             sql.session.add(new_keys)
             sql.session.commit()
 
-            current_app.logger.warning("VAPID Keypair has been generated successfully.")
+            current_app.logger.warning("VAPID Keypair Database Entry has been created with default settings.")
+            return {"success": "VAPID Keypair Database Entry created with default settings."}
 
         else:
-            if not existing_vapid_keys.public_key or not existing_vapid_keys.private_key:
-                current_app.logger.warning("VAPID Keypair exists, but one or both keys are missing! Generating new VAPID Keypair...")
+            if existing_vapid_keys.enabled:
+                if not existing_vapid_keys.public_key or not existing_vapid_keys.private_key:
+                    current_app.logger.warning("VAPID Keypair exists, but one or both keys are missing! Regenerating new VAPID Keypair and clearing subscribers...")
 
-                result = generate_vapid_keys()
-                if "error" in result:
-                    return {"error": result["error"]}
+                    result = generate_vapid_keys()
+                    if "error" in result:
+                        return {"error": result["error"]}
 
-                private_key, public_key = result
+                    private_key, public_key = result
 
-                existing_vapid_keys.public_key = public_key
-                existing_vapid_keys.private_key = private_key
+                    existing_vapid_keys.public_key = public_key
+                    existing_vapid_keys.private_key = private_key
 
-                sql.session.commit()
+                    PushNotificationsSubscribers.query.delete()
+                    sql.session.commit()
 
-                current_app.logger.warning("VAPID Keypair has been updated successfully.")
+                    current_app.logger.warning("VAPID Keypair has been regenerated and subscribers table cleared.")
+
+                    return {"success": "VAPID Keypair has been regenerated and subscribers table cleared."}
+
+                else:
+                    current_app.logger.info("Push notifications are enabled with existing VAPID Keypair!")
+
+                    return {"success": "Push notifications are enabled with existing VAPID Keypair!"}
             else:
-                current_app.logger.info("Using existing VAPID Keypair from the application database!")
+                current_app.logger.warning("Push notifications are disabled - option 'enabled' is set to False.")
+
+                return {"success": "Push notifications are disabled."}
     except Exception as e:
         current_app.logger.error(f"An error occurred inside asklvkaszus/modules/vapid_core module - function check_vapid_keys(): {e}")
 

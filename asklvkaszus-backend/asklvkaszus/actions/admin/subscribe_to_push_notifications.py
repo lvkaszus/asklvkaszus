@@ -1,6 +1,6 @@
 from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
-from ...models.notifications_subscribers import NotificationsSubscribers
+from ...models.push_notifications_subscribers import PushNotificationsSubscribers
 
 def admin_subscribe_to_push_notifications(identity):
     data = request.get_json()
@@ -15,7 +15,7 @@ def admin_subscribe_to_push_notifications(identity):
         if not endpoint or not auth or not p256dh:
             return jsonify(error="Invalid subscription data!"), 400
 
-        subscription = NotificationsSubscribers(endpoint=endpoint, keys_auth=auth, keys_p256dh=p256dh)
+        subscription = PushNotificationsSubscribers(endpoint=endpoint, keys_auth=auth, keys_p256dh=p256dh)
         
         db.session.add(subscription)
         db.session.commit()
@@ -23,7 +23,7 @@ def admin_subscribe_to_push_notifications(identity):
         return jsonify(success="Subscribed successfully!"), 201
 
     except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/admin_subscribe_to_push_notifications module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/subscribe_to_push_notifications module: {e}")
 
         return jsonify(error='An error occurred while subscribing to push notifications channel! Try again later.'), 500
             
