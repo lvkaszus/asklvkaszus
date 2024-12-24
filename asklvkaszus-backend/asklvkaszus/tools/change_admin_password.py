@@ -1,6 +1,6 @@
 import os
-import yaml
 import sys
+import yaml
 import mysql.connector
 import getpass
 import bcrypt
@@ -9,7 +9,7 @@ import logging
 
 logging.basicConfig(
     level=logging.INFO,
-    format='[%(asctime)s] %(levelname)s: %(message)s',
+    format='[%(name)s] - %(asctime)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
 )
 logger = logging.getLogger("Ask @lvkaszus! - Backend: Tools")
@@ -17,115 +17,98 @@ logger = logging.getLogger("Ask @lvkaszus! - Backend: Tools")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONFIG_PATH = os.path.join(BASE_DIR, 'config/config.yml')
 
-if not os.path.exists(CONFIG_PATH):
-    logger.error(f"Application initialization failed! Configuration file {CONFIG_PATH} was not found inside root application folder.")
-    sys.exit(1)
+def load_config():
+    if not os.path.exists(CONFIG_PATH):
+        logger.critical(f"Configuration file not found: {CONFIG_PATH}")
+        sys.exit(1)
 
-try:
-    with open(CONFIG_PATH, 'r') as file:
-        config = yaml.safe_load(file)
-except yaml.YAMLError as e:
-    logger.error(f"Application initialization failed! Configuration file {CONFIG_PATH} contains syntax errors: {e}")
-    sys.exit(1)
+    try:
+        with open(CONFIG_PATH, 'r') as file:
+            return yaml.safe_load(file)
+    except yaml.YAMLError as e:
+        logger.critical(f"Error in configuration file syntax: {e}")
+        sys.exit(2)
 
-MYSQL_HOST = config['mysql'].get('host', 'localhost')
-MYSQL_PORT = config['mysql'].get('port', '3306')
-MYSQL_USERNAME = config['mysql'].get('username', 'asklvkaszus')
-MYSQL_PASSWORD = config['mysql'].get('password', 'asklvkaszus')
-MYSQL_DATABASE = config['mysql'].get('database', 'asklvkaszus')
-
-try:
-    db_connection = mysql.connector.connect(
-        host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USERNAME,
-        password=MYSQL_PASSWORD, database=MYSQL_DATABASE,
-        charset='utf8mb4', collation='utf8mb4_unicode_ci'
-    )
-    cursor = db_connection.cursor()
-except Exception as e:
-    logger.error(f'An error occurred while connecting to "Ask @lvkaszus!" application SQL Database! {e}')
-    sys.exit(1)
-
-username = input('Username of the user for changing its password: ')
-
-if username == "":
-    logger.error('Username cannot be empty!')
-    cursor.close()
-    db_connection.close()
-    sys.exit(2)
-
-try:
-    check_query = "SELECT * FROM registered_users WHERE username = %s"
-    update_query = "UPDATE registered_users SET password = %s WHERE username = %s"
-
-    cursor.execute(check_query, (username,))
-    existing_user = cursor.fetchone()
-
-    if existing_user:
-        logger.info(f'User with username "{username}" found as registered user!')
-
-        logger.info('ARE YOU SURE you want to change password of user with username "{}"?'.format(username))
-        username_confirm = input(f'TYPE "{username}" TO CONFIRM: ')
-
-        if username_confirm == username:
-            new_password = getpass.getpass('New password: ')
-
-            if len(new_password) < 12:
-                logger.error('New password must be at least 12 characters long.')
-                cursor.close()
-                db_connection.close()
-                sys.exit(5)
-
-            elif not re.search("[A-Z]", new_password):
-                logger.error('New password must contain at least one uppercase letter.')
-                cursor.close()
-                db_connection.close()
-                sys.exit(6)
-
-            elif not re.search("[0-9]", new_password):
-                logger.error('New password must contain at least one number.')
-                cursor.close()
-                db_connection.close()
-                sys.exit(7)
-
-            elif not re.search("[!@#$%^&*]", new_password):
-                logger.error('Password must contain at least one special character like: !, @, #, $, %, ^, &, *.')
-                cursor.close()
-                db_connection.close()
-                sys.exit(8)
-
-            confirm_password = getpass.getpass('Confirm password: ')
-            if new_password != confirm_password:
-                logger.error('Confirmed password is not the same as new password!')
-                cursor.close()
-                db_connection.close()
-                sys.exit(9)
-
-            logger.info(f'Changing password for user with username "{username}"...')
-
-            salt = bcrypt.gensalt(rounds=14)
-            hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), salt).decode('utf-8')
-            cursor.execute(update_query, (hashed_new_password, username))
-            db_connection.commit()
-            cursor.close()
-            db_connection.close()
-
-            logger.info(f'Password for user with username "{username}" has been changed successfully!')
-            sys.exit(0)
-
-        else:
-            logger.error(f'Incorrect username confirmed. Password of the user with username "{username}" has not been changed.')
-            cursor.close()
-            db_connection.close()
-            sys.exit(4)
-
-    else:
-        logger.error(f'User with username {username} does not exist.')
-        cursor.close()
-        db_connection.close()
+def connect_to_database(config):
+    try:
+        db_connection = mysql.connector.connect(
+            host=config['mysql'].get('host', 'localhost'),
+            port=config['mysql'].get('port', 3306),
+            user=config['mysql'].get('username', 'root'),
+            password=config['mysql'].get('password', ''),
+            database=config['mysql'].get('database', 'test'),
+            charset='utf8mb4',
+            collation='utf8mb4_unicode_ci'
+        )
+        return db_connection
+    except Exception as e:
+        logger.critical(f"Failed to connect to MySQL database: {e}")
         sys.exit(3)
 
-except Exception as e:
-    logger.error(f'An error occurred while changing the password for user "{username}" in the database! {e}')
-    cursor.close()
-    db_connection.close()
-    sys.exit(10)
+def validate_password(password):
+    if len(password) < 12:
+        logger.error("Password must be at least 12 characters long.")
+        return False
+    if not re.search("[A-Z]", password):
+        logger.error("Password must contain at least one uppercase letter.")
+        return False
+    if not re.search("[0-9]", password):
+        logger.error("Password must contain at least one number.")
+        return False
+    if not re.search("[!@#$%^&*]", password):
+        logger.error("Password must contain at least one special character (!, @, #, $, %, ^, &, *).")
+        return False
+    return True
+
+def main():
+    config = load_config()
+
+    db_connection = connect_to_database(config)
+    cursor = db_connection.cursor()
+
+    username = input("Enter the username: ")
+
+    if not username:
+        logger.error("Username cannot be empty.")
+        sys.exit(4)
+
+    try:
+        cursor.execute("SELECT * FROM registered_users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+
+        if not user:
+            logger.error(f"User '{username}' does not exist.")
+            sys.exit(5)
+
+        logger.info(f"User '{username}' found. Proceeding with password change.")
+
+        confirmation = input(f"Type '{username}' to confirm password change: ")
+        if confirmation != username:
+            logger.error("Confirmation failed. Password change aborted.")
+            sys.exit(6)
+
+        new_password = getpass.getpass("Enter new password: ")
+        if not validate_password(new_password):
+            sys.exit(7)
+
+        confirm_password = getpass.getpass("Confirm new password: ")
+        if new_password != confirm_password:
+            logger.error("Passwords do not match.")
+            sys.exit(8)
+
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        cursor.execute("UPDATE registered_users SET password = %s WHERE username = %s", (hashed_password, username))
+        db_connection.commit()
+
+        logger.info(f"Password for user '{username}' changed successfully.")
+
+    except Exception as e:
+        logger.critical(f"Error during MySQL database operation: {e}")
+        sys.exit(9)
+
+    finally:
+        cursor.close()
+        db_connection.close()
+
+if __name__ == "__main__":
+    main()
