@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
@@ -36,9 +37,16 @@ export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
 
                 console.log(t('admin-success-configurenotifications-aboutsubscription'), subscription);
 
+                const csrfToken = await SendFetchCsrfTokenRequest();
+
                 const response = await axios.post(`${domain}/api/app/admin/subscribe_to_push_notifications`, {
                     endpoint: subscription.endpoint,
                     keys: subscription.toJSON().keys,
+                },
+                {
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
                 });
 
                 const { success } = response.data;
