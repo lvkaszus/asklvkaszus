@@ -74,7 +74,7 @@ try:
     logger.warning('Please wait while "Ask @lvkaszus!" application is being restored to its factory default settings!')
     logger.warning('Attempting to delete SQL Database Tables...')
 
-    sql_database_tables = ["app_settings", "registered_users", "blocked_senders", "questions"]
+    sql_database_tables = ["alembic_version", "app_settings", "blocked_senders", "push_notifications_keys", "push_notifications_subscribers", "questions", "registered_users"]
 
     for table in sql_database_tables:
         logger.warning(f'Attempting to delete SQL Database Table named "{table}"...')
