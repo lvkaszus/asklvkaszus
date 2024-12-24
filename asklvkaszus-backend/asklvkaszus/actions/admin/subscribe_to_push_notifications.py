@@ -1,15 +1,17 @@
-from ...extensions import sql
+from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
 from datetime import datetime
 from ...models.push_notifications_subscribers import PushNotificationsSubscribers
 import traceback
 
-def admin_subscribe_to_push_notifications():
+def admin_subscribe_to_push_notifications(identity):
     data = request.get_json()
     endpoint = data.get('endpoint')
     keys = data.get('keys', {})
     auth = keys.get('auth')
     p256dh = keys.get('p256dh')
+
+    csrf.protect()
 
     try:
         if not endpoint or not auth or not p256dh:

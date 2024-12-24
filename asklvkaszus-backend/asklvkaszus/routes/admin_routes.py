@@ -114,8 +114,9 @@ def admin_refresh_api_token_route(identity):
 
 @admin_bp.route('/subscribe_to_push_notifications', methods=['POST'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
-def admin_subscribe_to_push_notifications_route():
-    return admin_subscribe_to_push_notifications()
+@token_required
+def admin_subscribe_to_push_notifications_route(identity):
+    return admin_subscribe_to_push_notifications(identity)
 
 @admin_bp.route('/toggle_admin_api', methods=['POST'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
