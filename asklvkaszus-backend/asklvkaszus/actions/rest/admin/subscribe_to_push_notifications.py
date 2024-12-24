@@ -1,10 +1,10 @@
-from ...extensions import sql
+from ....extensions import sql
 from flask import current_app, request, jsonify
 from datetime import datetime
-from ...models.push_notifications_subscribers import PushNotificationsSubscribers
+from ....models.push_notifications_subscribers import PushNotificationsSubscribers
 import traceback
 
-def admin_subscribe_to_push_notifications():
+def api_admin_subscribe_to_push_notifications():
     data = request.get_json()
     endpoint = data.get('endpoint')
     keys = data.get('keys', {})
@@ -48,7 +48,7 @@ def admin_subscribe_to_push_notifications():
         return jsonify(success=message), 200
 
     except Exception as e:
-        current_app.logger.error(f"An error occurred inside asklvkaszus/actions/admin/subscribe_to_push_notifications module: {e}")
+        current_app.logger.error(f"An error occurred inside asklvkaszus/actions/rest/admin/subscribe_to_push_notifications module: {e}")
         traceback.print_exc()
 
         return jsonify(error='An error occurred while subscribing to push notifications channel! Try again later.'), 500

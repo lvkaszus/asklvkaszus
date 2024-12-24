@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify
 from ..config import Config
 from ..extensions import limiter
 from ..modules.jwt_core import token_required
+
+
 from ..actions.fetch_backend_version import fetch_backend_version
 from ..actions.auth.fetch_csrf_token import fetch_csrf_token
 
@@ -24,6 +26,7 @@ from ..actions.admin.toggle_user_api import admin_toggle_user_api
 from ..actions.admin.unblock_all_senders import admin_unblock_all_senders
 from ..actions.admin.unblock_sender import admin_unblock_sender
 from ..actions.admin.user_info import admin_user_info
+
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -86,11 +89,10 @@ def admin_fetch_blocked_senders_route(identity):
 def admin_fetch_updates_route(identity):
     return admin_fetch_updates(identity)
 
-@admin_bp.route('/fetch_vapid_public_key', methods=['POST'])
+@admin_bp.route('/fetch_vapid_public_key', methods=['GET'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
-@token_required
-def admin_fetch_vapid_public_key_route(identity):
-    return admin_fetch_vapid_public_key(identity)
+def admin_fetch_vapid_public_key_route():
+    return admin_fetch_vapid_public_key()
 
 @admin_bp.route('/purge_all_questions', methods=['DELETE'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
@@ -112,9 +114,8 @@ def admin_refresh_api_token_route(identity):
 
 @admin_bp.route('/subscribe_to_push_notifications', methods=['POST'])
 @limiter.limit(Config.ADMIN_RATELIMIT)
-@token_required
-def admin_subscribe_to_push_notifications_route(identity):
-    return admin_subscribe_to_push_notifications(identity)
+def admin_subscribe_to_push_notifications_route():
+    return admin_subscribe_to_push_notifications()
 
 @admin_bp.route('/toggle_admin_api', methods=['POST'])
 @limiter.limit(Config.ADMIN_RATELIMIT)

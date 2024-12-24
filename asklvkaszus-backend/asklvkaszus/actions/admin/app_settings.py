@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
 from ...models.app_settings import AppSettings
+import traceback
 
 def admin_app_settings(identity):
     if request.method == 'GET':
@@ -22,6 +23,7 @@ def admin_app_settings(identity):
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type GET: {e}")
+            traceback.print_exc()
 
             return jsonify(error='An error occured while loading application settings! Try again later.'), 500
 
@@ -75,6 +77,7 @@ def admin_app_settings(identity):
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/app_settings module - request type POST: {e}")
+            traceback.print_exc()
 
             return jsonify(error='An error occurred while updating application settings! Try again later.'), 500
 

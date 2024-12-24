@@ -1,6 +1,7 @@
 from ...extensions import csrf
 from flask import current_app, jsonify
 from ...modules.rest_core import toggle_admin_api
+import traceback
 
 def admin_toggle_admin_api(identity):
     csrf.protect()
@@ -15,5 +16,6 @@ def admin_toggle_admin_api(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/toggle_admin_api module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while changing Admin API state! Try again later.'), 500

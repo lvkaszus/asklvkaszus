@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
 from ...models.questions import Questions
+import traceback
 
 def admin_answer_question(identity):
     data = request.get_json()
@@ -25,7 +26,8 @@ def admin_answer_question(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/answer_question module: {e}")
-        
+        traceback.print_exc()
+
         return jsonify(error='An error occurred while updating answer to selected question! Try again later.'), 500
 
     finally:

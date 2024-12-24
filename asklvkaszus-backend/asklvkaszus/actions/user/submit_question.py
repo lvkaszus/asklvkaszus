@@ -1,4 +1,4 @@
-from flask import current_app, request, jsonify
+from flask import current_app ,request, jsonify
 from ...extensions import csrf, sql
 from ...models.blocked_senders import BlockedSenders
 from ...models.app_settings import AppSettings
@@ -9,7 +9,8 @@ import uuid
 from datetime import datetime
 import urllib.parse
 from ...modules.telegram_notify import send_telegram_notification
-from ...modules.push_notify import send_push_notification
+from ...modules.webpush_notify import send_push_notification
+import traceback
 
 def user_submit_question():
     data = request.get_json()
@@ -53,7 +54,7 @@ def user_submit_question():
 
         notify_user = RegisteredUsers.query.first()
 
-        send_push_notification(question, now, senders_ip_address)
+        send_push_notification(notify_user.username, question, now, senders_ip_address)
         send_telegram_notification(notify_user.username, question, now, senders_ip_address)
 
 
@@ -62,7 +63,8 @@ def user_submit_question():
         return jsonify(success=response_text), 200
 
     except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/app/user/submit_question module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/actions/user/submit_question module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while sending your message! Try again later.'), 500
     finally:

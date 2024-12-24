@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, jsonify
 from ...models.questions import Questions
+import traceback
 
 def admin_purge_all_questions(identity):
     csrf.protect()
@@ -13,6 +14,7 @@ def admin_purge_all_questions(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/purge_all_questions module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while purging all questions! Try again later.'), 500
 

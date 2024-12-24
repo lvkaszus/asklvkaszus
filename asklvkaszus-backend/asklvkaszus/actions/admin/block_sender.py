@@ -3,6 +3,7 @@ from flask import current_app, request, jsonify
 from ...models.blocked_senders import BlockedSenders
 from ...models.questions import Questions
 from datetime import datetime
+import traceback
 
 def admin_block_sender(identity):
     data = request.get_json()
@@ -32,6 +33,7 @@ def admin_block_sender(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occurred inside asklvkaszus/actions/admin/block_sender module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while blocking sender! Try again later.'), 500
 

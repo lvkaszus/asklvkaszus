@@ -1,6 +1,7 @@
 from flask import current_app, jsonify
 from ...extensions import sql
 from ...models.questions import Questions
+import traceback
 
 def user_fetch_all_questions():
     try:
@@ -23,7 +24,8 @@ def user_fetch_all_questions():
         return jsonify(formatted_questions), 200
 
     except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/app/user/fetch_all_questions module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/actions/user/fetch_all_questions module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while fetching questions list! Try again later.'), 500
         

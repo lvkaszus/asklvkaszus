@@ -37,7 +37,7 @@
 | **Ads?**                              | ✅ Ad-free           | ❌ Ad-free             | ❌ Ad-free          |
 | **Automatic Questions?**              | ✅ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions |
 | **Text Formatting?**                  | ✅ Offers text formatting (as well as placing videos or location inside questions/answers!) | ⚠️ Only offers placing photos | ⚠️ Only offers placing photos in the background |
-| **Notifications?**                    | ✅ Notifications (by Telegram) | ✅ Notifications | ✅ Notifications |
+| **Notifications?**                    | ✅ Notifications (PWA, Telegram) | ✅ Notifications | ✅ Notifications |
 | **Available On?**                     | ✅ Desktop and Mobile (PWA) | ✅ Desktop and Mobile | ⚠️ Only on Mobile |
 
 <div align="center">

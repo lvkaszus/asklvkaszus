@@ -8,7 +8,9 @@ from ....modules.get_remote_address import get_remote_address
 import uuid
 from datetime import datetime
 import urllib.parse
+from ....modules.webpush_notify import send_push_notification
 from ....modules.telegram_notify import send_telegram_notification
+import traceback
 
 def api_user_submit_question():
     data = request.get_json()
@@ -47,9 +49,12 @@ def api_user_submit_question():
         sql.session.add(new_question)
         sql.session.commit()
 
-        notify_user = RegisteredUsers.query.filter_by(telegram_enabled=True).first()
-        if notify_user:
-            send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+
+        notify_user = RegisteredUsers.query.first()
+
+        send_push_notification(notify_user.username, question, now, senders_ip_address)
+        send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+
 
         current_app.logger.info("asklvkaszus/actions/rest/user/submit_question module: Some user sent an anonymous message!")
 
@@ -57,6 +62,7 @@ def api_user_submit_question():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/user/submit_question module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while sending your message! Try again later.'), 500
     finally:

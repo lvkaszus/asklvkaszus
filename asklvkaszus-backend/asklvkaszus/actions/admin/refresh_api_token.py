@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, jsonify
 from ...modules.rest_core import regenerate_api_key
+import traceback
 
 def admin_refresh_api_token(identity):
     csrf.protect()
@@ -15,5 +16,6 @@ def admin_refresh_api_token(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/refresh_api_token module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while refreshing User API Token! Try again later.'), 500

@@ -4,6 +4,7 @@ import bcrypt
 import re
 from ...models.registered_users import RegisteredUsers
 from datetime import datetime
+import traceback
 
 def change_password(identity):
     data = request.get_json()
@@ -56,6 +57,7 @@ def change_password(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/auth/change_password module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occured while changing your password! Try again later.'), 500
 

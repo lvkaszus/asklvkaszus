@@ -3,11 +3,13 @@ from ..config import Config
 from ..extensions import limiter
 from ..modules.jwt_core import token_required
 
+
 from ..actions.auth.login import login
 from ..actions.auth.register import register
 from ..actions.auth.change_password import change_password
 from ..actions.auth.logout import logout
 from ..actions.auth.session_guard import session_guard
+
 
 auth_bp = Blueprint('auth', __name__)
 

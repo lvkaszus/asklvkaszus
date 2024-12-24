@@ -4,6 +4,7 @@ from ..extensions import jwt_blacklist_redis_client
 import jwt
 from datetime import datetime, timezone, timedelta
 from functools import wraps
+import traceback
 
 def create_access_token(identity):
     try:
@@ -15,6 +16,7 @@ def create_access_token(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/modules/jwt_core module - function create_access_token(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while generating Access Token!"}
 
@@ -28,6 +30,7 @@ def create_refresh_token(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/modules/jwt_core module - function create_refresh_token(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while generating Refresh Token!"}
 
@@ -43,6 +46,7 @@ def verify_token(token):
         return None, 'Invalid Token!'
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/modules/jwt_core module - function verify_token(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while verifying token!"}
 
@@ -54,6 +58,7 @@ def revoke_tokens(access_token, refresh_token):
         jwt_blacklist_redis_client.setex(refresh_token, token_ttl, "revoked")
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/modules/jwt_core module - function revoke_tokens(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while revoking tokens!"}
 
@@ -88,6 +93,7 @@ def token_required(f):
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/modules/jwt_core module - function token_required(): {e}")
+            traceback.print_exc()
 
             return {"error":"An error occurred while  authenticating with JWT tokens!"}
         

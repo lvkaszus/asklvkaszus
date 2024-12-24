@@ -4,6 +4,7 @@ from ..extensions import sql
 from ..models.push_notifications_keys import PushNotificationsKeys
 from ..models.push_notifications_subscribers import PushNotificationsSubscribers
 from flask import current_app
+import traceback
 
 def generate_vapid_keys():
     try:        
@@ -17,6 +18,7 @@ def generate_vapid_keys():
 
     except Exception as e:
         current_app.logger.error(f"An error occurred inside asklvkaszus/modules/vapid_core module - function generate_vapid_keys(): {e}")
+        traceback.print_exc()
 
         return {"error": "An error occurred while generating VAPID Keys!"}
 
@@ -76,6 +78,7 @@ def check_vapid_keys():
                 return {"success": "Push notifications are disabled."}
     except Exception as e:
         current_app.logger.error(f"An error occurred inside asklvkaszus/modules/vapid_core module - function check_vapid_keys(): {e}")
+        traceback.print_exc()
 
         return {"error": "An error occurred while checking VAPID Keys!"}
 

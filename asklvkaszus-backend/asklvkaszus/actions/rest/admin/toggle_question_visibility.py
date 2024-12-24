@@ -1,6 +1,7 @@
 from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.questions import Questions
+import traceback
 
 def api_admin_toggle_question_visibility():
     data = request.get_json()
@@ -23,6 +24,7 @@ def api_admin_toggle_question_visibility():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/toggle_question_visibility module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while changing question visibility! Try again later.'), 500
 

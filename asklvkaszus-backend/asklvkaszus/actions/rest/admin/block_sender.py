@@ -2,6 +2,7 @@ from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.blocked_senders import BlockedSenders
 from datetime import datetime
+import traceback
 
 def api_admin_block_sender():
     data = request.get_json()
@@ -28,6 +29,7 @@ def api_admin_block_sender():
 
     except Exception as e:
         current_app.logger.error(f"An error occurred inside asklvkaszus/actions/rest/admin/block_sender module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while blocking sender! Try again later.'), 500
 

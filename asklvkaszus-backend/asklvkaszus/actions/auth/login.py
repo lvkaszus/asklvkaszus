@@ -5,6 +5,7 @@ from flask import current_app, request, jsonify
 from ...models.registered_users import RegisteredUsers
 import bcrypt
 from ...modules.jwt_core import create_access_token, create_refresh_token
+import traceback
 
 def login():
     data = request.get_json()
@@ -33,6 +34,7 @@ def login():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/auth/login module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occured while logging you in! Try again later.'), 500
 

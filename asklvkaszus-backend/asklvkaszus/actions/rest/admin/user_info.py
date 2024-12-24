@@ -1,6 +1,7 @@
 from flask import current_app, jsonify, g
 from ....extensions import sql
 from ....models.registered_users import RegisteredUsers
+import traceback
 
 def api_admin_user_info():
     api_key_result = getattr(g, 'api_key_result', {})
@@ -19,7 +20,9 @@ def api_admin_user_info():
                 'last_password_change': user.last_password_change,
                 'password_change_count': user.password_change_count,
                 'api_admin_enabled': user.api_admin_enabled,
+                'api_user_enabled': user.api_user_enabled,
                 'api_key': user.api_key,
+                'push_notifications_enabled': user.push_enabled,
                 'telegram_enabled': user.telegram_enabled,
                 'telegram_bot_token': user.telegram_bot_token,
                 'telegram_bot_chat_id': user.telegram_bot_chat_id
@@ -32,6 +35,7 @@ def api_admin_user_info():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/user_info module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while fetching user info! Try again later.'), 500
 

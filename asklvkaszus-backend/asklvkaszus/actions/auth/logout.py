@@ -2,6 +2,7 @@ from ...extensions import csrf
 from ...config import Config
 from flask import current_app, request, jsonify
 from ...modules.jwt_core import revoke_tokens
+import traceback
 
 def logout():
     access_token = request.cookies.get('access_token')
@@ -23,5 +24,6 @@ def logout():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/auth/logout module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while logging you out!'), 500

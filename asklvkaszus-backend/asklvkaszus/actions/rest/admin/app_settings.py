@@ -1,6 +1,7 @@
 from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.app_settings import AppSettings
+import traceback
 
 def api_admin_app_settings():
     if request.method == 'GET':
@@ -22,6 +23,7 @@ def api_admin_app_settings():
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/app_settings module - request type GET: {e}")
+            traceback.print_exc()
 
             return jsonify(error='An error occured while loading application settings! Try again later.'), 500
 
@@ -65,6 +67,7 @@ def api_admin_app_settings():
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/app_settings module - request type POST: {e}")
+            traceback.print_exc()
 
             return jsonify(error='An error occurred while updating application settings! Try again later.'), 500
 

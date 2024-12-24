@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, request, jsonify
 from ...models.blocked_senders import BlockedSenders
+import traceback
 
 def admin_fetch_blocked_senders(identity):
     csrf.protect()
@@ -25,6 +26,7 @@ def admin_fetch_blocked_senders(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/fetch_blocked_senders module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while fetching blocked senders list! Try again later.'), 500
             

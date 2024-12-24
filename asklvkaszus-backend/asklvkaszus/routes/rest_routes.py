@@ -3,7 +3,9 @@ from ..config import Config
 from ..extensions import limiter
 from ..modules.rest_core import require_api_key, require_user_api_enabled
 
+
 from ..actions.fetch_backend_version import fetch_backend_version
+
 from ..actions.rest.admin.answer_question import api_admin_answer_question
 from ..actions.rest.admin.app_settings import api_admin_app_settings
 from ..actions.rest.admin.block_sender import api_admin_block_sender
@@ -11,7 +13,9 @@ from ..actions.rest.admin.configure_notifications import api_admin_configure_not
 from ..actions.rest.admin.fetch_all_questions import api_admin_fetch_all_questions
 from ..actions.rest.admin.fetch_blocked_senders import api_admin_fetch_blocked_senders
 from ..actions.rest.admin.fetch_updates import api_admin_fetch_updates
+from ..actions.rest.admin.fetch_vapid_public_key import api_admin_fetch_vapid_public_key
 from ..actions.rest.admin.purge_all_questions import api_admin_purge_all_questions
+from ..actions.rest.admin.subscribe_to_push_notifications import api_admin_subscribe_to_push_notifications
 from ..actions.rest.admin.purge_question import api_admin_purge_question
 from ..actions.rest.admin.toggle_all_questions_visibility import api_admin_toggle_all_questions_visibility
 from ..actions.rest.admin.toggle_question_visibility import api_admin_toggle_question_visibility
@@ -26,11 +30,15 @@ from ..actions.rest.user.submit_question import api_user_submit_question
 
 rest_bp = Blueprint('rest', __name__)
 
+
+
 @rest_bp.route('/fetch_backend_version', methods=['GET'])
 @limiter.limit('50 per hour')
 @require_api_key
 def rest_fetch_backend_version_route():
     return fetch_backend_version()
+
+
 
 @rest_bp.route('/admin/answer_question', methods=['PUT'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)
@@ -74,6 +82,12 @@ def rest_admin_fetch_blocked_senders_route():
 def rest_admin_fetch_updates_route():
     return api_admin_fetch_updates()
 
+@rest_bp.route('/admin/fetch_vapid_public_key', methods=['GET'])
+@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@require_api_key
+def rest_admin_fetch_vapid_public_key():
+    return api_admin_fetch_vapid_public_key()
+
 @rest_bp.route('/admin/purge_all_questions', methods=['DELETE'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)
 @require_api_key
@@ -85,6 +99,12 @@ def rest_admin_purge_all_questions_route():
 @require_api_key
 def rest_admin_purge_question_route():
     return api_admin_purge_question()
+
+@rest_bp.route('/admin/subscribe_to_push_notifications', methods=['POST'])
+@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@require_api_key
+def rest_admin_subscribe_to_push_notifications_route():
+    return api_admin_subscribe_to_push_notifications()
 
 @rest_bp.route('/admin/toggle_all_questions_visibility', methods=['POST'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)

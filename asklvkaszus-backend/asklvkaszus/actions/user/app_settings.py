@@ -1,6 +1,7 @@
 from flask import current_app, jsonify
 from ...extensions import sql
 from ...models.app_settings import AppSettings
+import traceback
 
 def user_app_settings():
     try:
@@ -20,6 +21,7 @@ def user_app_settings():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/user/app_settings module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occured while loading application settings! Try again later.'), 500
     finally:

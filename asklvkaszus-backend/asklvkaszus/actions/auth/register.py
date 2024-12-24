@@ -4,6 +4,7 @@ from flask import current_app, request, jsonify
 from ...models.registered_users import RegisteredUsers
 import re
 import bcrypt
+import traceback
 
 def register():
     admin_user_registered = RegisteredUsers.query.first()
@@ -59,6 +60,7 @@ def register():
 
         except Exception as e:
             current_app.logger.error(f"An error occured inside asklvkaszus/actions/auth/register module: {e}")
+            traceback.print_exc()
 
             return jsonify(error='An error occured while registering your account! Try again later.'), 500
 

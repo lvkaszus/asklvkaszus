@@ -1,11 +1,17 @@
 from flask import Blueprint, jsonify
 from ..config import Config
 from ..extensions import limiter
+
+
 from ..actions.fetch_backend_version import fetch_backend_version
+
 from ..actions.auth.fetch_csrf_token import fetch_csrf_token
+
 from ..actions.user.app_settings import user_app_settings
+
 from ..actions.user.fetch_all_questions import user_fetch_all_questions
 from ..actions.user.submit_question import user_submit_question
+
 
 user_bp = Blueprint('user', __name__)
 

@@ -1,10 +1,10 @@
 from flask import current_app, jsonify
-from ...extensions import sql
-from ...models.push_notifications_keys import PushNotificationsKeys
-from ...modules.vapid_core import check_vapid_keys
+from ....extensions import sql
+from ....models.push_notifications_keys import PushNotificationsKeys
+from ....modules.vapid_core import check_vapid_keys
 import traceback
 
-def admin_fetch_vapid_public_key():
+def api_admin_fetch_vapid_public_key():
     try:
         vapid_keys_entry = PushNotificationsKeys.query.first()
 
@@ -18,10 +18,10 @@ def admin_fetch_vapid_public_key():
         if not vapid_keys_entry.public_key or not vapid_keys_entry.private_key:
             return jsonify(error="VAPID Keys are incomplete! Public or private key is missing."), 500
 
-        return jsonify(public_key=vapid_keys_entry.public_key), 200
+        return jsonify(public_key=vapid_keys_entry.public_key)
 
     except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/fetch_vapid_public_key module: {e}")
+        current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/fetch_vapid_public_key module: {e}")
         traceback.print_exc()
 
         return jsonify(error='An unexpected error occurred while fetching VAPID public key.'), 500

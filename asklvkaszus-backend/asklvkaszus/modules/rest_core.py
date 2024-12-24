@@ -4,7 +4,7 @@ from ..extensions import sql
 from ..models.app_settings import AppSettings
 from ..models.registered_users import RegisteredUsers
 import uuid
-
+import traceback
 
 def regenerate_api_key(username):
     try:
@@ -32,6 +32,7 @@ def regenerate_api_key(username):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/functions/rest_core module - function regenerate_api_key(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occured while regenerating Admin API Key!"}
     finally:
@@ -67,6 +68,7 @@ def toggle_admin_api(username):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/functions/rest_core module - function toggle_admin_api(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while changing Admin API state! Try again later."}
 
@@ -98,6 +100,7 @@ def toggle_user_api(username):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/functions/rest_core module - function toggle_user_api(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occurred while changing User API state! Try again later."}
 
@@ -125,6 +128,7 @@ def verify_api_key(api_key):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/functions/rest_core module - function verify_api_key(): {e}")
+        traceback.print_exc()
 
         return {"error":"An error occured while verifying Admin API Key!"}
     finally:

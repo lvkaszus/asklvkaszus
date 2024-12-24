@@ -1,6 +1,7 @@
 from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.questions import Questions
+import traceback
 
 def api_admin_answer_question():
     data = request.get_json()
@@ -23,7 +24,8 @@ def api_admin_answer_question():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/answer_question module: {e}")
-        
+        traceback.print_exc()
+
         return jsonify(error='An error occurred while updating answer to selected question! Try again later.'), 500
 
     finally:

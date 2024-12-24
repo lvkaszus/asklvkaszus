@@ -1,6 +1,7 @@
 from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.questions import Questions
+import traceback
 
 def api_admin_purge_question():
     data = request.get_json()
@@ -19,6 +20,7 @@ def api_admin_purge_question():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/purge_question module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while purging specified question! Try again later.'), 500
 

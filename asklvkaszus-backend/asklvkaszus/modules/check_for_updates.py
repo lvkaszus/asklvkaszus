@@ -1,6 +1,7 @@
 import requests
 from ..version import backend_version
 from flask import current_app
+import traceback
 
 def check_for_updates():
     appRepositoryApiUrl = "https://api.github.com/repos/lvkaszus/asklvkaszus/releases/latest"
@@ -27,5 +28,6 @@ def check_for_updates():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/modules/check_for_updates module: {e}")
+        traceback.print_exc()
 
         return {"error": "Failed to check for application updates! Try again later."}

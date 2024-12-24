@@ -1,6 +1,7 @@
 from flask import current_app, request, jsonify
 from ....extensions import sql
 from ....models.blocked_senders import BlockedSenders
+import traceback
 
 def api_admin_unblock_sender():
     data = request.get_json()
@@ -23,6 +24,7 @@ def api_admin_unblock_sender():
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/unblock_sender module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while unbanning sender! Try again later.'), 500
 

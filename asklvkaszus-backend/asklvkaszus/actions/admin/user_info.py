@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from flask import current_app, jsonify
 from ...models.registered_users import RegisteredUsers
+import traceback
 
 def admin_user_info(identity):
     csrf.protect()
@@ -25,6 +26,7 @@ def admin_user_info(identity):
 
     except Exception as e:
         current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/user_info module: {e}")
+        traceback.print_exc()
 
         return jsonify(error='An error occurred while fetching user info! Try again later.'), 500
 
