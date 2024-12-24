@@ -1,4 +1,4 @@
-"""empty message
+"""3.1.0 - Database Structure Changes
 
 Revision ID: 427c6b9a77e6
 Revises: 
