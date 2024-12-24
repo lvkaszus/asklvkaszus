@@ -86,6 +86,22 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
                         <Divider sx={{ marginY: '16px' }} />
 
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: '16px' }}>
+                                <Typography component='p'>
+                                    {t('admin-cn-telegramnotifications-enabled')}
+                                </Typography>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={telegramEnabled}
+                                            onChange={(e) => setTelegramEnabled(e.target.checked)}
+                                        />
+                                    }
+                                    label={telegramEnabled ? t('enabled') : t('disabled')}
+                                    sx={{ marginLeft: 'auto' }}
+                                />
+                            </Box>
+
                             <FormControl sx={{ margin: '8px' }} variant="outlined">
                                 <InputLabel htmlFor="telegram-bot-token">{t('admin-cn-telegramnotifications-bottoken')}</InputLabel>
                                 <OutlinedInput
@@ -98,7 +114,7 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
                                         <InputAdornment position="end">
                                             <IconButton
                                                 aria-label={
-                                                    showTelegramBotToken ? 'Ukryj token bota' : 'Pokaż token bota'
+                                                    showTelegramBotToken ? t('admin-cn-telegramnotifications-showbottoken-hide-label') : t('admin-cn-telegramnotifications-showbottoken-show-label')
                                                 }
                                                 onClick={handleTelegramBotTokenVisibility}
                                                 edge="end"
@@ -118,22 +134,6 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
                                 onChange={handleTelegramBotChatIdValue}
                                 sx={{ margin: '8px' }}
                             />
-
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: '16px' }}>
-                                <Typography component='p'>
-                                    {t('admin-cn-telegramnotifications-enabled')}
-                                </Typography>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={telegramEnabled}
-                                            onChange={(e) => setTelegramEnabled(e.target.checked)}
-                                        />
-                                    }
-                                    label={telegramEnabled ? t('enabled') : t('disabled')}
-                                    sx={{ marginLeft: 'auto' }}
-                                />
-                            </Box>
                         </Box>
                     </Box>
 

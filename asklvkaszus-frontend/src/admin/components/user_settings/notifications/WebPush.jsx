@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Dialog, DialogContent, Divider, FormControlLabel, IconButton, Switch, TextField, Typography, InputAdornment, FormControl, InputLabel, OutlinedInput, Select, MenuItem, Alert } from "@mui/material";
-import { Close, NotificationsNone, Notifications, InfoOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box, Button, Dialog, DialogContent, Divider, FormControlLabel, IconButton, Switch, Typography, Alert } from "@mui/material";
+import { Close, InfoOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import { SendFetchVapidPublicKeyRequest } from "../../requests/SendFetchVapidPublicKeyRequest";
+import { SendSubscribeToPushNotificationsRequest } from "../../requests/SendSubscribeToPushNotificationsRequest";
 import { SendConfigureWebPushNotificationsRequest } from "../../requests/SendConfigureWebPushNotificationsRequest";
 
-const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, configureWebPushNotificationsOutputData, setConfigureWebPushNotificationsNotifyOpen, handleUserDataUpdate }) => {
+const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetchVapidPublicKeyOutputData, setFetchVapidPublicKeyNotifyOpen, subscribeToPushNotificationsOutputData, setSubscribeToPushNotificationsNotifyOpen, configureWebPushNotificationsOutputData, setConfigureWebPushNotificationsNotifyOpen, handleUserDataUpdate }) => {
     const { t } = useTranslation();
 
     const [dialogConfirmOpen, setDialogConfirmOpen] = useState(false);
+
 
     const [webPushEnabled, setWebPushEnabled] = useState(true);
 
@@ -17,17 +20,56 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, conf
         }
     }, [userData]);
 
+
+    const [vapidPublicKey, setVapidPublicKey] = useState(null);
+
+    const { fetchVapidPublicKeyError, fetchVapidPublicKeyResponse, handleFetchVapidPublicKeyRequest } = SendFetchVapidPublicKeyRequest();
+
+    useEffect(() => {
+        if (fetchVapidPublicKeyResponse) {
+            fetchVapidPublicKeyOutputData(fetchVapidPublicKeyError, fetchVapidPublicKeyResponse);
+        }
+
+        if (fetchVapidPublicKeyError === false) {
+            setVapidPublicKey(fetchVapidPublicKeyResponse);
+            setFetchVapidPublicKeyNotifyOpen(false);
+            
+        } else {
+            setFetchVapidPublicKeyNotifyOpen(true);
+
+        }
+    }, [fetchVapidPublicKeyResponse]);
+
+    useEffect(() => {
+        handleFetchVapidPublicKeyRequest();
+    }, [])
+
+
     const [isDialogConfirmButtonDisabled, setDialogConfirmButtonDisabled] = useState(false);
 
     const handleWebPushEnabledValue = () => {
         setWebPushEnabled(!webPushEnabled);
     };
 
+
+    const { subscribeToPushNotificationsError, subscribeToPushNotificationsResponse, isUserSubscribed, handleSubscribeToPushNotificationsRequest } = SendSubscribeToPushNotificationsRequest(vapidPublicKey);
+
+    useEffect(() => {
+        subscribeToPushNotificationsOutputData(subscribeToPushNotificationsError, subscribeToPushNotificationsResponse);
+    }, [subscribeToPushNotificationsError, subscribeToPushNotificationsResponse]);
+
+    const handleSubscribeUser = async () => {
+        await handleSubscribeToPushNotificationsRequest();
+        setSubscribeToPushNotificationsNotifyOpen(true);
+    }
+
+
     const { configureWebPushNotificationsError, configureWebPushNotificationsResponse, handleConfigureWebPushNotificationsRequest } = SendConfigureWebPushNotificationsRequest(webPushEnabled);
 
     useEffect(() => {
         configureWebPushNotificationsOutputData(configureWebPushNotificationsError, configureWebPushNotificationsResponse);
     }, [configureWebPushNotificationsError, configureWebPushNotificationsResponse]);
+
 
     const handleDialogSettingsConfirm = async () => {
         setDialogConfirmOpen(true);
@@ -50,6 +92,7 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, conf
         setDialogConfirmOpen(false);
     }
 
+
     const isSecureConnection = window.location.protocol === 'https:'
 
     return (
@@ -70,25 +113,33 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, conf
 
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             {isSecureConnection ? (
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: '16px' }}>
-                                    <Typography component='p'>
-                                        {t('admin-cn-telegramnotifications-enabled')}
-                                    </Typography>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={webPushEnabled}
-                                                onChange={(e) => handleWebPushEnabledValue(e.target.checked)}
-                                            />
-                                        }
-                                        label={webPushEnabled ? t('enabled') : t('disabled')}
-                                        sx={{ marginLeft: 'auto' }}
-                                    />
-                                </Box>
+                                <>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginY: '16px' }}>
+                                        <Typography component='p'>
+                                            {t('admin-cn-pushnotifications-enabled')}
+                                        </Typography>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={webPushEnabled}
+                                                    onChange={(e) => handleWebPushEnabledValue(e.target.checked)}
+                                                />
+                                            }
+                                            label={webPushEnabled ? t('enabled') : t('disabled')}
+                                            sx={{ marginLeft: 'auto' }}
+                                        />
+                                    </Box>
+
+                                    {webPushEnabled && (
+                                        <Button variant="outlined" onClick={handleSubscribeUser} disabled={isUserSubscribed} color="primary">
+                                            {isUserSubscribed ? t('admin-cn-pushnotifications-alreadysubscribed') : t('admin-cn-pushnotifications-subscribe')}
+                                        </Button>
+                                    )}
+                                </>
                             ) : (
                                 <Box>
                                     <Alert severity="error" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        Obecnie używasz niezabezpieczonego połączenia (HTTP), a system powiadomień PWA wymaga zabezpieczonego połączenia (HTTPS). Dalsza konfiguracja nie jest możliwa. Spróbuj uruchomić stronę na serwerze z prawidłowymi ustawieniami HTTPS a następnie spróbuj ponownie. 
+                                        {t('admin-error-configurenotifications-insecureconnection')}
                                     </Alert>
                                 </Box>
                             )}
@@ -97,12 +148,20 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, conf
                     </Box>
 
                     <Box sx={{ textAlign: 'center', marginTop: '24px' }}>
-                        <Button variant="contained" onClick={handleDialogSettingsClose} color="primary" autoFocus sx={{ marginX: '4px' }}>
-                            {t('cancel')}
-                        </Button>
-                        <Button variant="outlined" onClick={handleDialogSettingsConfirm} color="primary" sx={{ marginX: '4px' }}>
-                            {t('confirm')}
-                        </Button>
+                        {isSecureConnection ? (
+                            <>
+                                <Button variant="contained" onClick={handleDialogSettingsClose} color="primary" autoFocus sx={{ marginX: '4px' }}>
+                                    {t('cancel')}
+                                </Button>
+                                <Button variant="outlined" onClick={handleDialogSettingsConfirm} color="primary" sx={{ marginX: '4px' }}>
+                                    {t('confirm')}
+                                </Button>
+                            </>
+                        ) : (
+                            <Button variant="contained" onClick={handleDialogSettingsClose} color="primary" autoFocus sx={{ marginX: '4px' }}>
+                                {t('cancel')}
+                            </Button>
+                        )}
                     </Box>
                 </DialogContent>
             </Dialog>
@@ -117,13 +176,21 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, conf
                         <Typography component='p' sx={{ fontWeight: 500, fontSize: '18px' }}>
                             <InfoOutlined />
 
-                            {t('admin-cn-dialog-confirm-changecurrentconfiguration-title')}
+                            {webPushEnabled ? (
+                                t('admin-cn-dialog-confirm-changecurrentconfiguration-title')
+                            ) : (
+                                t('admin-cn-dialog-confirm-newconfiguration-title')
+                            )}
                         </Typography>
 
                         <Divider sx={{ marginY: '16px' }} />
 
                         <Typography component='p'>
-                            {t('admin-cn-dialog-confirm-changecurrentconfiguration-description')}
+                            {webPushEnabled ? (
+                                t('admin-cn-dialog-confirm-changecurrentconfiguration-description')
+                            ) : (
+                                t('admin-cn-dialog-confirm-newconfiguration-description')
+                            )}
                         </Typography>
                     </Box>
 

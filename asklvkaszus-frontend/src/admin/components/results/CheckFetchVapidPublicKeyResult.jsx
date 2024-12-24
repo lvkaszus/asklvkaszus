@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Snackbar, Alert } from '@mui/material';
 
-const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClose }) => {
+const CheckFetchVapidPublicKeyResult = ({ open, error, response, onClose }) => {
     const { t } = useTranslation();
 
     return (
@@ -16,48 +16,31 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
         >
             {(() => {
                 switch (error) {
-                    case false:
-                        switch (response) {
-                            case "Notifications Settings have been updated.":
-                                return (
-                                    <Alert onClose={onClose} severity="success" sx={{ width: '100%' }}>
-                                        {t('admin-success-configurenotifications')}
-                                    </Alert>
-                                );
-                            default:
-                                return null;
-                        }
                     case true:
                     default:
                         switch (response) {
                             case "An error occurred while generating VAPID Keys!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-generatevapidkeys')}
+                                        {t('admin-error-generatevapidkeys')}
                                     </Alert>
                                 )
                             case "An error occurred while checking VAPID Keys!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-checkvapidkeys')}
+                                        {t('admin-error-checkvapidkeys')}
                                     </Alert>
                                 )
                             case "Rate-limit exceeded! Try again later.":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-ratelimit')}
-                                    </Alert>
-                                );
-                            case "Please login again!":
-                                return (
-                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-pleaseloginagain')}
+                                        {t('admin-error-fetchvapidpublickey-ratelimit')}
                                     </Alert>
                                 );
                             default:
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications')}
+                                        {t('admin-error-fetchvapidpublickey')}
                                     </Alert>
                                 );
                         }
@@ -67,4 +50,4 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
     );
 };
 
-export default CheckConfigureWebPushNotificationsResult;
+export default CheckFetchVapidPublicKeyResult;

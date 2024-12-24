@@ -13,6 +13,10 @@ import '@fontsource/roboto/700.css';
 
 import Core from './Core';
 
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 ReactDOM.createRoot(document.getElementById('app-main')).render(
   <Core />
 );
+
+serviceWorkerRegistration.register();

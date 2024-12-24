@@ -36,6 +36,7 @@
     "ql-noquestionsyet": "No messages to display. Maybe you would send some? 😊️",
     "ql-notansweredyet": "{{nickname}} has not answered this question yet!",
 
+
     "info-pagetitle": "Information",
     "info-description": "Questions and answers very similar to NGL and Tellonym applications! 😄️",
 
@@ -69,6 +70,7 @@
     "admin-preauthnavbar-backtouserpanel": "Return to user panel",
 
     "adminpanel": "Administrator Panel",
+
     "login-pagetitle": "Log in",
     "login-hello": "Welcome!",
     "login-description": "Enter your username and password to log in.",
@@ -138,6 +140,7 @@
     "admin-mq-dialog-blocksender-title": "Blocking the sender of the question",
     "admin-mq-dialog-blocksender-description": "Are you sure you want to block the sender of this question? You will be able to unblock it at any time in the \"Management\" tab.",
 
+
     "admin-globalsettings-pagetitle": "Global settings",
 
     "admin-gsc-title": "Managing the global settings of the application",
@@ -159,6 +162,7 @@
     "admin-us-adminapienabled": "Admin API enabled?",
     "admin-us-userapienabled": "User API enabled?",
     "admin-us-adminapikey": "Admin API key",
+    "admin-us-pushnotifications-enabled": "Push Notifications (PWA) enabled??",
     "admin-us-telegramnotifications-enabled": "Telegram Notifications enabled?",
     "admin-us-telegramnotifications-bottoken": "Telegram Notifications - Bot Token",
     "admin-us-telegramnotifications-botchatid": "Telegram Notifications - Bot Chat ID",
@@ -186,12 +190,26 @@
     "admin-raa-dialog-refreshed-copyadminapikey": "Copy the administrator's API key",
 
     "admin-cn-editnotificationssettings": "Edit notification settings",
-    "admin-cn-configurenotifications": "Configure notifications",
-    "admin-cn-notificationsmanagement": "Notification management",
-    "admin-cn-notificationsconfiguration": "Configuration of notifications",
+    "admin-cn-notificationsmanagement": "Notifications management",
+    "admin-cn-notificationsconfiguration": "Notifications configuration",
+    "admin-cn-notifications-provider": "Choose a notification provider",
+    "admin-cn-notifications-chooseprovider": "Choose a notification provider",
+
+    "pwa": "PWA (Web Push)",
+    "telegram": "Telegram",
+
+    "admin-cn-notifications-submit": "Submit",
+
+    "admin-cn-pushnotifications-enabled": "Push Notifications enabled?",
+    "admin-cn-pushnotifications-alreadysubscribed": "Already subscribed!",
+    "admin-cn-pushnotifications-subscribe": "Subscribe to notifications",
+
     "admin-cn-telegramnotifications-enabled": "Telegram Notifications enabled?",
+    "admin-cn-telegramnotifications-showbottoken-hide-label": "Hide Bot Token",
+    "admin-cn-telegramnotifications-showbottoken-show-label": "Show Bot Token",
     "admin-cn-telegramnotifications-bottoken": "Telegram Bot Token",
     "admin-cn-telegramnotifications-chatid": "Telegram Bot Chat ID",
+
     "admin-cn-dialog-confirm-changecurrentconfiguration-title": "Changing the current notification configuration",
     "admin-cn-dialog-confirm-changecurrentconfiguration-description": "Are you sure you want to change the current Telegram notification configuration? After approving a change to the current notification configuration, a message will be sent to verify that the changed configuration is correct.",
     "admin-cn-dialog-confirm-newconfiguration-title": "Approval of new notification configuration",
@@ -248,6 +266,9 @@
     "admin-success-toggleuserapi-enabled": "User API access has been enabled!",
     "admin-success-refreshadminapikey": "The administrator API key has been successfully refreshed!",
     "admin-success-copyadminapikey": "The administrator API key was successfully copied to the clipboard!",
+    "admin-success-configurenotifications-aboutsubscription": "Subscription details:",
+    "admin-success-configurenotifications-subscribed": "Subscribed successfully!!",
+    "admin-success-configurenotifications-subscriptionupdated": "Subscription updated successfully!",
     "admin-success-configurenotifications": "The notification configuration has been successfully updated!",
     "admin-success-changepassword": "The password has been changed successfully!",
     "admin-success-unblockallsenders": "All blocked senders have been successfully unblocked!",
@@ -314,8 +335,20 @@
     "admin-error-refreshadminapikey-ratelimit": "The maximum number of sent requests for refreshing the admin API key has been exceeded! Try again later.",
     "admin-error-refreshadminapikey": "An error occurred while sending a request to refresh the admin API key!",
     "admin-error-copyadminapikey": "Failed to copy the admin API key! Maybe because you are using an insecure connection? 🤔️",
+    "admin-error-generatevapidkeys": "An error occurred while generating VAPID keys!",
+    "admin-error-checkvapidkeys": "An error occurred while checking VAPID keys!",
+    "admin-error-fetchvapidpublickey-ratelimit": "The maximum number of sent requests to retrieve the VAPID public key has been exceeded! Try again later.",
+    "admin-error-fetchvapidpublickey": "An error occurred while sending a request for a VAPID public key!",
+    "admin-error-subscribetopushnotifications-ratelimit": "The maximum number of push notification subscription requests sent has been exceeded! Please try again later.",
+    "admin-error-subscribetopushnotifications": "An error occurred while sending a request to subscribe to push notifications!",
+    "admin-error-configurenotifications-invaliddata": "Incorrect subscription data!",
+    "admin-error-configurenotifications-subscriptionerror": "An error occurred while subscribing to notifications!",
+    "admin-error-configurenotifications-serviceworker": "Service Worker is not available in this browser!",
+    "admin-error-configurenotifications-insecureconnection": "You are currently using an insecure connection (HTTP), and the PWA notification system requires a secure connection (HTTPS). Further configuration is not possible. Try running this application on a server with correct HTTPS settings and then try again.",
     "admin-error-configurenotifications-emptybottoken": "Telegram Bot Token must not be empty!",
     "admin-error-configurenotifications-emptybotchatid": "Telegram Bot Chat ID must not be empty!",
+    "admin-error-configurenotifications-generatevapidkeys": "An error occurred while generating VAPID keys!",
+    "admin-error-configurenotifications-checkvapidkeys": "An error occurred while checking VAPID keys!",
     "admin-error-configurenotifications-ratelimit": "The maximum number of notification configuration requests sent has been exceeded! Try again later.",
     "admin-error-configurenotifications": "An error occurred while sending a request to change the notification configuration!",
     "admin-error-changepassword-toofewcharacters": "The new password must be at least 12 characters long!",

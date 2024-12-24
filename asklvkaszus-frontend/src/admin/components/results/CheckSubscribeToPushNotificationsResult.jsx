@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Snackbar, Alert } from '@mui/material';
 
-const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClose }) => {
+const CheckSubscribeToPushNotificationsResult = ({ open, error, response, onClose }) => {
     const { t } = useTranslation();
 
     return (
@@ -18,10 +18,16 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
                 switch (error) {
                     case false:
                         switch (response) {
-                            case "Notifications Settings have been updated.":
+                            case "Subscription updated successfully!":
                                 return (
                                     <Alert onClose={onClose} severity="success" sx={{ width: '100%' }}>
-                                        {t('admin-success-configurenotifications')}
+                                        {t('admin-success-configurenotifications-subscriptionupdated')}
+                                    </Alert>
+                                );
+                            case "Subscribed successfully!":
+                                return (
+                                    <Alert onClose={onClose} severity="success" sx={{ width: '100%' }}>
+                                        {t('admin-success-configurenotifications-subscribed')}
                                     </Alert>
                                 );
                             default:
@@ -30,16 +36,10 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
                     case true:
                     default:
                         switch (response) {
-                            case "An error occurred while generating VAPID Keys!":
+                            case "Invalid subscription data!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-generatevapidkeys')}
-                                    </Alert>
-                                )
-                            case "An error occurred while checking VAPID Keys!":
-                                return (
-                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-checkvapidkeys')}
+                                        {t('admin-error-configurenotifications-invaliddata')}
                                     </Alert>
                                 )
                             case "Rate-limit exceeded! Try again later.":
@@ -67,4 +67,4 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
     );
 };
 
-export default CheckConfigureWebPushNotificationsResult;
+export default CheckSubscribeToPushNotificationsResult;

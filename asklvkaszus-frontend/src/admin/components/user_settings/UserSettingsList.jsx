@@ -13,6 +13,8 @@ import ChangePassword from "./ChangePassword";
 import CheckChangePasswordResult from "../results/CheckChangePasswordResult";
 import ShowAdminApiKey from "./ShowAdminApiKey";
 import { useTranslation } from "react-i18next";
+import CheckFetchVapidPublicKeyResult from "../results/CheckFetchVapidPublicKeyResult";
+import CheckSubscribeToPushNotificationsResult from "../results/CheckSubscribeToPushNotificationsResult";
 
 const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
     const { t } = useTranslation();
@@ -30,6 +32,14 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
     const [refreshAdminApiKeyStatus, setRefreshAdminApiKeyStatus] = useState('');
     const [refreshAdminApiKeyResponse, setRefreshAdminApiKeyResponse] = useState('');
     const [isRefreshAdminApiKeyNotifyOpen, setRefreshAdminApiKeyNotifyOpen] = useState(false);
+
+    const [fetchVapidPublicKeyStatus, setFetchVapidPublicKeyStatus] = useState('');
+    const [fetchVapidPublicKeyResponse, setFetchVapidPublicKeyResponse] = useState('');
+    const [isFetchVapidPublicKeyNotifyOpen, setFetchVapidPublicKeyNotifyOpen] = useState(false);
+
+    const [subscribeToPushNotificationsStatus, setSubscribeToPushNotificationsStatus] = useState('');
+    const [subscribeToPushNotificationsResponse, setSubscribeToPushNotificationsResponse] = useState('');
+    const [isSubscribeToPushNotificationsNotifyOpen, setSubscribeToPushNotificationsNotifyOpen] = useState(false);
 
     const [configureWebPushNotificationsStatus, setConfigureWebPushNotificationsStatus] = useState('');
     const [configureWebPushNotificationsResponse, setConfigureWebPushNotificationsResponse] = useState('');
@@ -69,6 +79,24 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
 
     const handleRefreshAdminApiKeyNotifyClose = () => {
         setRefreshAdminApiKeyNotifyOpen(false);
+    };
+
+    const fetchVapidPublicKeyOutputData = (status, response) => {
+        setFetchVapidPublicKeyStatus(status);
+        setFetchVapidPublicKeyResponse(response);
+    };
+
+    const handleFetchVapidPublicKeyNotifyClose = () => {
+        setFetchVapidPublicKeyNotifyOpen(false);
+    };
+
+    const subscribeToPushNotificationsOutputData = (status, response) => {
+        setSubscribeToPushNotificationsStatus(status);
+        setSubscribeToPushNotificationsResponse(response);
+    };
+
+    const handleSubscribeToPushNotificationsNotifyClose = () => {
+        setSubscribeToPushNotificationsNotifyOpen(false);
     };
 
     const configureWebPushNotificationsOutputData = (status, response) => {
@@ -229,9 +257,11 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
                         </Typography>
                     </Box>
 
-                    <ConfigureNotifications userData={userData} configureTelegramNotificationsOutputData={configureTelegramNotificationsOutputData} setConfigureTelegramNotificationsNotifyOpen={setConfigureTelegramNotificationsNotifyOpen} configureWebPushNotificationsOutputData={configureWebPushNotificationsOutputData} setConfigureWebPushNotificationsNotifyOpen={setConfigureWebPushNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
+                    <ConfigureNotifications userData={userData} configureTelegramNotificationsOutputData={configureTelegramNotificationsOutputData} setConfigureTelegramNotificationsNotifyOpen={setConfigureTelegramNotificationsNotifyOpen} fetchVapidPublicKeyOutputData={fetchVapidPublicKeyOutputData} setFetchVapidPublicKeyNotifyOpen={setFetchVapidPublicKeyNotifyOpen} setSubscribeToPushNotificationsNotifyOpen={setSubscribeToPushNotificationsNotifyOpen} subscribeToPushNotificationsOutputData={subscribeToPushNotificationsOutputData} configureWebPushNotificationsOutputData={configureWebPushNotificationsOutputData} setConfigureWebPushNotificationsNotifyOpen={setConfigureWebPushNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
                 </CardContent>
             </Card>
+
+            <CheckChangePasswordResult open={isChangePasswordNotifyOpen} error={changePasswordStatus} response={changePasswordResponse} onClose={handleChangePasswordNotifyClose} />
 
             <CheckToggleAdminApiResult open={isToggleAdminApiNotifyOpen} error={toggleAdminApiStatus} response={toggleAdminApiResponse} username={username} onClose={handleToggleAdminApiNotifyClose} />
 
@@ -239,11 +269,13 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
 
             <CheckRefreshAdminApiKeyResult open={isRefreshAdminApiKeyNotifyOpen} error={refreshAdminApiKeyStatus} response={refreshAdminApiKeyResponse} onClose={handleRefreshAdminApiKeyNotifyClose} />
 
+            <CheckFetchVapidPublicKeyResult open={isFetchVapidPublicKeyNotifyOpen} error={fetchVapidPublicKeyStatus} response={fetchVapidPublicKeyResponse} onClose={handleFetchVapidPublicKeyNotifyClose} />
+
+            <CheckSubscribeToPushNotificationsResult open={isSubscribeToPushNotificationsNotifyOpen} error={subscribeToPushNotificationsStatus} response={subscribeToPushNotificationsResponse} onClose={handleSubscribeToPushNotificationsNotifyClose} />
+
             <CheckConfigureWebPushNotificationsResult open={isConfigureWebPushNotificationsNotifyOpen} error={configureWebPushNotificationsStatus} response={configureWebPushNotificationsResponse} onClose={handleConfigureWebPushNotificationsNotifyClose} />
 
             <CheckConfigureTelegramNotificationsResult open={isConfigureTelegramNotificationsNotifyOpen} error={configureTelegramNotificationsStatus} response={configureTelegramNotificationsResponse} onClose={handleConfigureTelegramNotificationsNotifyClose} />
-
-            <CheckChangePasswordResult open={isChangePasswordNotifyOpen} error={changePasswordStatus} response={changePasswordResponse} onClose={handleChangePasswordNotifyClose} />
         </>
     );
 };
