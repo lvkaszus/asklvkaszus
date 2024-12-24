@@ -14,7 +14,7 @@
 
 <h2 align="center">Features</h2>
 
-- Receiving anonymous questions from people that have sent a message on main page with notifications (by using Telegram Bot API Integration)
+- Receiving anonymous questions from people that have sent a message on main page with notifications (by using Telegram Bot API Integration or Push Notifications)
 - Replying to anonymous questions with use of Markdown formatting system that not only can **format** ~~text~~ but also embed an YouTube video or OpenStreetMap geolocation
 - Show/Hide all questions with a single click
 - Manually show/hide single question
