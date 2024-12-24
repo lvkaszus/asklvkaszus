@@ -26,7 +26,7 @@ def user_submit_question():
         senders_ip_address = get_remote_address()
         is_senders_ip_blocked = BlockedSenders.query.filter_by(ip_address=senders_ip_address).first()
 
-        if is_senders_ip_blocked == True:
+        if is_senders_ip_blocked:
             return jsonify(error='Sending question failed. You have been blocked!'), 403
 
 

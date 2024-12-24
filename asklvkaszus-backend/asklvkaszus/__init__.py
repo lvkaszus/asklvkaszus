@@ -22,7 +22,6 @@ from .routes.admin_routes import admin_bp
 
 from .routes.rest_routes import rest_bp
 
-from flask_migrate import upgrade
 from .modules.vapid_core import check_vapid_keys
 
 def create_app():
@@ -36,6 +35,9 @@ def create_app():
     log_format = "[Ask @lvkaszus! - Backend] - %(asctime)s - %(levelname)s - %(message)s"
     date_format = "%Y-%m-%d | %H:%M:%S"
     formatter = logging.Formatter(fmt=log_format, datefmt=date_format)
+
+    if app.logger.hasHandlers():
+        app.logger.handlers.clear()
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
@@ -85,8 +87,6 @@ def create_app():
 
     with app.app_context():
         sql.create_all()
-
-        upgrade() # Migrates database tables and columns to the latest version according to the application version
 
         check_vapid_keys()
 
