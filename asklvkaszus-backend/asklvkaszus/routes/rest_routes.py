@@ -139,19 +139,19 @@ def rest_admin_user_info_route():
 
 
 @rest_bp.route('/user/app_settings', methods=['GET'])
-@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@limiter.limit(Config.API_USER_RATELIMIT)
 @require_user_api_enabled
 def rest_user_app_settings_route():
     return api_user_app_settings()
 
 @rest_bp.route('/user/fetch_all_questions', methods=['GET'])
-@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@limiter.limit(Config.API_USER_RATELIMIT)
 @require_user_api_enabled
 def rest_user_fetch_all_questions_route():
     return api_user_fetch_all_questions()
 
 @rest_bp.route('/user/submit_question', methods=['POST'])
-@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@limiter.limit(Config.API_USER_RATELIMIT)
 @require_user_api_enabled
 def rest_user_submit_question_route():
     return api_user_submit_question()

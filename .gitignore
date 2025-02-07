@@ -316,3 +316,4 @@ dist
 
 # Application configuration
 config.yml
+redis.conf

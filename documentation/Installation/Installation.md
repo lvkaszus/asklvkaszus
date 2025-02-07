@@ -156,7 +156,7 @@ services:
 
 8. **Copy example Redis configuration file to your application Redis configuration directory.**
 
-- `sudo cp asklvkaszus-backend/config/redis.conf /etc/redis/asklvkaszus`
+- `sudo cp asklvkaszus-backend/config/redis.example.conf /etc/redis/asklvkaszus/redis.conf`
 
 9. **Open `/etc/redis/asklvkaszus/redis.conf` file with your favourite text editor.**
 
@@ -358,7 +358,7 @@ docker run -d \
 
 12. **Copy example Redis configuration file to your application Redis configuration directory.**
 
-- `sudo cp asklvkaszus-backend/config/redis.conf /etc/redis/asklvkaszus`
+- `sudo cp asklvkaszus-backend/config/redis.example.conf /etc/redis/asklvkaszus/redis.conf`
 
 13. **Open `/etc/redis/asklvkaszus/redis.conf` file with your favourite text editor.**
 

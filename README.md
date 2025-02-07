@@ -19,8 +19,8 @@
 - Show/Hide all questions with a single click
 - Manually show/hide single question
 - Multiple Sender Blocking based on sender's IP address blacklisting in one of the database tables (IP Addresses of Users around the internet are public after all, so sender's anonymity/privacy has not been lost!)
-- Protected Administrator REST API
-- Public User REST API
+- **If enabled by Administrator**: Protected Administrator REST API
+- **If enabled by Administrator**: Public User REST API
 - Secure authorization/authentication system
 - SQL Injection / XSS / CSRF Protection
 - Completely refreshed User Interface
@@ -45,7 +45,7 @@
 
 If you want to give this project a try and install it on your server, then please visit
 
-[Full installation guide available here](documentation/Installation.md)!
+[Full installation guide available here](documentation/Installation/Installation.md)!
 
 Application is available to install in Docker image or if you don't want to install it with using Docker, you can also install it manually step-by-step as described in the guide linked above.
 </div>

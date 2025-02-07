@@ -5,3 +5,6 @@ lib/
 lib64/
 pyvenv.cfg
 config.yml
+redis.conf
+*.log
+*.log*
