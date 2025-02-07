@@ -3,9 +3,9 @@
 <h3>Anonymous questions and answers application, pretty much like Ngl or Tellonym, but better!</h3>
 </div>
 
-| ![Alt Text](screenshots/home-dark.png)  | ![Alt Text](screenshots/admin-dark.png)  |
+| ![Home - Dark](screenshots/home-dark.png)  | ![Admin - Dark](screenshots/admin-dark.png)  |
 |-----------------------------------------|------------------------------------------|
-| ![Alt Text](screenshots/home-light.png) | ![Alt Text](screenshots/admin-light.png) |
+| ![Home - Light](screenshots/home-light.png) | ![Admin - Light](screenshots/admin-light.png) |
 
 <div align="center">
 <h2>Why this was created?</h2>
@@ -30,15 +30,15 @@
 
 <h2 align="center">Comparison</h2>
 
-|                                       | Ask @lvkaszus!       | Tellonym               | Ngl App             |
-|---------------------------------------|----------------------|------------------------|---------------------|
-| **Open Source?**                      | ✅ Open Source       | ❌ Open Source         | ❌ Open Source      |
-| **Data Tracking?**                    | ✅ No data tracking  | ❌ No data tracking    | ❌ No data tracking |
-| **Ads?**                              | ✅ Ad-free           | ❌ Ad-free             | ❌ Ad-free          |
-| **Automatic Questions?**              | ✅ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions | ❌ Does not send annoying automatic questions |
-| **Text Formatting?**                  | ✅ Offers text formatting (as well as placing videos or location inside questions/answers!) | ⚠️ Only offers placing photos | ⚠️ Only offers placing photos in the background |
-| **Notifications?**                    | ✅ Notifications (PWA, Telegram) | ✅ Notifications | ✅ Notifications |
-| **Available On?**                     | ✅ Desktop and Mobile (PWA) | ✅ Desktop and Mobile | ⚠️ Only on Mobile |
+|                                       | Ask @lvkaszus!             | Tellonym                   | Ngl App                  |
+|---------------------------------------|----------------------------|----------------------------|--------------------------|
+| **Open Source?**                      | ✅ Yes                     | ❌ No                      | ❌ No                     |
+| **Data Tracking?**                    | ✅ No                      | ❌ Yes                     | ❌ Yes                    |
+| **Ads?**                              | ✅ No Ads                  | ❌ Ads                     | ❌ Ads                    |
+| **Automatic Bot Questions?**              | ✅ No Automatic Bot Questions  | ❌ Yes                     | ❌ Yes                    |
+| **Text Formatting & Custom Media?**                  | ✅ Yes (including videos and locations) | ⚠️ Limited to Photos Only | ⚠️ Limited to Photos Only in Background |
+| **Notifications?**                    | ✅ Yes (PWA, Telegram)     | ✅ Yes                     | ✅ Yes                    |
+| **Available On?**                     | ✅ Desktop and Mobile (PWA) | ✅ Desktop and Mobile      | ⚠️ Mobile Only            |
 
 <div align="center">
 <h2>Installation</h2>
