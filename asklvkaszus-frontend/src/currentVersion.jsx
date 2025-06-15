@@ -1,5 +1,5 @@
 const currentVersion = () => {
-    const frontendVersion = "3.1.1";
+    const frontendVersion = "3.1.2";
 
     return frontendVersion;
 }
