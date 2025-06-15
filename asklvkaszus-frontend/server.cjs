@@ -10,7 +10,7 @@ const distPath = path.join(__dirname, 'dist');
 app.use(compression());
 app.use(express.static(distPath));
 
-app.get('*', (req, res) => {
+app.get('/*any', (req, res) => {
   res.sendFile(path.resolve(distPath, 'index.html'));
 });
 
