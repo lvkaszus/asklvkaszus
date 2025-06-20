@@ -91,7 +91,6 @@ const AdminLogin = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     setButtonDisabled(true);
-    setLoading(true);
     await handleLoginRequest();
     setUsername('');
     setPassword('');

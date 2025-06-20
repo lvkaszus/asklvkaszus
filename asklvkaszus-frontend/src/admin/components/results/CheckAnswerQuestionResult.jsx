@@ -30,6 +30,18 @@ const CheckAnswerQuestionResult = ({ open, error, response, onClose }) => {
                     case true:
                     default:
                         switch (response) {
+                            case 'Invalid JSON payload!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-answerquestion-invalidjsonpayload')}
+                                    </Alert>
+                                );
+                            case 'Please provide a Question ID!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-answerquestion-noquestionid')}
+                                    </Alert>
+                                );
                             case 'Question with selected ID does not exist.':
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
@@ -46,6 +58,12 @@ const CheckAnswerQuestionResult = ({ open, error, response, onClose }) => {
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
                                         {t('admin-error-answerquestion-emptyreplynotallowed')}
+                                    </Alert>
+                                );
+                            case 'Sending question reply failed. Message is too long (maximum of 5000 characters)!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-answerquestion-toolongreply')}
                                     </Alert>
                                 );
                             case 'Please login again!':

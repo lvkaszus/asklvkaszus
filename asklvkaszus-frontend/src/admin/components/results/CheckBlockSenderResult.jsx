@@ -30,10 +30,22 @@ const CheckBlockSenderResult = ({ open, error, response, sender_ip, onClose }) =
                     case true:
                     default:
                         switch (response) {
+                            case 'Invalid JSON payload!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-blocksender-invalidjsonpayload')}
+                                    </Alert>
+                                );
                             case 'Sender IP Address cannot be empty!':
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
                                         {t('admin-error-blocksender-emptyipaddressnotallowed')}
+                                    </Alert>
+                                );
+                            case 'Invalid Sender IP Address format!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-blocksender-invalidipaddressformat')}
                                     </Alert>
                                 );
                             case `Sender with IP Address ${sender_ip} is already banned!`:

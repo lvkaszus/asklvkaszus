@@ -25,9 +25,18 @@ export const SendFetchAdminAppSettingsRequest = () => {
         if (error.response) {
             const { error: responseError } = error.response.data;
 
-            setAdminAppSettingsResponse(responseError);
-            setAdminAppSettingsError(true);
+            if (
+              responseError.includes("Token") ||
+              responseError.includes("CSRF")
+            ) {
+              setAdminAppSettingsError(true);
+              setAdminAppSettingsResponse('Please login again!');
+
+            } else {
+              setAdminAppSettingsResponse(responseError);
+              setAdminAppSettingsError(true);
             
+            }            
           } else {
             setAdminAppSettingsResponse('');
             setAdminAppSettingsError(true);

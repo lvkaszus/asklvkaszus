@@ -100,7 +100,7 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, question
                                 )
                               )}
 
-                              <Typography component='p' sx={{ fontWeight: 300, fontSize: '12px', marginTop: 'auto' }}>{date}</Typography>
+                              <Typography component='p' sx={{ fontWeight: 300, fontSize: '12px', marginTop: 'auto' }}>{date ? new Date(date).toLocaleString() : '-'}</Typography>
                               <Typography  component='p' sx={{ fontWeight: 300, fontSize: '12px' }}>{`${t('admin-ql-ishidden')} ${hidden ? t('yes') : t('no')}`}</Typography>
 
                               <AnswerQuestion

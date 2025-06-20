@@ -83,7 +83,7 @@ const ManagementTable = ({ isBlockedSendersLoading, blockedSendersError, blocked
                                                             {row.last_question || "None"}
                                                         </TableCell>
                                                         <TableCell>
-                                                            {row.date}
+                                                            {row.date ? new Date(row.date).toLocaleString() : '-'}
                                                         </TableCell>
                                                         <TableCell align="right">
                                                             <UnblockSenderButton sender_ip={row.ip_address} unblockSenderOutputData={unblockSenderOutputData} setUnblockSenderNotifyOpen={setUnblockSenderNotifyOpen} handleBlockedSendersDataUpdate={forceDataFetch} />

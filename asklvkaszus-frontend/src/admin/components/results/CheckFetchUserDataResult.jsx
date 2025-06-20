@@ -18,10 +18,10 @@ const CheckFetchUserDataResult = ({ open, error, response, onClose }) => {
                 switch (error) {
                     case true:
                         switch (response) {
-                            case "No username was provided!":
+                            case "User not found!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-userdata-nousername')}
+                                        {t('admin-error-userdata-nouser')}
                                     </Alert>
                                 );
                             case "Rate-limit exceeded! Try again later.":

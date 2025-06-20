@@ -42,7 +42,7 @@ export const SendFetchUserDataRequest = () => {
             responseError.includes("CSRF")
           ) {
             setUserDataResponse('Please login again!');
-            setUserDataError(false);
+            setUserDataError(true);
 
             navigate('/admin/login');
 

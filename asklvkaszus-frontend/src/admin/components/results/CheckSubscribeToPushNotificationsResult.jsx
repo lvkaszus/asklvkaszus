@@ -36,10 +36,28 @@ const CheckSubscribeToPushNotificationsResult = ({ open, error, response, onClos
                     case true:
                     default:
                         switch (response) {
-                            case "Invalid subscription data!":
+                            case "Invalid JSON payload!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                        {t('admin-error-configurenotifications-invaliddata')}
+                                        {t('admin-error-configurenotifications-invalidjsonpayload')}
+                                    </Alert>
+                                )
+                            case "Invalid endpoint!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-invalidendpoint')}
+                                    </Alert>
+                                )
+                            case "Invalid auth key!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-invalidauthkey')}
+                                    </Alert>
+                                )
+                            case "Invalid p256dh key!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-invalidp256dhkey')}
                                     </Alert>
                                 )
                             case "Rate-limit exceeded! Try again later.":

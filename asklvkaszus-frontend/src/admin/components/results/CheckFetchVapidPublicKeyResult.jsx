@@ -31,6 +31,12 @@ const CheckFetchVapidPublicKeyResult = ({ open, error, response, onClose }) => {
                                         {t('admin-error-checkvapidkeys')}
                                     </Alert>
                                 )
+                            case "VAPID Keys are incomplete! Public or private key is missing.":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-vapidkeysincomplete')}
+                                    </Alert>
+                                )
                             case "Rate-limit exceeded! Try again later.":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

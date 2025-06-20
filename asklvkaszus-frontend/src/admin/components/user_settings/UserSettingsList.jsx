@@ -152,7 +152,7 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
                             {t('admin-us-lastpasswordchange')}
                         </Typography>
                         <Typography>
-                            {userData.last_password_change || '-'}
+                            {userData.last_password_change ? new Date(userData.last_password_change).toLocaleString() : '-'}
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

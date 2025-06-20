@@ -34,6 +34,18 @@ const CheckToggleQuestionVisibilityResult = ({ open, error, response, onClose })
                     }
                 } else {
                     switch (response) {
+                        case "Invalid JSON payload!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-togglequestionvisibility-invalidjsonpayload')}
+                                </Alert>
+                            );
+                        case "Please provide a Question ID!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-togglequestionvisibility-invalidjsonpayload')}
+                                </Alert>
+                            );
                         case "Question with selected ID does not exist.":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

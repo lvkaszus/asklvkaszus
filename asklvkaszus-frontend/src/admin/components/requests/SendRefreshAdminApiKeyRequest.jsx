@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
+import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
@@ -11,6 +12,8 @@ export const SendRefreshAdminApiKeyRequest = () => {
   const [refreshAdminApiKeyError, setRefreshAdminApiKeyError] = useState(false);
   const [refreshAdminApiKeyResponse, setRefreshAdminApiKeyResponse] = useState('');
   const [newAdminApiKey, setNewAdminApiKey] = useState('');
+
+  const navigate = useNavigate();
 
   const refreshAdminApiKeyRequest = async () => {
     try {
@@ -36,10 +39,22 @@ export const SendRefreshAdminApiKeyRequest = () => {
         if (error.response) {
             const { error: responseError } = error.response.data;
 
-            setRefreshAdminApiKeyResponse(responseError);
-            setNewAdminApiKey('');
-            setRefreshAdminApiKeyError(true);
+            if (
+              responseError.includes("Token") ||
+              responseError.includes("CSRF")
+            ) {
+              setRefreshAdminApiKeyResponse('Please login again!');
+              setNewAdminApiKey('');
+              setRefreshAdminApiKeyError(true);
 
+              navigate('/admin/login');
+
+            } else {
+              setRefreshAdminApiKeyResponse(responseError);
+              setNewAdminApiKey('');
+              setRefreshAdminApiKeyError(true);
+              
+            }
           } else {
             setRefreshAdminApiKeyResponse('');
             setNewAdminApiKey('')

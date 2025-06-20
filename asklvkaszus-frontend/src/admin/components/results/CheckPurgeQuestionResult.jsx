@@ -29,6 +29,18 @@ const CheckPurgeQuestionResult = ({ open, error, response, onClose }) => {
                         }
                     case true:
                         switch (response) {
+                            case "Invalid JSON payload!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-purgequestion-invalidjsonpayload')}
+                                    </Alert>
+                                );
+                            case "Please provide a Question ID!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-purgequestion-noquestionid')}
+                                    </Alert>
+                                );
                             case "Question with selected ID does not exist.":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

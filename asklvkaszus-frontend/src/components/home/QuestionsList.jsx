@@ -82,7 +82,7 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
                       )
                     )}
                                       
-                    <Typography component='p' sx={{ fontWeight: 300, fontSize: '12px', marginTop: '12px' }}>{date}</Typography>
+                    <Typography component='p' sx={{ fontWeight: 300, fontSize: '12px', marginTop: '12px' }}>{date ? new Date(date).toLocaleString() : '-'}</Typography>
                   </CardContent>
                 </Card>
               </Box>

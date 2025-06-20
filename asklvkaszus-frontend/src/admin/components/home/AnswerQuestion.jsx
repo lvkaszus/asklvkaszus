@@ -14,6 +14,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
     const [dialogOpen, setDialogOpen] = useState(false);
     const [confirmEditOpen, setConfirmEditOpen] = useState(false);
     const [answerText, setAnswerText] = useState('');
+    const [answerTextError, setAnswerTextError] = useState(false);
     const [isMarkdownDialogOpen, setMarkdownDialogOpen] = useState(false);
     const [isDialogYesButtonDisabled, setDialogYesButtonDisabled] = useState(false);
 
@@ -27,7 +28,16 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
     }
 
     const handleAnswerChange = (event) => {
-        setAnswerText(event.target.value);
+        const text = event.target.value;  
+        setAnswerText(text);
+
+        if (text.length > 5000) {
+            setAnswerTextError(true)
+            setDialogYesButtonDisabled(true)
+        } else {
+            setAnswerTextError(false);
+            setDialogYesButtonDisabled(false);
+        }
     }
 
     const handleMarkdownDialogOpen = () => {
@@ -107,6 +117,12 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
                         variant="outlined"
                         margin="normal"
                         fullWidth
+                        error={answerTextError}
+                        helperText={
+                            answerTextError
+                                ? t('admin-aq-charactercountlimitexceeded', { maximum_character_count: 5000 })
+                                : t('admin-aq-characters', { current_character_count: answerText.length, maximum_character_count: 5000 })
+                        }
                     />
 
                     <Typography component='p' sx={{ fontWeight: 300, fontSize: '14px' }}>

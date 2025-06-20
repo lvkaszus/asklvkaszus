@@ -41,13 +41,13 @@ export const SendLogout = () => {
         const { error: responseError } = error.response.data;
         
         if (
-            responseError.includes("Token") ||
-            responseError.includes("CSRF")
+          responseError.includes("Token") ||
+          responseError.includes("CSRF")
         ) {
-            setLogoutResponse('Please login again!');
-            setLogoutError(false);
+          setLogoutResponse('Please login again!');
+          setLogoutError(true);
 
-            navigate('/admin/login');
+          navigate('/admin/login');
 
         } else {
           setLogoutResponse(responseError);

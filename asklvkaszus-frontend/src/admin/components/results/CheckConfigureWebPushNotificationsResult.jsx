@@ -30,6 +30,18 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
                     case true:
                     default:
                         switch (response) {
+                            case "Invalid JSON payload!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-invalidjsonpayload')}
+                                    </Alert>
+                                )
+                            case "User not found!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-usernotfound')}
+                                    </Alert>
+                                )
                             case "An error occurred while generating VAPID Keys!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
@@ -40,6 +52,12 @@ const CheckConfigureWebPushNotificationsResult = ({ open, error, response, onClo
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
                                         {t('admin-error-configurenotifications-checkvapidkeys')}
+                                    </Alert>
+                                )
+                            case "webpush_enabled must be boolean!":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-configurenotifications-inputvarmustbeabool', { input_var: 'webpush_enabled' })}
                                     </Alert>
                                 )
                             case "Rate-limit exceeded! Try again later.":

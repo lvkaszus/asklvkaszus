@@ -115,7 +115,6 @@ const AdminRegister = () => {
     const handleFormSubmit = async (event) => {
       event.preventDefault();
       setButtonDisabled(true);
-      setLoading(true);
       await handleRegisterRequest();
       setUsername('');
       setPassword('');

@@ -28,10 +28,22 @@ const CheckUnblockSenderResult = ({ open, error, response, sender_ip, onClose })
                     }
                 } else {
                     switch (response) {
+                        case "Invalid JSON payload!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-unblocksender-invalidjsonpayload')}
+                                </Alert>
+                            );
                         case "Sender IP Address cannot be empty!":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
                                     {t('admin-error-unblocksender-noip')}
+                                </Alert>
+                            );
+                        case "Invalid Sender IP address format!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-unblocksender-invalidipaddressformat')}
                                 </Alert>
                             );
                         case `Sender with IP Address ${sender_ip} not found!`:

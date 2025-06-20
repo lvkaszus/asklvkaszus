@@ -28,28 +28,40 @@ const CheckUpdateAppSettingsResult = ({ open, error, response, onClose }) => {
                     }
                 } else {
                     switch (response) {
-                        case "global_api_enabled cannot be empty!":
+                        case "Invalid JSON payload!":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                    {t('admin-error-updateappsettings-inputvarempty', { input_var: 'global_api_enabled' })}
+                                    {t('admin-error-updateappsettings-invalidjsonpayload')}
                                 </Alert>
                             );
-                        case "markdown_frontend_enabled cannot be empty!":
+                        case "App Settings not found!":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                    {t('admin-error-updateappsettings-inputvarempty', { input_var: 'markdown_frontend_enabled' })}
+                                    {t('admin-error-updateappsettings-appsettingsnotfound')}
                                 </Alert>
                             );
-                        case "markdown_admin_enabled cannot be empty!":
+                        case "global_api_enabled must be boolean!":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                    {t('admin-error-updateappsettings-inputvarempty', { input_var: 'markdown_admin_enabled' })}
+                                    {t('admin-error-updateappsettings-inputvarmustbeabool', { input_var: 'global_api_enabled' })}
                                 </Alert>
                             );
-                        case "approve_questions_first cannot be empty!":
+                        case "markdown_frontend_enabled must be boolean!":
                             return (
                                 <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
-                                    {t('admin-error-updateappsettings-inputvarempty', { input_var: 'approve_questions_first' })}
+                                    {t('admin-error-updateappsettings-inputvarmustbeabool', { input_var: 'markdown_frontend_enabled' })}
+                                </Alert>
+                            );
+                        case "markdown_admin_enabled must be boolean!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-updateappsettings-inputvarmustbeabool', { input_var: 'markdown_admin_enabled' })}
+                                </Alert>
+                            );
+                        case "approve_questions_first must be boolean!":
+                            return (
+                                <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                    {t('admin-error-updateappsettings-inputvarmustbeabool', { input_var: 'approve_questions_first' })}
                                 </Alert>
                             );
                         case "Rate-limit exceeded! Try again later.":

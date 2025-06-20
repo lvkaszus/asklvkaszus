@@ -37,6 +37,12 @@ const CheckUpdatesResult = ({ open, status, response, latestVersion, currentVers
 
                     default:
                         switch (response) {
+                            case "Failed to fetch data from the GitHub API! Try again later.":
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-checkupdates-fetchdataerror')}
+                                    </Alert>
+                                );
                             case "Rate-limit exceeded! Try again later.":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

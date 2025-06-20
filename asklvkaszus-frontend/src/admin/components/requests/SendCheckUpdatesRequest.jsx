@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
+import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
@@ -12,6 +13,8 @@ export const SendCheckUpdatesRequest = () => {
   const [checkUpdatesResponse, setCheckUpdatesResponse] = useState('');
   const [latestVersion, setLatestVersion] = useState('');
   const [currentVersion, setCurrentVersion] = useState('');
+
+  const navigate = useNavigate();
 
   const submitCheckUpdatesRequest = async () => {
     try {
@@ -44,9 +47,21 @@ export const SendCheckUpdatesRequest = () => {
         if (error.response) {
             const { error: responseError } = error.response.data;
 
-            setCheckUpdatesStatus('error');
-            setCheckUpdatesResponse(responseError);
+            if (
+              responseError.includes("Token") ||
+              responseError.includes("CSRF")
+            ) {
+              setCheckUpdatesStatus('error');
+              setCheckUpdatesResponse('Please login again!');
 
+
+              navigate('/admin/login');
+
+            } else {
+              setCheckUpdatesStatus('error');
+              setCheckUpdatesResponse(responseError);
+            
+            }
           } else {
             setCheckUpdatesStatus('error');
             setCheckUpdatesResponse('');
