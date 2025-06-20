@@ -8,7 +8,7 @@ import traceback
 
 def regenerate_api_key(username):
     try:
-        app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
         user = RegisteredUsers.query.filter_by(username=username).first()
 
 
@@ -41,7 +41,7 @@ def regenerate_api_key(username):
 
 def toggle_admin_api(username):
     try:
-        app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
         if not app_settings.global_api_enabled:
             return {"error":"Cannot toggle Admin API while Global API is disabled!"}
@@ -78,7 +78,7 @@ def toggle_admin_api(username):
 
 def toggle_user_api(username):
     try:
-        app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
         if not app_settings.global_api_enabled:
             return {"error":"Cannot toggle User API while Global API is disabled!"}
@@ -110,7 +110,7 @@ def toggle_user_api(username):
 
 def verify_api_key(api_key):
     try:
-        app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
         admin_api_user = RegisteredUsers.query.filter_by(api_admin_enabled=True).first()
         user = RegisteredUsers.query.filter_by(api_key=api_key).first()
 
@@ -163,7 +163,7 @@ def require_api_key(func):
 def require_user_api_enabled(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
         user_api_user = RegisteredUsers.query.filter_by(api_user_enabled=True).first()
 
         if not app_settings.global_api_enabled:

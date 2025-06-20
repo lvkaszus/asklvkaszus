@@ -1,32 +1,32 @@
-from flask import current_app, request, jsonify
+from flask import request, jsonify
+from ....modules.fields import safe_get
 from ....extensions import sql
+import ipaddress
 from ....models.blocked_senders import BlockedSenders
-import traceback
 
 def api_admin_unblock_sender():
     data = request.get_json()
-    sender_ip = data.get('sender_ip')
+
+    if not data:
+        return jsonify(error="Invalid JSON payload!"), 400
+
+    sender_ip = safe_get(data, 'sender_ip', str)
+
+    if not sender_ip:
+        return jsonify(error="Sender IP Address cannot be empty!"), 400
 
     try:
-        if not sender_ip:
-            return jsonify(error="Sender IP Address cannot be empty!"), 400
-            
-        blocked_sender = BlockedSenders.query.filter_by(ip_address=sender_ip).first()
+        ipaddress.ip_address(sender_ip)
+    except ValueError:
+        return jsonify(error="Invalid Sender IP address format!"), 400
+        
+    blocked_sender = BlockedSenders.query.filter_by(ip_address=sender_ip).first()
 
-        if blocked_sender:
-            sql.session.delete(blocked_sender)
-            sql.session.commit()
+    if blocked_sender:
+        sql.session.delete(blocked_sender)
+        sql.session.commit()
 
-            return jsonify(success=f"Sender with IP Address {sender_ip} unbanned successfully!")
+        return jsonify(success=f"Sender with IP Address {sender_ip} unbanned successfully!"), 200
 
-        else:
-            return jsonify(error=f"Sender with IP Address {sender_ip} not found!"), 404
-
-    except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/unblock_sender module: {e}")
-        traceback.print_exc()
-
-        return jsonify(error='An error occurred while unbanning sender! Try again later.'), 500
-
-    finally:
-        sql.session.close()
+    else:
+        return jsonify(error=f"Sender with IP Address {sender_ip} not found!"), 404

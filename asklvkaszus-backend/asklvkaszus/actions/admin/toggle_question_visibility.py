@@ -1,37 +1,35 @@
 from ...extensions import csrf, sql
-from flask import current_app, request, jsonify
+from ...modules.fields import safe_get
+from flask import request, jsonify
 from ...models.questions import Questions
-import traceback
 
 def admin_toggle_question_visibility(identity):
-    data = request.get_json()
-    question_id = data.get('question_id')
-
     csrf.protect()
 
-    try:
-        question = Questions.query.get(question_id)
+    data = request.get_json()
 
-        if not question:
-            return jsonify(error='Question with selected ID does not exist.'), 404
+    if not data:
+        return jsonify(error="Invalid JSON payload!"), 400
 
-        if question.hidden == True:
-            question.hidden = False
-            response = jsonify(success='Question is now visible.')
-        else:
-            question.hidden = True
-            response = jsonify(success='Question is now hidden.')
+    question_id = safe_get(data, 'question_id', str)
 
-        response.status_code = 200
-        sql.session.commit()
+    if not question_id:
+        return jsonify(error='Please provide a Question ID!'), 400
 
-        return response
+    question = Questions.query.get(question_id)
 
-    except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/admin/toggle_question_visibility module: {e}")
-        traceback.print_exc()
+    if not question:
+        return jsonify(error='Question with selected ID does not exist.'), 404
 
-        return jsonify(error='An error occurred while changing question visibility! Try again later.'), 500
+    if question.hidden == True:
+        question.hidden = False
+        response = jsonify(success='Question is now visible.')
+    else:
+        question.hidden = True
+        response = jsonify(success='Question is now hidden.')
 
-    finally:
-        sql.session.close()
+    response.status_code = 200
+
+    sql.session.commit()
+
+    return response

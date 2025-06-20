@@ -1,5 +1,6 @@
 import os
 from ...extensions import csrf, sql
+from ...modules.fields import safe_get
 from flask import current_app, request, jsonify
 from ...models.registered_users import RegisteredUsers
 import re
@@ -53,9 +54,9 @@ def register():
 
 
         # Next, extract username, password, and confirm_password fields from the JSON data.
-        username = data.get("username").strip()
-        password = data.get("password").strip()
-        confirm_password = data.get("confirm_password").strip()
+        username = safe_get(data, 'username', str)
+        password = safe_get(data, 'password', str)
+        confirm_password = safe_get(data, 'confirm_password', str)
 
         # If any required field is missing, return an error.
         if not username or not password or not confirm_password:

@@ -1,6 +1,7 @@
 import os
 from ...config import Config
 from ...extensions import csrf, sql
+from ...modules.fields import safe_get
 from flask import current_app, request, jsonify
 import re
 from ...models.registered_users import RegisteredUsers
@@ -27,8 +28,8 @@ def login():
 
 
     # Next, extract username and password fields from the JSON data.
-    username = data.get('username').strip()
-    password = data.get('password').strip()
+    username = safe_get(data, 'username', str)
+    password = safe_get(data, 'password', str)
 
     # If any required field is missing, return an error.
     if not username or not password:

@@ -1,9 +1,10 @@
 from ...extensions import csrf, sql
+from ...modules.fields import safe_get
 from flask import current_app, request, jsonify
 import bcrypt
 import re
 from ...models.registered_users import RegisteredUsers
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Ask @lvkaszus! - Auth System REST API: Change current user password
 
@@ -23,9 +24,9 @@ def change_password(identity):
         return jsonify(error="Invalid JSON payload!"), 400
 
     # Next, extract old_password, new_password, and confirm_new_password fields from the JSON data.
-    old_password = data.get('old_password').strip()
-    new_password = data.get('new_password').strip()
-    confirm_new_password = data.get('confirm_new_password').strip()
+    old_password = safe_get(data, 'old_password', str)
+    new_password = safe_get(data, 'new_password', str)
+    confirm_new_password = safe_get(data, 'confirm_new_password', str)
 
     # If any required field is missing, return an error.
     if not old_password or not new_password or not confirm_new_password:
@@ -80,7 +81,7 @@ def change_password(identity):
         user.password = hashed_new_password
         
         # Update the timestamp of the last password change to the current time.
-        user.last_password_change = datetime.now()
+        user.last_password_change = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
         # Increment the password change counter for auditing purposes.
         user.password_change_count += 1
 

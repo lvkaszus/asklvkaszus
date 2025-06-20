@@ -1,76 +1,67 @@
-from flask import current_app, request, jsonify
+from flask import request, jsonify
 from ....extensions import sql
 from ....models.app_settings import AppSettings
-import traceback
 
 def api_admin_app_settings():
     if request.method == 'GET':
-        try:
-            app_settings = AppSettings.query.get(1)
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
-            if app_settings is not None:
-                app_settings_json = {
-                    'global_api_enabled': app_settings.global_api_enabled,
-                    'markdown_admin_enabled': app_settings.markdown_admin_enabled,
-                    'markdown_frontend_enabled': app_settings.markdown_frontend_enabled,
-                    'approve_questions_first': app_settings.approve_questions_first,
-                }
+        if app_settings is not None:
+            app_settings_json = {
+                'global_api_enabled': app_settings.global_api_enabled,
+                'markdown_admin_enabled': app_settings.markdown_admin_enabled,
+                'markdown_frontend_enabled': app_settings.markdown_frontend_enabled,
+                'approve_questions_first': app_settings.approve_questions_first,
+            }
 
-                return jsonify(app_settings_json)
+            return jsonify(app_settings_json), 200
 
-            else:
-                return jsonify(error="App Settings are not set yet!"), 404
-
-        except Exception as e:
-            current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/app_settings module - request type GET: {e}")
-            traceback.print_exc()
-
-            return jsonify(error='An error occured while loading application settings! Try again later.'), 500
-
-        finally:
-            sql.session.close()
-
+        else:
+            return jsonify(error="App Settings are not set yet!"), 404
 
     elif request.method == 'POST':
         data = request.get_json()
 
-        try:
-            app_settings = AppSettings.query.get(1)
+        if not data:
+            return jsonify(error="Invalid JSON payload!"), 400
+        
+        app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
-            if 'markdown_frontend_enabled' in data:
-                toggle_frontend_markdown_value = data['markdown_frontend_enabled']
+        if not app_settings:
+            return jsonify(error="App Settings not found!"), 404
 
-                if toggle_frontend_markdown_value == "":
-                    return jsonify(error="markdown_frontend_enabled cannot be empty!"), 400
+        if 'global_api_enabled' in data:
+            toggle_api_value = data['global_api_enabled']
 
-                app_settings.markdown_frontend_enabled = toggle_frontend_markdown_value
+            if not isinstance(toggle_api_value, bool):
+                return jsonify(error="global_api_enabled must be boolean!"), 400
 
-            if 'markdown_admin_enabled' in data:
-                toggle_admin_markdown_value = data['markdown_admin_enabled']
+            app_settings.global_api_enabled = toggle_api_value
 
-                if toggle_admin_markdown_value == "":
-                    return jsonify(error="markdown_admin_enabled cannot be empty!"), 400
+        if 'markdown_frontend_enabled' in data:
+            toggle_frontend_markdown_value = data['markdown_frontend_enabled']
 
-                app_settings.markdown_admin_enabled = toggle_admin_markdown_value
+            if not isinstance(toggle_frontend_markdown_value, bool):
+                return jsonify(error="markdown_frontend_enabled must be boolean!"), 400
 
-            if 'approve_questions_first' in data:
-                toggle_approve_questions_first = data['approve_questions_first']
+            app_settings.markdown_frontend_enabled = toggle_frontend_markdown_value
 
-                if toggle_approve_questions_first == "":
-                    return jsonify(error="approve_questions_first cannot be empty!"), 400
+        if 'markdown_admin_enabled' in data:
+            toggle_admin_markdown_value = data['markdown_admin_enabled']
 
-                app_settings.approve_questions_first = toggle_approve_questions_first
+            if not isinstance(toggle_admin_markdown_value, bool):
+                return jsonify(error="markdown_admin_enabled must be boolean!"), 400
 
-            sql.session.commit()
+            app_settings.markdown_admin_enabled = toggle_admin_markdown_value
 
-            return jsonify(success='App Settings has been updated.')
+        if 'approve_questions_first' in data:
+            toggle_approve_questions_first = data['approve_questions_first']
 
-        except Exception as e:
-            current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/app_settings module - request type POST: {e}")
-            traceback.print_exc()
+            if not isinstance(toggle_approve_questions_first, bool):
+                return jsonify(error="approve_questions_first must be boolean!"), 400
 
-            return jsonify(error='An error occurred while updating application settings! Try again later.'), 500
+            app_settings.approve_questions_first = toggle_approve_questions_first
 
-        finally:
-            sql.session.close()
-            
+        sql.session.commit()
+
+        return jsonify(success='Application Settings have been updated.'), 200

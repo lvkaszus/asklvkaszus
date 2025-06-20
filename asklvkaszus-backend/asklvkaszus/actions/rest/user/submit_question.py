@@ -1,4 +1,5 @@
 from flask import current_app, request, jsonify
+from ....modules.fields import safe_get
 from ....extensions import sql
 from ....models.blocked_senders import BlockedSenders
 from ....models.app_settings import AppSettings
@@ -6,7 +7,7 @@ from ....models.questions import Questions
 from ....models.registered_users import RegisteredUsers
 from ....modules.get_remote_address import get_remote_address
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 import urllib.parse
 from ....modules.webpush_notify import send_push_notification
 from ....modules.telegram_notify import send_telegram_notification
@@ -19,7 +20,7 @@ def api_user_submit_question():
         return jsonify(error="Invalid JSON payload!"), 400
 
 
-    question = data.get('question').strip()
+    question = safe_get(data, 'question', str)
 
     if not question:
         return jsonify(error='Sending question failed. Empty messages are not allowed!'), 400
@@ -35,7 +36,7 @@ def api_user_submit_question():
         return jsonify(error='Sending question failed. You have been blocked!'), 403
 
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     new_id = str(uuid.uuid4())
 
     existing_question = Questions.query.filter_by(id=new_id).first()
@@ -59,8 +60,9 @@ def api_user_submit_question():
 
     notify_user = RegisteredUsers.query.first()
 
-    send_push_notification(notify_user.username, question, now, senders_ip_address)
-    send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+    if notify_user:
+        send_push_notification(notify_user.username, question, now, senders_ip_address)
+        send_telegram_notification(notify_user.username, question, now, senders_ip_address)
 
 
     current_app.logger.info("asklvkaszus/actions/rest/user/submit_question module: Some user sent an anonymous message!")

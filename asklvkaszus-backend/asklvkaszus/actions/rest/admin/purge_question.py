@@ -1,28 +1,25 @@
-from flask import current_app, request, jsonify
+from flask import request, jsonify
+from ....modules.fields import safe_get
 from ....extensions import sql
 from ....models.questions import Questions
-import traceback
 
 def api_admin_purge_question():
     data = request.get_json()
-    question_id = data.get('question_id')
 
-    try:
-        question = Questions.query.get(question_id)
+    if not data:
+        return jsonify(error="Invalid JSON payload!"), 400
 
-        if not question:
-            return jsonify(error='Question with selected ID does not exist.'), 404
+    question_id = safe_get(data, 'question_id', str)
 
-        sql.session.delete(question)
-        sql.session.commit()
+    if not question_id:
+        return jsonify(error='Please provide a Question ID!'), 400
 
-        return jsonify(success='Question has been purged successfully!')
+    question = Questions.query.get(question_id)
 
-    except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/rest/admin/purge_question module: {e}")
-        traceback.print_exc()
+    if not question:
+        return jsonify(error='Question with selected ID does not exist.'), 404
 
-        return jsonify(error='An error occurred while purging specified question! Try again later.'), 500
+    sql.session.delete(question)
+    sql.session.commit()
 
-    finally:
-        sql.session.close()
+    return jsonify(success='Question has been purged successfully!'), 200
