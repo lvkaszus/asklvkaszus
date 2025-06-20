@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography, FormControl, Select, MenuItem } from "@mui/material";
 import { Close, Notifications, InfoOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
-import WebPush from "./notifications/WebPush"
+import PWAPush from "./notifications/PWAPush"
 import Telegram from "./notifications/Telegram";
 
 const ConfigureNotifications = ({ userData, configureTelegramNotificationsOutputData, setConfigureTelegramNotificationsNotifyOpen, fetchVapidPublicKeyOutputData, setFetchVapidPublicKeyNotifyOpen, setSubscribeToPushNotificationsNotifyOpen, subscribeToPushNotificationsOutputData, configureWebPushNotificationsOutputData, setConfigureWebPushNotificationsNotifyOpen, handleUserDataUpdate }) => {
@@ -112,7 +112,7 @@ const ConfigureNotifications = ({ userData, configureTelegramNotificationsOutput
             </Dialog>
 
             {notificationProvider === 'pwa' && (
-                <WebPush userData={userData} dialogSettingsOpen={webPushDialogSettingsOpen} handleDialogSettingsClose={handleWebPushDialogClose} fetchVapidPublicKeyOutputData={fetchVapidPublicKeyOutputData} setFetchVapidPublicKeyNotifyOpen={setFetchVapidPublicKeyNotifyOpen} subscribeToPushNotificationsOutputData={subscribeToPushNotificationsOutputData} setSubscribeToPushNotificationsNotifyOpen={setSubscribeToPushNotificationsNotifyOpen} configureWebPushNotificationsOutputData={configureWebPushNotificationsOutputData} setConfigureWebPushNotificationsNotifyOpen={setConfigureWebPushNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
+                <PWAPush userData={userData} dialogSettingsOpen={webPushDialogSettingsOpen} handleDialogSettingsClose={handleWebPushDialogClose} fetchVapidPublicKeyOutputData={fetchVapidPublicKeyOutputData} setFetchVapidPublicKeyNotifyOpen={setFetchVapidPublicKeyNotifyOpen} subscribeToPushNotificationsOutputData={subscribeToPushNotificationsOutputData} setSubscribeToPushNotificationsNotifyOpen={setSubscribeToPushNotificationsNotifyOpen} configureWebPushNotificationsOutputData={configureWebPushNotificationsOutputData} setConfigureWebPushNotificationsNotifyOpen={setConfigureWebPushNotificationsNotifyOpen} handleUserDataUpdate={handleUserDataUpdate} />
             )}
 
             {notificationProvider === 'telegram' && (

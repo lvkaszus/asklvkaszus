@@ -1,14 +1,13 @@
 from flask import Blueprint, jsonify
 from ..config import Config
 from ..extensions import limiter
-from ..version import backend_version
 
 root_bp = Blueprint('root', __name__)
 
 def generate_root_endpoint_response():
     return jsonify(
         application_name=f"Ask {Config.YOUR_NICKNAME}! - Backend",
-        repository_url="https://github.com/lvkaszus/asklvkaszus-react"
+        repository_url="https://github.com/lvkaszus/asklvkaszus"
     ), 200
 
 @root_bp.route('/', methods=['GET'])

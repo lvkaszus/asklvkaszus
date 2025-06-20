@@ -1,15 +1,12 @@
 from ...extensions import csrf
 from flask import current_app, jsonify
-import traceback
 
 def session_guard(identity):
+    # Check CSRF token and session cookie when HTTP request method is POST
+    # as defined in the application configuration script (config.py: WTF_CSRF_METHODS)
+    # by using function from Flask-WTF library.
     csrf.protect()
 
-    try:
-        return jsonify(logged_in_as=identity), 200
-    
-    except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/auth/session_guard module: {e}")
-        traceback.print_exc()
-
-        return jsonify(error='An error occurred while checking your session! Try again later.'), 500
+    # Return a JSON response indicating the currently authenticated user.
+    # The 'logged_in_as' field contains the identity (username) of the user associated with the current JWT token.
+    return jsonify(logged_in_as=identity), 200

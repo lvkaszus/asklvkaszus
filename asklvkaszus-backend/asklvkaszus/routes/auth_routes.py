@@ -31,8 +31,9 @@ def auth_change_password_route(identity):
 
 @auth_bp.route('/logout', methods=['POST'])
 @limiter.limit(Config.AUTH_RATELIMIT)
-def auth_logout_route():
-    return logout()
+@token_required
+def auth_logout_route(identity):
+    return logout(identity)
 
 @auth_bp.route('/session_guard', methods=['POST'])
 @limiter.limit('1000 per hour')

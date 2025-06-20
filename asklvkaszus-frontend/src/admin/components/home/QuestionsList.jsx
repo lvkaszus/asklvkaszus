@@ -65,7 +65,7 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, question
 
                     <Grid container spacing={2}>
                       {fetchAllQuestionsResponse.map(({ id, date, question, answer, hidden, ip_address }) => (
-                        <Grid item xs={12} md={3} key={id} sx={{ wordBreak: 'break-word' }}>
+                        <Grid size={{ xs: 12, md: 3 }} key={id} sx={{ wordBreak: 'break-word' }}>
                           <Card variant="outlined" sx={{ marginY: 2, height: '100%' }}>
                             <CardContent style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', height: '100%', width: '100%' }}>
                               {markdownFrontendEnabled ? (

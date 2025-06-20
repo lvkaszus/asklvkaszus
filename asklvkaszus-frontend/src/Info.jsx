@@ -29,7 +29,7 @@ const Info = () =>{
             <Typography component='p'>{t('info-description')}</Typography>
 
             <Box sx={{ marginY: '32px' }}>
-              <Link href="https://github.com/lvkaszus/asklvkaszus-react" target="_blank" rel="noreferrer noopener">{t('info-sourcecodelink')}</Link>
+              <Link href="https://github.com/lvkaszus/asklvkaszus" target="_blank" rel="noreferrer noopener">{t('info-sourcecodelink')}</Link>
             </Box>
 
             <Box sx={{ textAlign: 'left' }}>

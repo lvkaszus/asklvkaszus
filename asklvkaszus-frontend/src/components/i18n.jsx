@@ -22,6 +22,9 @@ i18n.use(initReactI18next).init({
       'en-US': {
         translation: enUS,
       },
+      'en': {
+        translation: enUS,
+      },
       'pl-PL': {
         translation: plPL,
       },

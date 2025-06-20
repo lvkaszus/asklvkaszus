@@ -1,1 +1,1 @@
-backend_version = "3.1.2"
+backend_version = "3.2.0"

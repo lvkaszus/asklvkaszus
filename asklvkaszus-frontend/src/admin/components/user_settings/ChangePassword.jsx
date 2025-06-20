@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Card, CardContent, Dialog, DialogContent, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { useTheme, Box, Button, Card, CardContent, Dialog, DialogContent, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { Close, Done, InfoOutlined, LockReset, Warning } from "@mui/icons-material";
 import { SendChangePasswordRequest } from "../requests/SendChangePasswordRequest";
 import { useTranslation } from "react-i18next";
 
 const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen, handleUserDataUpdate }) => {
+    const theme = useTheme();
+
     const { t } = useTranslation();
 
     const [dialogChangePasswordOpen, setDialogChangePasswordOpen] = useState(false);
@@ -19,6 +21,7 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
         uppercase: false,
         digit: false,
         specialChar: false,
+        allowedChars: false
     });
 
     const [isDialogChangePasswordConfirmButtonDisabled, setDialogChangePasswordConfirmButtonDisabled] = useState(true);
@@ -42,12 +45,14 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
         const uppercaseRegex = /[A-Z]/;
         const digitRegex = /\d/;
         const specialCharRegex = /[!@#$%^&*]/;
+        const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
     
         setPasswordStrength({
           length: lengthRegex.test(value),
           uppercase: uppercaseRegex.test(value),
           digit: digitRegex.test(value),
-          specialChar: specialCharRegex.test(value)
+          specialChar: specialCharRegex.test(value),
+          allowedChars: allowedCharsRegex.test(value)
         });
       };
   
@@ -178,49 +183,131 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
 
                     <Card variant="outlined" sx={{ textAlign: 'left', marginY: '8px' }}>
                         <CardContent>
+                            {passwordStrength.allowedChars ? (
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
+                                    <Done />
+                                    {t('register-password-allowedchars')}
+                                </Typography>
+                            ) : (
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
+                                    <Close />
+                                    {t('register-password-allowedchars')}
+                                </Typography>
+                            )}
+
                             {passwordStrength.length ? (
-                                <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
                                     <Done />
                                     {t('register-password-length')}
                                 </Typography>
                             ) : (
-                                <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                     <Close />
                                     {t('register-password-length')}
                                 </Typography>
                             )}
 
                             {passwordStrength.uppercase ? (
-                                <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
                                     <Done />
                                     {t('register-password-uppercase')}
                                 </Typography>
                             ) : (
-                                <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                     <Close />
                                     {t('register-password-uppercase')}
                                 </Typography>
                             )}
 
                             {passwordStrength.digit ? (
-                                <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
                                     <Done />
                                     {t('register-password-digit')}
                                 </Typography>
                             ) : (
-                                <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                     <Close />
                                     {t('register-password-digit')}
                                 </Typography>
                             )}
 
                             {passwordStrength.specialChar ? (
-                                <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
                                     <Done />
                                     {t('register-password-specialchar')}
                                 </Typography>
                             ) : (
-                                <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                     <Close />
                                     {t('register-password-specialchar')}
                                 </Typography>
@@ -228,18 +315,39 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
 
                             {newPassword && confirmNewPassword ? (
                                 newPassword === confirmNewPassword ? (
-                                    <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.success.light
+                                        : theme.palette.success.main
+                                    }}
+                                >
                                         <Done />
                                         {t('register-password-same')}
                                     </Typography>
                                 ) : (
-                                    <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                         <Close />
                                         {t('register-password-same')}
                                     </Typography>
                                 )
                             ) : (
-                                <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                                <Typography
+                                    component='p'
+                                    sx={{
+                                        color: theme.palette.mode === 'dark'
+                                        ? theme.palette.error.light
+                                        : theme.palette.error.main
+                                    }}
+                                >
                                     <Close />
                                     {t('register-password-nopasswords')}
                                 </Typography>

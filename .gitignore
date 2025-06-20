@@ -317,3 +317,6 @@ dist
 # Application configuration
 config.yml
 redis.conf
+
+# Docker Compose for Development File
+docker-compose.dev.yml

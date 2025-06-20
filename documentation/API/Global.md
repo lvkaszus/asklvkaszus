@@ -40,7 +40,7 @@ This endpoint provides informational data about the application, including its n
    ```json
    {
      "application_name": "Ask @lvkaszus! - Backend",
-     "repository_url": "https://github.com/lvkaszus/asklvkaszus-react"
+     "repository_url": "https://github.com/lvkaszus/asklvkaszus"
    }
    ```
 

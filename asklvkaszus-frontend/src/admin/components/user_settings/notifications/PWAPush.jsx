@@ -6,7 +6,7 @@ import { SendFetchVapidPublicKeyRequest } from "../../requests/SendFetchVapidPub
 import { SendSubscribeToPushNotificationsRequest } from "../../requests/SendSubscribeToPushNotificationsRequest";
 import { SendConfigureWebPushNotificationsRequest } from "../../requests/SendConfigureWebPushNotificationsRequest";
 
-const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetchVapidPublicKeyOutputData, setFetchVapidPublicKeyNotifyOpen, subscribeToPushNotificationsOutputData, setSubscribeToPushNotificationsNotifyOpen, configureWebPushNotificationsOutputData, setConfigureWebPushNotificationsNotifyOpen, handleUserDataUpdate }) => {
+const PWAPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetchVapidPublicKeyOutputData, setFetchVapidPublicKeyNotifyOpen, subscribeToPushNotificationsOutputData, setSubscribeToPushNotificationsNotifyOpen, configureWebPushNotificationsOutputData, setConfigureWebPushNotificationsNotifyOpen, handleUserDataUpdate }) => {
     const { t } = useTranslation();
 
     const [dialogConfirmOpen, setDialogConfirmOpen] = useState(false);
@@ -208,4 +208,4 @@ const WebPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetc
     );
 }
 
-export default WebPush
+export default PWAPush

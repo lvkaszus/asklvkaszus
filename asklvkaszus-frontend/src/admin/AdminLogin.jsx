@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
-import { Card, CardContent, Typography, Input, Button, Box, Divider, LinearProgress } from "@mui/material";
+import { Card, CardContent, Typography, Button, Box, Divider, LinearProgress, TextField } from "@mui/material";
 import { Person, Lock, Login, PersonAdd } from "@mui/icons-material";
 import RecoverPasswordDescription from "./components/login/RecoverPasswordDescription";
 import { SendLoginRequest } from "./components/requests/SendLoginRequest";
@@ -25,6 +25,9 @@ const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const [isSubmitNotificationOpen, setSubmitNotificationOpen] = useState(false);
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   
@@ -43,6 +46,38 @@ const AdminLogin = () => {
     handleRequests();
   }, []);
 
+  const validateUsername = (username) => {
+    if (username.length > 32) {
+      setUsernameError(t('login-username-toomuchusernamecharacters'));
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      setUsernameError(t('login-username-forbiddenusernamecharacters'));
+    } else if (/(-{2,}|_{2,})/.test(username)) {
+      setUsernameError(t('login-username-consecutivecharacters'));
+    } else {
+      setUsernameError('');
+    }
+  };
+
+  const validatePassword = (password) => {
+    if (password.length > 100) {
+      setPasswordError(t('login-password-toomuchpasswordcharacters'));
+    } else if (!/^[a-zA-Z0-9!@#$%^&*]+$/.test(password)) {
+      setPasswordError(t('login-password-forbiddencharacters'));
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  useEffect(() => {
+    if (usernameError || passwordError) {
+      setButtonDisabled(true);
+
+    } else {
+      setButtonDisabled(false);
+
+    }
+  }, [username, password]);
+
   const { loginError, loginResponse, handleLoginRequest } = SendLoginRequest(username, password);
 
   const handleUsernameValue = (event) => {
@@ -56,6 +91,7 @@ const AdminLogin = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     setButtonDisabled(true);
+    setLoading(true);
     await handleLoginRequest();
     setUsername('');
     setPassword('');
@@ -106,28 +142,40 @@ const AdminLogin = () => {
                 <Box component='form' onSubmit={handleFormSubmit}>
                   <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '32px' }}>
                     <Person />
-                    <Input
+                    <TextField
                       id="username"
                       name="username"
                       autoComplete="username"
                       placeholder={t('login-username')}
                       value={username}
-                      onChange={handleUsernameValue}
+                      onChange={(e) => {
+                        handleUsernameValue(e);
+                        validateUsername(e.target.value);
+                      }}
+                      error={!!usernameError}
+                      helperText={usernameError}
                       sx={{ marginLeft: '8px' }}
+                      variant="standard"
                       fullWidth
                     />
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', marginY: '16px' }}>
                     <Lock />
-                    <Input
+                    <TextField
                       type="password"
                       id="password"
                       name="password"
                       autoComplete="password"
                       placeholder={t('login-password')}
                       value={password}
-                      onChange={handlePasswordValue}
+                      onChange={(e) => {
+                        handlePasswordValue(e);
+                        validatePassword(e.target.value);
+                      }}
+                      error={!!passwordError}
+                      helperText={passwordError}
                       sx={{ marginLeft: '8px' }}
+                      variant="standard"
                       fullWidth
                     />
                   </Box>
@@ -138,7 +186,7 @@ const AdminLogin = () => {
                     </Link>
                   )}
 
-                  <Button type='submit' disabled={isButtonDisabled} fullWidth>
+                  <Button variant='outlined' type='submit' disabled={isButtonDisabled} fullWidth>
                     <Login />
                     {t('login-login')}
                   </Button>

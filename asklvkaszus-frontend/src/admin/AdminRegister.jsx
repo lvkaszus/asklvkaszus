@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
-import { Card, CardContent, Typography, Input, Button, Alert, Box, Divider, LinearProgress } from "@mui/material";
+import { useTheme, Card, CardContent, Typography, Button, Alert, Box, Divider, LinearProgress, TextField } from "@mui/material";
 import { Person, Lock, Close, Done, Login, PersonAdd } from "@mui/icons-material";
 import { SendRegisterRequest } from "./components/requests/SendRegisterRequest";
 import CheckRegisterResult from "./components/results/CheckRegisterResult";
@@ -13,6 +13,8 @@ import { SendRegistrationEnabledRequest } from "./components/requests/SendRegist
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
 const AdminRegister = () => {
+    const theme = useTheme();
+
     const { t } = useTranslation();
 
     const [isLoading, setLoading] = useState(true);
@@ -21,11 +23,14 @@ const AdminRegister = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const [usernameError, setUsernameError] = useState('');
+
     const [passwordStrength, setPasswordStrength] = useState({
       length: false,
       uppercase: false,
       digit: false,
       specialChar: false,
+      allowedChars: false
     });
 
     const { registerError, registerResponse, handleRegisterRequest } = SendRegisterRequest(username, password, confirmPassword);
@@ -47,17 +52,33 @@ const AdminRegister = () => {
       handleRequests();
     }, []);
 
+    const validateUsername = (username) => {
+      if (username.length < 4) {
+        setUsernameError(t('register-username-toofewusernamecharacters'));
+      } else if (username.length > 32) {
+        setUsernameError(t('register-username-toomuchusernamecharacters'));
+      } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        setUsernameError(t('register-username-forbiddenusernamecharacters'));
+      } else if (/(-{2,}|_{2,})/.test(username)) {
+        setUsernameError(t('register-username-consecutivecharacters'));
+      } else {
+        setUsernameError('');
+      }
+    };
+
     const checkPasswordStrength = (value) => {
       const lengthRegex = /^.{12,}$/;
       const uppercaseRegex = /[A-Z]/;
       const digitRegex = /\d/;
       const specialCharRegex = /[!@#$%^&*]/;
+      const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
   
       setPasswordStrength({
         length: lengthRegex.test(value),
         uppercase: uppercaseRegex.test(value),
         digit: digitRegex.test(value),
-        specialChar: specialCharRegex.test(value)
+        specialChar: specialCharRegex.test(value),
+        allowedChars: allowedCharsRegex.test(value)
       });
     };
 
@@ -69,14 +90,14 @@ const AdminRegister = () => {
       const isConfirmNewPasswordEntered = confirmPassword.length > 0;
       const areNewPasswordsSame = password === confirmPassword;
   
-      if (isAnyPasswordRequirementFalse || !isNewPasswordEntered || !isConfirmNewPasswordEntered || !areNewPasswordsSame) {
+      if (isAnyPasswordRequirementFalse || !isNewPasswordEntered || !isConfirmNewPasswordEntered || !areNewPasswordsSame || usernameError) {
         setButtonDisabled(true);
 
       } else {
         setButtonDisabled(false);
 
       }
-  }, [password, confirmPassword]);
+  }, [username, password, confirmPassword]);
 
     const handleUsernameValue = (event) => {
       setUsername(event.target.value);
@@ -94,6 +115,7 @@ const AdminRegister = () => {
     const handleFormSubmit = async (event) => {
       event.preventDefault();
       setButtonDisabled(true);
+      setLoading(true);
       await handleRegisterRequest();
       setUsername('');
       setPassword('');
@@ -139,21 +161,27 @@ const AdminRegister = () => {
                     <Box component='form' onSubmit={handleFormSubmit}>
                       <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '32px' }}>
                         <Person />
-                        <Input
+                        <TextField
                           id="username"
                           name="username"
                           autoComplete="username"
                           placeholder={t('register-username')}
                           value={username}
-                          onChange={handleUsernameValue}
+                          onChange={(e) => {
+                            handleUsernameValue(e);
+                            validateUsername(e.target.value);
+                          }}
+                          error={!!usernameError}
+                          helperText={usernameError}
                           sx={{ marginLeft: '8px' }}
+                          variant="standard"
                           fullWidth
                         />
                       </Box>
 
                       <Box sx={{ display: 'flex', alignItems: 'center', marginY: '16px' }}>
                         <Lock />
-                        <Input
+                        <TextField
                           id="password"
                           type="password"
                           name="password"
@@ -162,13 +190,14 @@ const AdminRegister = () => {
                           value={password}
                           onChange={handlePasswordValue}
                           sx={{ marginLeft: '8px' }}
+                          variant="standard"
                           fullWidth
                         />
                       </Box>
 
                       <Box sx={{ display: 'flex', alignItems: 'center', marginY: '16px' }}>
                         <Lock />
-                        <Input
+                        <TextField
                           id="confirm-password"
                           type="password"
                           name="password"
@@ -177,55 +206,138 @@ const AdminRegister = () => {
                           value={confirmPassword}
                           onChange={handleConfirmPasswordValue}
                           sx={{ marginLeft: '8px' }}
+                          variant="standard"
                           fullWidth
                         />
                       </Box>
 
                       <Card variant="outlined" sx={{ textAlign: 'left', marginY: '8px' }}>
                         <CardContent>
+                          {passwordStrength.allowedChars ? (
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
+                              <Done />
+                              {t('register-password-allowedchars')}
+                            </Typography>
+                          ) : (
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
+                              <Close />
+                              {t('register-password-allowedchars')}
+                            </Typography>
+                          )}
+
                           {passwordStrength.length ? (
-                            <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
                               <Done />
                               {t('register-password-length')}
                             </Typography>
                           ) : (
-                            <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                               <Close />
                               {t('register-password-length')}
                             </Typography>
                           )}
 
                           {passwordStrength.uppercase ? (
-                            <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
                               <Done />
                               {t('register-password-uppercase')}
                             </Typography>
                           ) : (
-                            <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                               <Close />
                               {t('register-password-uppercase')}
                             </Typography>
                           )}
 
                           {passwordStrength.digit ? (
-                            <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
                               <Done />
                               {t('register-password-digit')}
                             </Typography>
                           ) : (
-                            <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                               <Close />
                               {t('register-password-digit')}
                             </Typography>
                           )}
 
                           {passwordStrength.specialChar ? (
-                            <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
                               <Done />
                               {t('register-password-specialchar')}
                             </Typography>
                           ) : (
-                            <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                               <Close />
                               {t('register-password-specialchar')}
                             </Typography>
@@ -233,18 +345,39 @@ const AdminRegister = () => {
 
                           {password && confirmPassword ? (
                             password === confirmPassword ? (
-                              <Typography component='p' color="lightgreen" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.success.light
+                                  : theme.palette.success.main
+                              }}
+                            >
                                 <Done />
                                 {t('register-password-same')}
                               </Typography>
                             ) : (
-                              <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                                 <Close />
                                 {t('register-password-same')}
                               </Typography>
                             )
                           ) : (
-                            <Typography component='p' color="lightcoral" sx={{ fontWeight: 300 }}>
+                            <Typography
+                              component='p'
+                              sx={{
+                                color: theme.palette.mode === 'dark'
+                                  ? theme.palette.error.light
+                                  : theme.palette.error.main
+                              }}
+                            >
                               <Close />
                               {t('register-password-nopasswords')}
                             </Typography>
@@ -252,14 +385,14 @@ const AdminRegister = () => {
                         </CardContent>
                       </Card>
 
-                      <Button type='submit' disabled={isButtonDisabled} fullWidth>
+                      <Button variant='outlined' type='submit' disabled={isButtonDisabled} fullWidth>
                           <PersonAdd />
                           {t('register-register')}
                       </Button>
                     </Box>
                   </>
                 ) : (
-                  <Alert severity='error' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}>{t('error-register-unavailable')}</Alert>
+                  <Alert severity='error' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}>{t('admin-error-register-nonewusers')}</Alert>
                 )}
 
                 <Link to='/admin/login'>

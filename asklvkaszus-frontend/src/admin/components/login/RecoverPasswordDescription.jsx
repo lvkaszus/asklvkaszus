@@ -15,23 +15,27 @@ const RecoverPasswordDescription = ({ open, onClose }) => {
         </IconButton>
 
         <DialogContent>
-            <Box sx={{ textAlign: 'center' }}>
-                <Typography component='p' sx={{ fontWeight: 500, fontSize: '18px' }}>
-                    <InfoRounded />
-                    {t('recoverpassword-title')}
-                </Typography>
+            <Box sx={{ textAlign: 'center', marginBottom: '16px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                    <InfoRounded sx={{ mr: 1 }}/>
+
+                    <Typography component='p' sx={{ fontWeight: 500, fontSize: '18px' }}>
+                        {t('recoverpassword-title')}
+                    </Typography>
+                </Box>
+
                 <Typography component='p'>
                     {t('recoverpassword-description')}
                 </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
-                <Folder />
+                <Folder sx={{ mr: 1 }} />
                 <Typography component='code' sx={{ fontFamily: 'revert', fontSize: '12px', borderWidth: '1px', borderStyle: 'solid', padding: '4px' }}>asklvkaszus-backend/asklvkaszus/tools/change_admin_password.py</Typography>
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-                <Terminal />
+                <Terminal sx={{ mr: 1 }} />
                 <Typography component='code' sx={{ fontFamily: 'revert', fontSize: '12px', borderWidth: '1px', borderStyle: 'solid', padding: '4px' }}>python3 change_admin_password.py</Typography>
             </Box>
 
