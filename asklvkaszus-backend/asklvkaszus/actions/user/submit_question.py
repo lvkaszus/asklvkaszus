@@ -10,62 +10,60 @@ from datetime import datetime
 import urllib.parse
 from ...modules.telegram_notify import send_telegram_notification
 from ...modules.webpush_notify import send_push_notification
-import traceback
 
 def user_submit_question():
-    data = request.get_json()
-    question = data.get('question')
-
     csrf.protect()
 
-    try:
-        if not question:
-            return jsonify(error='Sending question failed. Empty messages are not allowed!'), 400
+    data = request.get_json()
+
+    if not data:
+        return jsonify(error="Invalid JSON payload!"), 400
 
 
-        senders_ip_address = get_remote_address()
-        is_senders_ip_blocked = BlockedSenders.query.filter_by(ip_address=senders_ip_address).first()
+    question = data.get('question').strip()
 
-        if is_senders_ip_blocked:
-            return jsonify(error='Sending question failed. You have been blocked!'), 403
+    if not question:
+        return jsonify(error='Sending question failed. Empty messages are not allowed!'), 400
+
+    if len(question) > 5000:
+        return jsonify(error='Sending question failed. Message is too long (maximum of 5000 characters)!'), 400
 
 
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    senders_ip_address = get_remote_address()
+    is_senders_ip_blocked = BlockedSenders.query.filter_by(ip_address=senders_ip_address).first()
+
+    if is_senders_ip_blocked:
+        return jsonify(error='Sending question failed. You have been blocked!'), 403
+
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    new_id = str(uuid.uuid4())
+
+    existing_question = Questions.query.filter_by(id=new_id).first()
+    while existing_question:
         new_id = str(uuid.uuid4())
-
         existing_question = Questions.query.filter_by(id=new_id).first()
-        while existing_question:
-            new_id = str(uuid.uuid4())
-            existing_question = Questions.query.filter_by(id=new_id).first()
 
 
-        app_settings = AppSettings.query.get(1)
+    app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
-        if app_settings.approve_questions_first == True:
-            new_question = Questions(id=new_id, question=question, date=now, answer='Not answered yet!', hidden=True, ip_address=senders_ip_address)
-            response_text = "Your message has been sent successfully, but administrator needs to approve it before it will be visible!"
-        else:
-            new_question = Questions(id=new_id, question=question, date=now, answer='Not answered yet!', hidden=False, ip_address=senders_ip_address)
-            response_text = "Your message has been sent successfully!"
+    if app_settings.approve_questions_first == True:
+        new_question = Questions(id=new_id, question=question, date=now, answer='Not answered yet!', hidden=True, ip_address=senders_ip_address)
+        response_text = "Your message has been sent successfully, but administrator needs to approve it before it will be visible!"
+    else:
+        new_question = Questions(id=new_id, question=question, date=now, answer='Not answered yet!', hidden=False, ip_address=senders_ip_address)
+        response_text = "Your message has been sent successfully!"
 
-        sql.session.add(new_question)
-        sql.session.commit()
-
-
-        notify_user = RegisteredUsers.query.first()
-
-        send_push_notification(notify_user.username, question, now, senders_ip_address)
-        send_telegram_notification(notify_user.username, question, now, senders_ip_address)
+    sql.session.add(new_question)
+    sql.session.commit()
 
 
-        current_app.logger.info("asklvkaszus/functions/submit_question module: Some user sent an anonymous message!")
+    notify_user = RegisteredUsers.query.first()
 
-        return jsonify(success=response_text), 200
+    send_push_notification(notify_user.username, question, now, senders_ip_address)
+    send_telegram_notification(notify_user.username, question, now, senders_ip_address)
 
-    except Exception as e:
-        current_app.logger.error(f"An error occured inside asklvkaszus/actions/user/submit_question module: {e}")
-        traceback.print_exc()
 
-        return jsonify(error='An error occurred while sending your message! Try again later.'), 500
-    finally:
-        sql.session.close()
+    current_app.logger.info("asklvkaszus/functions/submit_question module: Some user sent an anonymous message!")
+
+    return jsonify(success=response_text), 200

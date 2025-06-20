@@ -11,6 +11,8 @@
 
     "sqf-title": "Twoja wiadomość",
     "sqf-placeholder": "Kliknij tutaj i napisz cokolwiek!",
+    "sqf-characters": "{{current_character_count}} / {{maximum_character_count}} znaków",
+    "sqf-charactercountlimitexceeded": "Przekroczono limit {{maximum_character_count}} znaków!",
     "sqf-approvalenabled": "Administrator musi zatwierdzić twoją wiadomość przed wyświetleniem!",
     "sqf-button": "Wyślij anonimową wiadomość!",
     "sqf-markdownenabled": "Markdown jest włączony!",
@@ -58,7 +60,9 @@
     "error-fetchuserappsettings": "Wystąpił błąd podczas pobierania ustawień aplikacji użytkownika!",
     "error-fetchcsrftoken":"Wystąpił błąd podczas pobierania tokenu CSRF!",
     "error-fetchquestionslist": "Wystąpił błąd podczas pobierania listy wszystkich wiadomości!",
+    "error-submitquestion-invalidjsonpayload":"Nieprawidłowe dane żądania!",
     "error-submitquestion-empty":"Nie można wysłać pustej wiadomości!",
+    "error-submitquestion-toolong":"Wiadomość przekracza maksymalną długość 5000 znaków!",
     "error-submitquestion-blocked":"Wysyłanie wiadomości się nie powiodło, ponieważ zostałeś zablokowany przez administratora!",
     "error-submitquestion-ratelimit":"Osiągnąłeś maksymalną ilość wysłanych wiadomości! Spróbuj ponownie później.",
     "error-submitquestion":"Wystąpił błąd podczas wysyłania nowej wiadomości!",

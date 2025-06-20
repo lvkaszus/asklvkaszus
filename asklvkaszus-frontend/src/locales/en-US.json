@@ -11,6 +11,8 @@
 
     "sqf-title": "Your message",
     "sqf-placeholder": "Click here and write anything!",
+    "sqf-characters": "{{current_character_count}} / {{maximum_character_count}} characters",
+    "sqf-charactercountlimitexceeded": "Limit of {{maximum_character_count}} characters has been exceeded!",
     "sqf-approvalenabled": "An administrator must approve your message before it is displayed!",
     "sqf-button": "Send an anonymous message!",
     "sqf-markdownenabled": "Markdown is on!",
@@ -58,7 +60,9 @@
     "error-fetchuserappsettings": "An error occurred while downloading user application settings!",
     "error-fetchcsrftoken": "An error occurred while retrieving the CSRF token!",
     "error-fetchquestionslist": "An error occurred while downloading the list of all messages!",
+    "error-submitquestion-invalidjsonpayload":"Invalid request data!",
     "error-submitquestion-empty": "You can't send an empty message!",
+    "error-submitquestion-toolong":"Message exceeds the maximum length of 5000 characters!",
     "error-submitquestion-blocked": "Sending a message failed because you were blocked by an administrator!",
     "error-submitquestion-ratelimit": "You have reached the maximum number of messages sent! Try again later.",
     "error-submitquestion": "An error occurred while sending a new message!",

@@ -29,10 +29,22 @@ const CheckSubmitQuestionResult = ({ open, error, response, onClose }) => {
                     case true:
                     default:
                         switch (response) {
+                            case 'Invalid JSON payload!':
+                                return (
+                                    <Alert severity='error' onClose={onClose} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {t('error-submitquestion-invalidjsonpayload')}
+                                    </Alert>
+                                );
                             case 'Sending question failed. Empty messages are not allowed!':
                                 return (
                                     <Alert severity='error' onClose={onClose} sx={{ display: 'flex', alignItems: 'center' }}>
                                         {t('error-submitquestion-empty')}
+                                    </Alert>
+                                );
+                            case 'Sending question failed. Message is too long (maximum of 5000 characters)!':
+                                return (
+                                    <Alert severity='error' onClose={onClose} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {t('error-submitquestion-toolong')}
                                     </Alert>
                                 );
                             case 'Sending question failed. You have been blocked!':

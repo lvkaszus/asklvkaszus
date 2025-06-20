@@ -13,12 +13,23 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
     const { t } = useTranslation();
 
     const [questionText, setQuestionText] = useState('');
+    const [questionTextError, setQuestionTextError] = useState(false);
+
     const [isMarkdownDialogOpen, setMarkdownDialogOpen] = useState(false);
     const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
     const [isButtonDisabled, setButtonDisabled] = useState(false);
 
     const handleQuestionTextFieldChange = (event) => {
-        setQuestionText(event.target.value.replace(/\n/g, ''));
+      const text = event.target.value;  
+      setQuestionText(text.replace(/\n/g, ''));
+
+      if (text.length > 5000) {
+        setQuestionTextError(true)
+        setButtonDisabled(true)
+      } else {
+        setQuestionTextError(false)
+        setButtonDisabled(false)
+      }
     };
 
     const handleMarkdownDialogOpen = () => {
@@ -66,6 +77,12 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
               onChange={handleQuestionTextFieldChange}
               onKeyDown={handleEnterKeyPress}
               fullWidth
+              error={questionTextError}
+              helperText={
+                questionTextError
+                  ? t('sqf-charactercountlimitexceeded', { maximum_character_count: 5000 })
+                  : t('sqf-characters', { current_character_count: questionText.length, maximum_character_count: 5000 })
+              }
             />
 
             {questionsNeedApproval && (
