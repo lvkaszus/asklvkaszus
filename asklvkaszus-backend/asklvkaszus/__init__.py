@@ -1,10 +1,9 @@
 import os
 from flask import Flask
 from .config import Config
-import logging
-from logging.handlers import TimedRotatingFileHandler
+from .logger import setup_main_logger, main_logger
+from .extensions import wait_for_db, wait_for_redis, sql, csrf, limiter, cors
 from .errors import register_error_handlers
-from .extensions import sql, csrf, limiter, cors
 from flask_migrate import Migrate
 from .models.app_settings import AppSettings
 from .models.blocked_senders import BlockedSenders
@@ -28,35 +27,17 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Setup logger
-    log_level = logging.DEBUG if app.config['DEBUG'] else logging.INFO
-    app.logger.setLevel(log_level)
+    setup_main_logger(Config.LOGFILE, Config.DEBUG)
 
-    log_format = "[Ask @lvkaszus! - Backend] - %(asctime)s - %(levelname)s - %(message)s"
-    date_format = "%Y-%m-%d | %H:%M:%S"
-    formatter = logging.Formatter(fmt=log_format, datefmt=date_format)
+    if not wait_for_db(db_uri=Config.SQLALCHEMY_DATABASE_URI, logger=main_logger()):
+        main_logger.critical("Application SQL Database initialization failed! Aborting application startup...")
 
-    if app.logger.hasHandlers():
-        app.logger.handlers.clear()
+        raise ConnectionError("Application SQL Database does not respond after attempting to connect to it for 60 seconds!")
 
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    app.logger.addHandler(console_handler)
+    if not wait_for_redis(redis_uri=Config.REDIS_SERVER_URI, logger=main_logger()):
+        main_logger.critical(f"Application Redis Database initialization failed! Aborting application startup...")
 
-    if app.config['LOGFILE']:
-        log_file = app.config['LOGFILE']
-
-        if not os.path.isabs(log_file):
-            log_file = os.path.join(os.getcwd(), log_file)
-
-        log_dir = os.path.dirname(log_file)
-        os.makedirs(log_dir, exist_ok=True)
-
-        file_handler = TimedRotatingFileHandler(log_file, when='W0', backupCount=1)
-        file_handler.setFormatter(formatter)
-        file_handler.setLevel(log_level)
-        app.logger.addHandler(file_handler)
-    # End of logger setup
+        raise ConnectionError("Application Redis Database does not respond after attempting to connect to it for 60 seconds!")
 
     register_error_handlers(app)
     

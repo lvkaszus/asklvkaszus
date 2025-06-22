@@ -30,6 +30,8 @@ from ..actions.admin.user_info import admin_user_info
 
 admin_bp = Blueprint('admin', __name__)
 
+
+
 @admin_bp.route('/fetch_backend_version', methods=['GET'])
 @limiter.limit('50 per hour')
 def admin_fetch_backend_version_route():

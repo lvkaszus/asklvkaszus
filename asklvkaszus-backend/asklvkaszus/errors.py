@@ -49,10 +49,11 @@ def register_error_handlers(app):
 
     # Handler for CSRF (Cross-Site Request Forgery) errors.
     # Triggered when a request is missing a valid CSRF token or the token is invalid.
-    # Returns a clear error message from the exception description and HTTP 403 (Forbidden).
+    # Returns a generic "Internal Server Error" response to prevent exposure
+    # of sensitive details that may be used by attacker to try to exploit the application.
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
-        return jsonify(error=e.description), 403
+        return jsonify(error="CSRF Validation Failed!"), 403
 
 
     # Handler for HTTP 400 Bad Request errors.

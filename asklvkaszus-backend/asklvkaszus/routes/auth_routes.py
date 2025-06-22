@@ -13,6 +13,8 @@ from ..actions.auth.session_guard import session_guard
 
 auth_bp = Blueprint('auth', __name__)
 
+
+
 @auth_bp.route('/login', methods=['POST'])
 @limiter.limit(Config.AUTH_RATELIMIT)
 def auth_login_route():

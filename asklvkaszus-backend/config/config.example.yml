@@ -28,7 +28,7 @@ cookies_secure: true
 
 rate_limits:
   auth: "35 per hour"
-  admin: "250 per hour"
+  admin: "500 per hour"
   api_admin: "250 per hour"
-  user: "10 per hour"
+  user: "250 per hour"
   api_user: "10 per hour"

@@ -28,13 +28,13 @@ def user_fetch_csrf_token_route():
 
 
 @user_bp.route('/app_settings', methods=['GET'])
-@limiter.limit('50 per hour')
+@limiter.limit(Config.USER_RATELIMIT)
 def user_app_settings_route():
     return user_app_settings()
 
 
 @user_bp.route('/fetch_all_questions', methods=['POST'])
-@limiter.limit('500 per hour')
+@limiter.limit(Config.USER_RATELIMIT)
 def user_fetch_all_questions_route():
     return user_fetch_all_questions()
 

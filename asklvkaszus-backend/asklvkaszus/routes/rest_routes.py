@@ -3,7 +3,7 @@ from ..config import Config
 from ..extensions import limiter
 from ..modules.rest_core import require_api_key, require_user_api_enabled
 
-
+from ..actions.health_check import health_check
 from ..actions.fetch_backend_version import fetch_backend_version
 
 from ..actions.rest.admin.answer_question import api_admin_answer_question
@@ -30,6 +30,12 @@ from ..actions.rest.user.submit_question import api_user_submit_question
 
 rest_bp = Blueprint('rest', __name__)
 
+
+
+@rest_bp.route('/health_check', methods=['GET'])
+@limiter.exempt()
+def rest_health_check_route():
+    return health_check()
 
 
 @rest_bp.route('/fetch_backend_version', methods=['GET'])
