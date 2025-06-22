@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendRegisterRequest = (username, password, confirmPassword) => {
-  const { t } = useTranslation();
-
   const [registerError, setRegisterError] = useState(false);
   const [registerResponse, setRegisterResponse] = useState('');
 
@@ -48,7 +45,7 @@ export const SendRegisterRequest = (username, password, confirmPassword) => {
             setRegisterResponse('');
             setRegisterError(true);
 
-            console.error(`${t('admin-error-register')} ${error}`);
+            console.error('An error occurred while sending the account registration request!', error);
 
           }
     }

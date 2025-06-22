@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendFetchUserAppSettingsRequest = () => {
-  const { t } = useTranslation();
-
   const [userAppSettingsResponse, setUserAppSettingsResponse] = useState('');
   const [userAppSettingsError, setUserAppSettingsError] = useState(false);
 
@@ -30,7 +27,7 @@ export const SendFetchUserAppSettingsRequest = () => {
         setUserAppSettingsResponse('');
         setUserAppSettingsError(true);
 
-        console.error(t('error-fetchuserappsettings') + error);
+        console.error('An error occurred while downloading user application settings!', error);
 
       }
     }

@@ -7,6 +7,8 @@ ENV TZ="Europe/Warsaw"
 ENV DOMAIN="https://ask.lvkasz.us"
 ENV YOUR_NICKNAME="@me"
 
+ENV NODE_ENV="production"
+
 COPY package*.json ./
 
 RUN npm install

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Helmet } from "react-helmet";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import CheckUpdatesResult from "./components/results/CheckUpdatesResult";
@@ -14,10 +13,21 @@ import { SendSetSessionRequest } from "./components/requests/SendSetSessionReque
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const AdminManagement = ({ isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
+const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDataFetch, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
   const { t } = useTranslation();
 
+  useEffect(() => {
+    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+    document.title = `${t('admin-management-pagetitle')} - Ask ${yourNickname}!`;
+  }, [yourNickname]);
+
   const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
+      handleFetchAdminAppSettingsRequest();
+    }
+  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
 
   const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
@@ -94,11 +104,7 @@ const AdminManagement = ({ isAdminAppSettingsNotificationOpen, adminAppSettingsE
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
       <Box sx={{ padding: '8px', width: '100%' }}>
-        <Helmet>
-          <title>{t('admin-management-pagetitle')} - Ask {yourNickname}!</title>
-
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
+        <meta name="robots" content="noindex, nofollow" />
 
         <AdminNavbar displayName={sessionUsername} />
 

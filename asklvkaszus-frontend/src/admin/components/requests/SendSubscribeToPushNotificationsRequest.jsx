@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,8 +19,6 @@ const urlBase64ToUint8Array = (base64String) => {
 };
 
 export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
-    const { t } = useTranslation();
-
     const [subscribeToPushNotificationsError, setSubscribeToPushNotificationsError] = useState(false);
     const [subscribeToPushNotificationsResponse, setSubscribeToPushNotificationsResponse] = useState('');
 
@@ -38,7 +35,7 @@ export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
                     applicationServerKey: urlBase64ToUint8Array(publicKey),
                 });
 
-                console.log(t('admin-success-configurenotifications-aboutsubscription'), subscription);
+                console.log('Subscription details:', subscription);
 
                 const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -81,14 +78,14 @@ export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
                     setSubscribeToPushNotificationsResponse('');
                     setSubscribeToPushNotificationsError(true);
 
-                    console.error(`${t('admin-error-subscribetopushnotifications')} ${error}`);
+                    console.error('An error occurred while sending a request to subscribe to push notifications!', error);
                 }
             }
         } else {
             setSubscribeToPushNotificationsResponse('');
             setSubscribeToPushNotificationsError(true);
 
-            console.error(t('admin-error-configurenotifications-serviceworker'));
+            console.error('Service Worker is not available in this browser!');
         }
     };
 

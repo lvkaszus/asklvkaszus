@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Helmet } from "react-helmet";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import CheckUpdatesResult from "./components/results/CheckUpdatesResult";
@@ -17,194 +16,201 @@ import { SendSetSessionRequest } from "./components/requests/SendSetSessionReque
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const AdminHome = ({ isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
-    const { t } = useTranslation();
+const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDataFetch, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
+  const { t } = useTranslation();
 
-    const [isLoading, setLoading] = useState(true);
+  useEffect(() => {
+    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+    document.title = `${t('admin-home-pagetitle')} - Ask ${yourNickname}!`;
+  }, [yourNickname]);
 
-    const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
-    const { sessionUsername, handleSetSessionRequest } = SendSetSessionRequest();
+  useEffect(() => {
+    if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
+      handleFetchAdminAppSettingsRequest();
+    }
+  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
 
-    const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
+  const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
-    const handleRequests = async () => {
-      await handleSetSessionRequest();
+  const { sessionUsername, handleSetSessionRequest } = SendSetSessionRequest();
 
-      if (updateChecks < 1) {
-        await handleCheckUpdatesRequest();
-        setUpdateChecks(1);
-        setCheckUpdatesNotificationOpen(true);
-      }
+  const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-      setLoading(false);
+  const handleRequests = async () => {
+    await handleSetSessionRequest();
+
+    if (updateChecks < 1) {
+      await handleCheckUpdatesRequest();
+      setUpdateChecks(1);
+      setCheckUpdatesNotificationOpen(true);
     }
 
-    useEffect(() => {
-      handleRequests();
-    }, []);
+    setLoading(false);
+  }
 
-    const handleCheckUpdatesNotificationClose = () => {
-      setCheckUpdatesNotificationOpen(false);
-    };
+  useEffect(() => {
+    handleRequests();
+  }, []);
 
-    const [forceAdminQuestionsListDataFetch, setForceAdminQuestionsListDataFetch] = useState(false);
+  const handleCheckUpdatesNotificationClose = () => {
+    setCheckUpdatesNotificationOpen(false);
+  };
 
-    const handleAdminQuestionsListUpdate = () => {
-      setForceAdminQuestionsListDataFetch((prev) => !prev);
-    };
+  const [forceAdminQuestionsListDataFetch, setForceAdminQuestionsListDataFetch] = useState(false);
 
-    const [purgeAllQuestionsStatus, setPurgeAllQuestionsStatus] = useState('');
-    const [purgeAllQuestionsResponse, setPurgeAllQuestionsResponse] = useState('');
-  
-    const purgeAllQuestionsOutputData = (status, response) => {
-      setPurgeAllQuestionsStatus(status);
-      setPurgeAllQuestionsResponse(response);
-    };
+  const handleAdminQuestionsListUpdate = () => {
+    setForceAdminQuestionsListDataFetch((prev) => !prev);
+  };
 
-    const [isPurgeAllQuestionsNotificationOpen, setPurgeAllQuestionsNotificationOpen] = useState(false);
+  const [purgeAllQuestionsStatus, setPurgeAllQuestionsStatus] = useState('');
+  const [purgeAllQuestionsResponse, setPurgeAllQuestionsResponse] = useState('');
 
-    const handlePurgeAllQuestionsNotificationClose = () => {
-      setPurgeAllQuestionsNotificationOpen(false);
-    };
+  const purgeAllQuestionsOutputData = (status, response) => {
+    setPurgeAllQuestionsStatus(status);
+    setPurgeAllQuestionsResponse(response);
+  };
 
-    const [toggleAllQuestionsVisibilityStatus, setToggleAllQuestionsVisibilityStatus] = useState('');
-    const [toggleAllQuestionsVisibilityResponse, setToggleAllQuestionsVisibilityResponse] = useState('');
-  
-    const toggleAllQuestionsVisibilityOutputData = (status, response) => {
-      setToggleAllQuestionsVisibilityStatus(status);
-      setToggleAllQuestionsVisibilityResponse(response);
-    };
-      
-    const [isToggleQuestionsVisibilityNotificationOpen, setToggleQuestionsVisibilityNotificationOpen] = useState(false);
+  const [isPurgeAllQuestionsNotificationOpen, setPurgeAllQuestionsNotificationOpen] = useState(false);
 
-    const handleToggleQuestionsVisibilityNotificationClose = () => {
-      setToggleQuestionsVisibilityNotificationOpen(false);
-    };
+  const handlePurgeAllQuestionsNotificationClose = () => {
+    setPurgeAllQuestionsNotificationOpen(false);
+  };
 
-    const [answerQuestionStatus, setAnswerQuestionStatus] = useState('');
-    const [answerQuestionResponse, setAnswerQuestionResponse] = useState('');
-  
-    const answerQuestionOutputData = (status, response) => {
-      setAnswerQuestionStatus(status);
-      setAnswerQuestionResponse(response);
-    };
+  const [toggleAllQuestionsVisibilityStatus, setToggleAllQuestionsVisibilityStatus] = useState('');
+  const [toggleAllQuestionsVisibilityResponse, setToggleAllQuestionsVisibilityResponse] = useState('');
 
-    const [isAnswerQuestionNotificationOpen, setAnswerQuestionNotificationOpen] = useState(false);
+  const toggleAllQuestionsVisibilityOutputData = (status, response) => {
+    setToggleAllQuestionsVisibilityStatus(status);
+    setToggleAllQuestionsVisibilityResponse(response);
+  };
+    
+  const [isToggleQuestionsVisibilityNotificationOpen, setToggleQuestionsVisibilityNotificationOpen] = useState(false);
 
-    const handleAnswerQuestionNotificationClose = () => {
-      setAnswerQuestionNotificationOpen(false);
-    }
+  const handleToggleQuestionsVisibilityNotificationClose = () => {
+    setToggleQuestionsVisibilityNotificationOpen(false);
+  };
 
-    const [purgeQuestionStatus, setPurgeQuestionStatus] = useState('');
-    const [purgeQuestionResponse, setPurgeQuestionResponse] = useState('');
-  
-    const purgeQuestionOutputData = (status, response) => {
-      setPurgeQuestionStatus(status);
-      setPurgeQuestionResponse(response);
-    };
+  const [answerQuestionStatus, setAnswerQuestionStatus] = useState('');
+  const [answerQuestionResponse, setAnswerQuestionResponse] = useState('');
 
-    const [isPurgeQuestionNotificationOpen, setPurgeQuestionNotificationOpen] = useState(false);
-      
-    const handlePurgeQuestionNotificationClose = () => {
-      setPurgeQuestionNotificationOpen(false);
-    };
+  const answerQuestionOutputData = (status, response) => {
+    setAnswerQuestionStatus(status);
+    setAnswerQuestionResponse(response);
+  };
 
-    const [toggleQuestionVisibilityStatus, setToggleQuestionVisibilityStatus] = useState('');
-    const [toggleQuestionVisibilityResponse, setToggleQuestionVisibilityResponse] = useState('');
-  
-    const toggleQuestionVisibilityOutputData = (status, response) => {
-      setToggleQuestionVisibilityStatus(status);
-      setToggleQuestionVisibilityResponse(response);
-    };
+  const [isAnswerQuestionNotificationOpen, setAnswerQuestionNotificationOpen] = useState(false);
 
-    const [isToggleQuestionVisibilityNotificationOpen, setToggleQuestionVisibilityNotificationOpen] = useState(false);
+  const handleAnswerQuestionNotificationClose = () => {
+    setAnswerQuestionNotificationOpen(false);
+  }
 
-    const handleToggleQuestionVisibilityNotificationClose = () => {
-      setToggleQuestionVisibilityNotificationOpen(false);
-    };
+  const [purgeQuestionStatus, setPurgeQuestionStatus] = useState('');
+  const [purgeQuestionResponse, setPurgeQuestionResponse] = useState('');
 
-    const [blockSenderStatus, setBlockSenderStatus] = useState('');
-    const [blockSenderResponse, setBlockSenderResponse] = useState('');
-    const [blockSenderIp, setBlockSenderIp] = useState('');
-  
-    const blockSenderOutputData = (status, response, sender_ip) => {
-      setBlockSenderStatus(status);
-      setBlockSenderResponse(response);
-      setBlockSenderIp(sender_ip);
-    };
+  const purgeQuestionOutputData = (status, response) => {
+    setPurgeQuestionStatus(status);
+    setPurgeQuestionResponse(response);
+  };
 
-    const [isBlockSenderNotificationOpen, setBlockSenderNotificationOpen] = useState(false);
+  const [isPurgeQuestionNotificationOpen, setPurgeQuestionNotificationOpen] = useState(false);
+    
+  const handlePurgeQuestionNotificationClose = () => {
+    setPurgeQuestionNotificationOpen(false);
+  };
 
-    const handleBlockSenderNotificationClose = () => {
-      setBlockSenderNotificationOpen(false);
-    };
+  const [toggleQuestionVisibilityStatus, setToggleQuestionVisibilityStatus] = useState('');
+  const [toggleQuestionVisibilityResponse, setToggleQuestionVisibilityResponse] = useState('');
 
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
-        <Box sx={{ padding: '8px', width: '100%' }}>
-          <Helmet>
-            <title>{t('admin-home-pagetitle')} - Ask {yourNickname}!</title>
+  const toggleQuestionVisibilityOutputData = (status, response) => {
+    setToggleQuestionVisibilityStatus(status);
+    setToggleQuestionVisibilityResponse(response);
+  };
 
-            <meta name="robots" content="noindex, nofollow" />
-          </Helmet>
+  const [isToggleQuestionVisibilityNotificationOpen, setToggleQuestionVisibilityNotificationOpen] = useState(false);
 
-          <AdminNavbar displayName={sessionUsername} />
+  const handleToggleQuestionVisibilityNotificationClose = () => {
+    setToggleQuestionVisibilityNotificationOpen(false);
+  };
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '64px' }}>
-            {isLoading ? (
-              <Box sx={{ minWidth: '300px' }}>
-                <Typography component='p'>{t('loading')}</Typography>
-                <LinearProgress sx={{ marginTop: '12px', width: '100%' }} />
-              </Box>
-            ) : (
-                <QuestionsList
-                  markdownFrontendEnabled={adminAppSettingsResponse.markdown_frontend_enabled}
-                  markdownAdminEnabled={adminAppSettingsResponse.markdown_admin_enabled}
-                  questionsNeedApproval={adminAppSettingsResponse.approve_questions_first}
-                  
-                  forceDataFetch={forceAdminQuestionsListDataFetch}
-                  handleForceDataFetch={handleAdminQuestionsListUpdate}
-                  
-                  purgeAllQuestionsOutputData={purgeAllQuestionsOutputData}
-                  PAQNotifyOpen={setPurgeAllQuestionsNotificationOpen} 
-                  
-                  toggleAllQuestionsVisibilityOutputData={toggleAllQuestionsVisibilityOutputData}
-                  TAQVisibilityNotifyOpen={setToggleQuestionsVisibilityNotificationOpen}
+  const [blockSenderStatus, setBlockSenderStatus] = useState('');
+  const [blockSenderResponse, setBlockSenderResponse] = useState('');
+  const [blockSenderIp, setBlockSenderIp] = useState('');
 
-                  answerQuestionOutputData={answerQuestionOutputData}
-                  AnswerQuestionNotifyOpen={setAnswerQuestionNotificationOpen}
-                  
-                  purgeQuestionOutputData={purgeQuestionOutputData}
-                  PurgeQuestionNotifyOpen={setPurgeQuestionNotificationOpen}
-                  
-                  toggleQuestionVisibilityOutputData={toggleQuestionVisibilityOutputData}
-                  ToggleQuestionVisibilityNotifyOpen={setToggleQuestionVisibilityNotificationOpen}
-                  
-                  blockSenderOutputData={blockSenderOutputData}
-                  BlockSenderNotifyOpen={setBlockSenderNotificationOpen}
-                />
-            )}
-          </Box>
+  const blockSenderOutputData = (status, response, sender_ip) => {
+    setBlockSenderStatus(status);
+    setBlockSenderResponse(response);
+    setBlockSenderIp(sender_ip);
+  };
 
-          <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+  const [isBlockSenderNotificationOpen, setBlockSenderNotificationOpen] = useState(false);
 
-          <CheckUpdatesResult open={isCheckUpdatesNotificationOpen} status={checkUpdatesStatus} response={checkUpdatesResponse} latestVersion={latestVersion} currentVersion={currentVersion} onClose={handleCheckUpdatesNotificationClose} />
+  const handleBlockSenderNotificationClose = () => {
+    setBlockSenderNotificationOpen(false);
+  };
 
-          <CheckPurgeAllQuestionsResult open={isPurgeAllQuestionsNotificationOpen} error={purgeAllQuestionsStatus} response={purgeAllQuestionsResponse} onClose={handlePurgeAllQuestionsNotificationClose} />
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
+      <Box sx={{ padding: '8px', width: '100%' }}>
+        <meta name="robots" content="noindex, nofollow" />
 
-          <CheckToggleAllQuestionsVisibilityResult open={isToggleQuestionsVisibilityNotificationOpen} error={toggleAllQuestionsVisibilityStatus} response={toggleAllQuestionsVisibilityResponse} onClose={handleToggleQuestionsVisibilityNotificationClose} />
+        <AdminNavbar displayName={sessionUsername} />
 
-          <CheckAnswerQuestionResult open={isAnswerQuestionNotificationOpen} error={answerQuestionStatus} response={answerQuestionResponse} onClose={handleAnswerQuestionNotificationClose} />
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '64px' }}>
+          {isLoading ? (
+            <Box sx={{ minWidth: '300px' }}>
+              <Typography component='p'>{t('loading')}</Typography>
+              <LinearProgress sx={{ marginTop: '12px', width: '100%' }} />
+            </Box>
+          ) : (
+            <QuestionsList
+              markdownFrontendEnabled={adminAppSettingsResponse.markdown_frontend_enabled}
+              markdownAdminEnabled={adminAppSettingsResponse.markdown_admin_enabled}
+              questionsNeedApproval={adminAppSettingsResponse.approve_questions_first}
+              
+              forceDataFetch={forceAdminQuestionsListDataFetch}
+              handleForceDataFetch={handleAdminQuestionsListUpdate}
+              
+              purgeAllQuestionsOutputData={purgeAllQuestionsOutputData}
+              PAQNotifyOpen={setPurgeAllQuestionsNotificationOpen} 
+              
+              toggleAllQuestionsVisibilityOutputData={toggleAllQuestionsVisibilityOutputData}
+              TAQVisibilityNotifyOpen={setToggleQuestionsVisibilityNotificationOpen}
 
-          <CheckPurgeQuestionResult open={isPurgeQuestionNotificationOpen} error={purgeQuestionStatus} response={purgeQuestionResponse} onClose={handlePurgeQuestionNotificationClose} />
-
-          <CheckToggleQuestionVisibilityResult open={isToggleQuestionVisibilityNotificationOpen} error={toggleQuestionVisibilityStatus} response={toggleQuestionVisibilityResponse} onClose={handleToggleQuestionVisibilityNotificationClose} />
-
-          <CheckBlockSenderResult open={isBlockSenderNotificationOpen} error={blockSenderStatus} response={blockSenderResponse} sender_ip={blockSenderIp} onClose={handleBlockSenderNotificationClose} />
+              answerQuestionOutputData={answerQuestionOutputData}
+              AnswerQuestionNotifyOpen={setAnswerQuestionNotificationOpen}
+              
+              purgeQuestionOutputData={purgeQuestionOutputData}
+              PurgeQuestionNotifyOpen={setPurgeQuestionNotificationOpen}
+              
+              toggleQuestionVisibilityOutputData={toggleQuestionVisibilityOutputData}
+              ToggleQuestionVisibilityNotifyOpen={setToggleQuestionVisibilityNotificationOpen}
+              
+              blockSenderOutputData={blockSenderOutputData}
+              BlockSenderNotifyOpen={setBlockSenderNotificationOpen}
+            />
+          )}
         </Box>
+
+        <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+
+        <CheckUpdatesResult open={isCheckUpdatesNotificationOpen} status={checkUpdatesStatus} response={checkUpdatesResponse} latestVersion={latestVersion} currentVersion={currentVersion} onClose={handleCheckUpdatesNotificationClose} />
+
+        <CheckPurgeAllQuestionsResult open={isPurgeAllQuestionsNotificationOpen} error={purgeAllQuestionsStatus} response={purgeAllQuestionsResponse} onClose={handlePurgeAllQuestionsNotificationClose} />
+
+        <CheckToggleAllQuestionsVisibilityResult open={isToggleQuestionsVisibilityNotificationOpen} error={toggleAllQuestionsVisibilityStatus} response={toggleAllQuestionsVisibilityResponse} onClose={handleToggleQuestionsVisibilityNotificationClose} />
+
+        <CheckAnswerQuestionResult open={isAnswerQuestionNotificationOpen} error={answerQuestionStatus} response={answerQuestionResponse} onClose={handleAnswerQuestionNotificationClose} />
+
+        <CheckPurgeQuestionResult open={isPurgeQuestionNotificationOpen} error={purgeQuestionStatus} response={purgeQuestionResponse} onClose={handlePurgeQuestionNotificationClose} />
+
+        <CheckToggleQuestionVisibilityResult open={isToggleQuestionVisibilityNotificationOpen} error={toggleQuestionVisibilityStatus} response={toggleQuestionVisibilityResponse} onClose={handleToggleQuestionVisibilityNotificationClose} />
+
+        <CheckBlockSenderResult open={isBlockSenderNotificationOpen} error={blockSenderStatus} response={blockSenderResponse} sender_ip={blockSenderIp} onClose={handleBlockSenderNotificationClose} />
       </Box>
-    )
+    </Box>
+  )
 }
 
 export default AdminHome

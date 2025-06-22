@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendUnblockSenderRequest = (senderIp) => {
-  const { t } = useTranslation();
-
   const [unblockSenderError, setUnblockSenderError] = useState(false);
   const [unblockSenderResponse, setUnblockSenderResponse] = useState('');
 
@@ -57,7 +54,7 @@ export const SendUnblockSenderRequest = (senderIp) => {
           setUnblockSenderResponse('');
           setUnblockSenderError(true);
 
-          console.error(`${t('admin-error-unblocksender')} ${error}`);
+          console.error('An error occurred while sending a request to unblock the sender!', error);
         }
     }
   };

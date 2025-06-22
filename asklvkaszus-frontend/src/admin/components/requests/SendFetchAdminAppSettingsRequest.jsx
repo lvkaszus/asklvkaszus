@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendFetchAdminAppSettingsRequest = () => {
-  const { t } = useTranslation();
-
   const [adminAppSettingsError, setAdminAppSettingsError] = useState(false);
   const [adminAppSettingsResponse, setAdminAppSettingsResponse] = useState('');
 
@@ -41,7 +38,7 @@ export const SendFetchAdminAppSettingsRequest = () => {
             setAdminAppSettingsResponse('');
             setAdminAppSettingsError(true);
 
-            console.error(`${t('admin-error-fetchadminappsettings')} ${error}`);
+            console.error('An error occurred while sending a request to download the admin application settings!', error);
 
           }
     }

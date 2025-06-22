@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet';
 import Navbar from './components/Navbar.jsx';
 import { Box, Card, CardContent, Divider, Typography } from '@mui/material';
 import QuestionsList from './components/home/QuestionsList.jsx';
@@ -9,8 +8,19 @@ import CheckFetchUserAppSettingsResult from './components/results/CheckFetchUser
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const Home = ({ isUserAppSettingsNotificationOpen, userAppSettingsError, userAppSettingsResponse, handleUserAppSettingsNotificationClose }) => {
+const Home = ({ handleFetchUserAppSettingsRequest, isUserAppSettingsNotificationOpen, userAppSettingsError, userAppSettingsResponse, handleUserAppSettingsNotificationClose }) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+    document.title = `Ask ${yourNickname}!`;
+  }, [yourNickname]);
+
+  useEffect(() => {
+    if (!userAppSettingsError) {
+      handleFetchUserAppSettingsRequest();
+    }
+  }, [userAppSettingsError]);
 
   const [forceQuestionsListDataFetch, setForceQuestionsListDataFetch] = useState(false);
 
@@ -21,11 +31,7 @@ const Home = ({ isUserAppSettingsNotificationOpen, userAppSettingsError, userApp
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
       <Box sx={{ padding: '8px' }}>
-        <Helmet>
-          <title>Ask {yourNickname}!</title>
-
-          <meta name="robots" content="index, follow" />
-        </Helmet>
+        <meta name="robots" content="index, follow" />
 
         <Navbar />
 
@@ -35,11 +41,11 @@ const Home = ({ isUserAppSettingsNotificationOpen, userAppSettingsError, userApp
               {t('home-title', { nickname: yourNickname })}
             </Typography>
 
-            <SubmitQuestionForm markdownFrontendEnabled={userAppSettingsResponse.markdown_frontend_enabled} questionsNeedApproval={userAppSettingsResponse.approve_questions_first} forceQuestionsListDataFetch={handleQuestionsListUpdate}/>
+            <SubmitQuestionForm markdownFrontendEnabled={userAppSettingsResponse?.markdown_frontend_enabled} questionsNeedApproval={userAppSettingsResponse?.approve_questions_first} forceQuestionsListDataFetch={handleQuestionsListUpdate}/>
 
             <Divider />
 
-            <QuestionsList markdownFrontendEnabled={userAppSettingsResponse.markdown_frontend_enabled} markdownAdminEnabled={userAppSettingsResponse.markdown_admin_enabled} forceDataFetch={forceQuestionsListDataFetch}/>
+            <QuestionsList markdownFrontendEnabled={userAppSettingsResponse?.markdown_frontend_enabled} markdownAdminEnabled={userAppSettingsResponse?.markdown_admin_enabled} forceDataFetch={forceQuestionsListDataFetch}/>
           </CardContent>
 
           <CheckFetchUserAppSettingsResult open={isUserAppSettingsNotificationOpen} error={userAppSettingsError} response={userAppSettingsResponse} onClose={handleUserAppSettingsNotificationClose} />

@@ -5,6 +5,7 @@ import currentVersion from '../../currentVersion.jsx';
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendVersionCheckRequest = () => {
+  const [versionLoading, setVersionLoading] = useState(true);
   const [latestGitVersion, setLatestGitVersion] = useState('');
   const [backendVersion, setBackendVersion] = useState('');
 
@@ -20,7 +21,7 @@ export const SendVersionCheckRequest = () => {
     } catch (error) {
       setLatestGitVersion(frontendVersion);
 
-      console.error(`${t('error-fetchgithublatestversion')} ${error}`);
+      console.error('An error occurred while downloading the latest version of the app from GitHub!', error);
 
     }
   };
@@ -31,21 +32,27 @@ export const SendVersionCheckRequest = () => {
       const backendVersion = backendData.data.backend_version;
 
       setBackendVersion(backendVersion);
+
       
     } catch (error) {
       setBackendVersion('?');
 
-      console.error(`${t('error-fetchrunningbackendversion')} ${error}`);
+      console.error('An error occurred while downloading the currently running version of the application backend!', error);
 
     }
   };
 
   useEffect(() => {
-    fetchBackendVersion();
-    fetchLatestGitVersion();
+    const fetchAll = async () => {
+      setVersionLoading(true);
+      await fetchBackendVersion()
+      await fetchLatestGitVersion()
+      setVersionLoading(false);
+    };
+    fetchAll();
   }, []);
 
   const isLatestGitVersion = frontendVersion === latestGitVersion;
 
-  return { frontendVersion, backendVersion, latestGitVersion, isLatestGitVersion };
+  return { versionLoading, frontendVersion, backendVersion, latestGitVersion, isLatestGitVersion };
 };

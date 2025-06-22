@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendUpdateAppSettingsRequest = (globalApiEnabled, markdownFrontendEnabled, markdownAdminEnabled, approveQuestionsFirst) => {
-  const { t } = useTranslation();
-
   const [updateAppSettingsError, setUpdateAppSettingsError] = useState(false);
   const [updateAppSettingsResponse, setUpdateAppSettingsResponse] = useState('');
 
@@ -60,7 +57,7 @@ export const SendUpdateAppSettingsRequest = (globalApiEnabled, markdownFrontendE
           setUpdateAppSettingsResponse('');
           setUpdateAppSettingsError(true);
 
-          console.error(`${t('admin-error-updateappsettings')} ${error}`);
+          console.error('An error occurred while sending a request to update the application settings!', error);
         }
     }
   };

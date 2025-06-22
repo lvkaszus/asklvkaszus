@@ -1,0 +1,64 @@
+.errorBoundaryRoot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+.errorBoundaryCard {
+  background: white;
+  color: black;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.errorBoundaryTitle {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.errorBoundaryHr {
+  color: #e6e6e6;
+  margin: 20px 0;
+}
+
+.errorBoundarySubtitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.errorBoundaryParagraph {
+  margin: 0 0 20px 0;
+}
+
+.errorBoundaryParagraphLast {
+  margin: 0;
+}
+
+.reloadButton {
+  background: black;
+  border: 1px solid black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 
+    background 0.3s,
+    color 0.3s,
+    border-color 0.3s;
+}
+
+.reloadButton:hover {
+  background: transparent;
+  border: 1px solid black;
+  color: black;
+}

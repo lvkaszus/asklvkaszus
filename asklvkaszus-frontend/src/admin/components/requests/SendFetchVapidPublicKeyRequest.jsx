@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendFetchVapidPublicKeyRequest = () => {
-  const { t } = useTranslation();
-
   const [fetchVapidPublicKeyError, setFetchVapidPublicKeyError] = useState(false);
   const [fetchVapidPublicKeyResponse, setFetchVapidPublicKeyResponse] = useState('');
 
@@ -43,7 +40,7 @@ export const SendFetchVapidPublicKeyRequest = () => {
         setFetchVapidPublicKeyResponse('');
         setFetchVapidPublicKeyError(true);
 
-        console.error(`${t('admin-error-fetchvapidpublickey')} ${error}`);
+        console.error('An error occurred while sending a request for a VAPID public key!', error);
         
       }
     }

@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendChangePasswordRequest = (oldPassword, newPassword, confirmNewPassword) => {
-  const { t } = useTranslation();
-
   const [changePasswordError, setChangePasswordError] = useState(false);
   const [changePasswordResponse, setChangePasswordResponse] = useState('');
 
@@ -59,7 +56,7 @@ export const SendChangePasswordRequest = (oldPassword, newPassword, confirmNewPa
           setChangePasswordResponse('');
           setChangePasswordError(true);
 
-          console.error(`${t('admin-error-changepassword')} ${error}`)
+          console.error('An error occurred while sending a password change request!', error)
         }
     }
   };

@@ -30,12 +30,12 @@ def create_app():
     setup_main_logger(Config.LOGFILE, Config.DEBUG)
 
     if not wait_for_db(db_uri=Config.SQLALCHEMY_DATABASE_URI, logger=main_logger()):
-        main_logger.critical("Application SQL Database initialization failed! Aborting application startup...")
+        main_logger.error("Application SQL Database initialization failed! Aborting application startup...")
 
         raise ConnectionError("Application SQL Database does not respond after attempting to connect to it for 60 seconds!")
 
     if not wait_for_redis(redis_uri=Config.REDIS_SERVER_URI, logger=main_logger()):
-        main_logger.critical(f"Application Redis Database initialization failed! Aborting application startup...")
+        main_logger.error(f"Application Redis Database initialization failed! Aborting application startup...")
 
         raise ConnectionError("Application Redis Database does not respond after attempting to connect to it for 60 seconds!")
 

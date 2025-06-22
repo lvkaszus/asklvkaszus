@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
-import { Helmet } from "react-helmet";
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
 import { Card, CardContent, Typography, Button, Box, Divider, LinearProgress, TextField } from "@mui/material";
 import { Person, Lock, Login, PersonAdd } from "@mui/icons-material";
@@ -17,6 +16,11 @@ const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
 const AdminLogin = () => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+    document.title = `${t('login-pagetitle')} - Ask ${yourNickname}!`;
+  }, [yourNickname]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -113,11 +117,7 @@ const AdminLogin = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
       <Box sx={{ padding: '8px' }}>
-        <Helmet>
-          <title>{t('login-pagetitle')} - Ask {yourNickname}!</title>
-
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
+        <meta name="robots" content="noindex, nofollow" />
 
         <PreAuthNavbar />
 

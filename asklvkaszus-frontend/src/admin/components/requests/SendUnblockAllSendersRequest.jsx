@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendUnblockAllSendersRequest = () => {
-  const { t } = useTranslation();
-
   const [unblockAllSendersError, setUnblockAllSendersError] = useState(false);
   const [unblockAllSendersResponse, setUnblockAllSendersResponse] = useState('');
 
@@ -54,7 +51,7 @@ export const SendUnblockAllSendersRequest = () => {
             setUnblockAllSendersResponse('');
             setUnblockAllSendersError(true);
 
-            console.error(`${t('admin-error-unblockallsenders')} ${error}`);
+            console.error('An error occurred while sending a request to unblock all blocked senders!', error);
         }
     }
   };

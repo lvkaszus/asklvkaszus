@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendFetchAllQuestionsRequest = () => {
-    const { t } = useTranslation();
-
     const [isFetchAllQuestionsLoading, setFetchAllQuestionsLoading] = useState(true);
     const [fetchAllQuestionsResponse, setFetchAllQuestionsResponse] = useState('');
     const [fetchAllQuestionsError, setFetchAllQuestionsError] = useState(false);
@@ -58,7 +55,7 @@ export const SendFetchAllQuestionsRequest = () => {
                 setFetchAllQuestionsError(true);
                 setFetchAllQuestionsLoading(false);
 
-                console.error(`${t('admin-error-fetchquestionslist')} ${error}`);
+                console.error('An error occurred while sending a request to download questions list!', error);
               }
           }
     };

@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendRegistrationEnabledRequest = () => {
-  const { t } = useTranslation();
-
   const [registrationEnabledResponse, setRegistrationEnabledResponse] = useState(false);
   const [registrationEnabledError, setRegistrationEnabledError] = useState(false);
 
@@ -23,7 +20,7 @@ export const SendRegistrationEnabledRequest = () => {
       setRegistrationEnabledResponse(false);
       setRegistrationEnabledError(true);
 
-      console.error(`${t('admin-error-getregistrationenabled')} ${error}`);
+      console.error('An error occurred while sending a request to check if the user registration is enabled!', error);
     }
   };
 

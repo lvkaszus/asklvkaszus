@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendToggleUserApiRequest = () => {
-  const { t } = useTranslation();
-
   const [toggleUserApiError, setToggleUserApiError] = useState(false);
   const [toggleUserApiResponse, setToggleUserApiResponse] = useState('');
 
@@ -54,7 +51,7 @@ export const SendToggleUserApiRequest = () => {
           setToggleUserApiResponse('');
           setToggleUserApiError(true);
 
-          console.error(`${t('admin-error-toggleuserapi')} ${error}`);
+          console.error('An error occurred while sending a request to change the state of the user\'s API!', error);
         }
     }
   };

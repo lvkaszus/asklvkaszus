@@ -1,8 +1,20 @@
 {
     "loading": "Loading...",
 
+    "notfound-pagetitle": "Not found!",
     "error-notfound-title": "404: Not found!",
     "error-notfound-description": "Check the URL and try again.",
+
+    "error-title": "Something went wrong!",
+    "error-whathappened-title": "What happened?",
+    "error-whathappened-description": "The operation of the application was interrupted due to a report of a critical error inside the application.",
+    "error-whattodo-title": "What can I do now?",
+    "error-whattodo-description": "Try again or come back later. If the problem persists, contact the application administrator ({{username}}) or the application creator (@lvkaszus)!",
+    "error-tryagain": "Try again",
+    "error-errordetails-show": "Show error details",
+    "error-errordetails-hide": "Hide error details",
+    "error-technicaldetails-title": "Technical details",
+    "error-technicaldetails-description": "If the problem repeatedly recurs, contact the application administrator ({{username}}) or the application developer (@lvkaszus)!",
 
     "navbar-homepage": "home",
     "navbar-info": "information",
@@ -302,7 +314,7 @@
     "admin-error-login-incorrectloginorpassword": "Incorrect username or password!",
     "admin-error-login-ratelimit": "The maximum number of account login requests sent has been exceeded! Please try again later.",
     "admin-error-login": "There was an error when sending the account login request!",
-    "admin-error-getregistrationenabled": "An error occurred while sending a request to download the registration opportunity!",
+    "admin-error-getregistrationenabled": "An error occurred while sending a request to check if the user registration is enabled!",
     "admin-error-register-nonewusers": "Registration for new users is disabled!",
     "admin-error-register-invalidjsonpayload": "Invalid request data!",
     "admin-error-register-usernamepasswordandconfirmedpasswordrequired": "Username, Password and Confirmed Password is required!",
@@ -327,7 +339,7 @@
     "admin-error-checkupdates-fetchdataerror": "Failed to fetch data from the GitHub API! Try again later.",
     "admin-error-checkupdates-ratelimit": "The maximum number of update check requests sent has been exceeded! Try again later.",
     "admin-error-checkupdates": "An error occurred while sending a request to check for updates!",
-    "admin-error-fetchquestionslist": "An error occurred while sending a request to download a list of questions!",
+    "admin-error-fetchquestionslist": "An error occurred while sending a request to download questions list!",
     "admin-error-purgeallquestions-ratelimit": "The maximum number of sent requests for deletion of all questions has been exceeded! Try again later.",
     "admin-error-purgeallquestions": "An error occurred while sending a request to delete all questions!",
     "admin-error-toggleallquestionsvisibility-noquestions": "No questions yet!",

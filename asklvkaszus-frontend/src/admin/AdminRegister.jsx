@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Helmet } from "react-helmet";
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
 import { useTheme, Card, CardContent, Typography, Button, Alert, Box, Divider, LinearProgress, TextField } from "@mui/material";
 import { Person, Lock, Close, Done, Login, PersonAdd } from "@mui/icons-material";
@@ -16,6 +15,11 @@ const AdminRegister = () => {
     const theme = useTheme();
 
     const { t } = useTranslation();
+
+    useEffect(() => {
+      // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+      document.title = `${t('register-pagetitle')} - Ask ${yourNickname}!`;
+    }, [yourNickname]);
 
     const [isLoading, setLoading] = useState(true);
 
@@ -130,11 +134,7 @@ const AdminRegister = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
       <Box sx={{ padding: '8px' }}>
-        <Helmet>
-          <title>{t('register-pagetitle')} - Ask {yourNickname}!</title>
-
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
+        <meta name="robots" content="noindex, nofollow" />
 
         <PreAuthNavbar />
   

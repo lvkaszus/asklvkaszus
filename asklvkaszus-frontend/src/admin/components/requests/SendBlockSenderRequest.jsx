@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendBlockSenderRequest = (senderIp) => {
-  const { t } = useTranslation();
-
   const [blockSenderError, setBlockSenderError] = useState(false);
   const [blockSenderResponse, setBlockSenderResponse] = useState('');
 
@@ -54,7 +51,7 @@ export const SendBlockSenderRequest = (senderIp) => {
           setBlockSenderResponse('');
           setBlockSenderError(true);
 
-          console.error(`${t('admin-error-blocksender')} ${error}`);
+          console.error('An error occurred while sending a request to block the sender!', error);
         }
     }
   };

@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendFetchAllQuestionsRequest = () => {
-    const { t } = useTranslation();
-
     const [isFetchAllQuestionsLoading, setFetchAllQuestionsLoading] = useState(true);
     const [fetchAllQuestionsResponse, setFetchAllQuestionsResponse] = useState('');
     const [fetchAllQuestionsError, setFetchAllQuestionsError] = useState(false);
@@ -31,10 +28,11 @@ export const SendFetchAllQuestionsRequest = () => {
             setFetchAllQuestionsLoading(false);
 
         } catch (error) {
-            console.error(`${t('error-fetchquestionslist')} ${error}`);
 
-            setFetchAllQuestionsResponse('');
+            console.error('An error occurred while downloading the list of all messages!', error);
+
             setFetchAllQuestionsError(true);
+            setFetchAllQuestionsResponse('');
             setFetchAllQuestionsLoading(false);
 
         }

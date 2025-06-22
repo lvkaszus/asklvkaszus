@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendConfigureWebPushNotificationsRequest = (WebpushEnabled) => {
-  const { t } = useTranslation();
-
   const [configureWebPushNotificationsError, setConfigureWebPushNotificationsError] = useState(false);
   const [configureWebPushNotificationsResponse, setConfigureWebPushNotificationsResponse] = useState('');
 
@@ -58,7 +55,7 @@ export const SendConfigureWebPushNotificationsRequest = (WebpushEnabled) => {
           setConfigureWebPushNotificationsResponse('');
           setConfigureWebPushNotificationsError(true);
 
-          console.error(`${t('admin-error-configurenotifications')} ${error}`)
+          console.error('An error occurred while sending a request to change the notification configuration!', error)
         }
     }
   };

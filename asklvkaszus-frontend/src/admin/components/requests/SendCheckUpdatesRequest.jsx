@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendCheckUpdatesRequest = () => {
-  const { t } = useTranslation();
-
   const [checkUpdatesStatus, setCheckUpdatesStatus] = useState('');
   const [checkUpdatesResponse, setCheckUpdatesResponse] = useState('');
   const [latestVersion, setLatestVersion] = useState('');
@@ -66,7 +63,7 @@ export const SendCheckUpdatesRequest = () => {
             setCheckUpdatesStatus('error');
             setCheckUpdatesResponse('');
 
-            console.error(`${t('admin-error-checkupdates')} ${error}`);
+            console.error('An error occurred while sending a request to check for updates!', error);
 
           }
     }

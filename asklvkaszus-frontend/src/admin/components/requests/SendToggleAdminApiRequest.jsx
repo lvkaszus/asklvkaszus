@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendToggleAdminApiRequest = () => {
-  const { t } = useTranslation();
-
   const [toggleAdminApiError, setToggleAdminApiError] = useState(false);
   const [toggleAdminApiResponse, setToggleAdminApiResponse] = useState('');
 
@@ -52,10 +49,10 @@ export const SendToggleAdminApiRequest = () => {
 
           }
         } else {
-          setToggleAdminApiResponse('');
+          setToggleAdminApiResponse('An error occurred while sending a request to change the state of the admin API!');
           setToggleAdminApiError(true);
 
-          console.error(`${t('admin-error-toggleadminapi')} ${error}`);
+          console.error('', error);
         }
     }
   };

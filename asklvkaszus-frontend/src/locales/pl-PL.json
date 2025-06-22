@@ -1,8 +1,21 @@
 {
     "loading": "Ładowanie...",
 
+    "notfound-pagetitle": "Nie znaleziono!",
     "error-notfound-title": "404: Nie znaleziono!",
     "error-notfound-description": "Sprawdź Adres URL i spróbuj ponownie.",
+
+    "error-title": "Coś poszło nie tak!",
+    "error-whathappened-title": "Co się stało?",
+    "error-whathappened-description": "Działanie aplikacji zostało przerwane z powodu zgłoszenia wystąpienia krytycznego błędu wewnątrz aplikacji.",
+    "error-whattodo-title": "Co mogę teraz zrobić?",
+    "error-whattodo-description": "Spróbuj ponownie lub wróć później. Jeśli problem się powtarza, skontaktuj się z administratorem ({{username}}) lub z twórcą aplikacji (@lvkaszus)!",
+    "error-tryagain": "Spróbuj ponownie",
+    "error-errordetails-show": "Pokaż szczegóły błędu",
+    "error-errordetails-hide": "Ukryj szczegóły błędu",
+    "error-technicaldetails-title": "Szczegóły techniczne",
+    "error-technicaldetails-description": "Jeżeli problem wielokrotnie się powtarza, skontaktuj się z administratorem witryny ({{username}}) lub z twórcą aplikacji (@lvkaszus)!",
+
 
     "navbar-homepage": "główna",
     "navbar-info": "informacje",

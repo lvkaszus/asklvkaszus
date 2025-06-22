@@ -1,13 +1,10 @@
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendCheckSessionRequest = () => {
-  const { t } = useTranslation();
-
   const navigate = useNavigate();
 
   const submitCheckSessionRequest = async () => {
@@ -31,7 +28,7 @@ export const SendCheckSessionRequest = () => {
         } else {
           // Leave user on the current page!
 
-          console.error(`${t('admin-error-sessionguard')} ${error}`);
+          console.error('An error occurred while sending a request to retrieve the current session state!', error);
           
         }
     }

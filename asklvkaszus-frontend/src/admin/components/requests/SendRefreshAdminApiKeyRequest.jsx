@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendRefreshAdminApiKeyRequest = () => {
-  const { t } = useTranslation();
-
   const [refreshAdminApiKeyError, setRefreshAdminApiKeyError] = useState(false);
   const [refreshAdminApiKeyResponse, setRefreshAdminApiKeyResponse] = useState('');
   const [newAdminApiKey, setNewAdminApiKey] = useState('');
@@ -60,7 +57,7 @@ export const SendRefreshAdminApiKeyRequest = () => {
             setNewAdminApiKey('')
             setRefreshAdminApiKeyError(true);
 
-            console.error(`${t('admin-error-refreshadminapikey')} ${error}`);
+            console.error('An error occurred while sending a request to refresh the admin API key!', error);
 
           }
     }

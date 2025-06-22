@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Helmet } from "react-helmet";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import CheckUpdatesResult from "./components/results/CheckUpdatesResult";
@@ -13,95 +12,102 @@ import { SendSetSessionRequest } from "./components/requests/SendSetSessionReque
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const AdminUserSettings = ({ isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
-    const { t } = useTranslation();
+const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDataFetch, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose, updateChecks, setUpdateChecks }) => {
+  const { t } = useTranslation();
 
-    const [isLoading, setLoading] = useState(true);
+  useEffect(() => {
+    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
+    document.title = `${t('admin-usersettings-pagetitle')} - Ask ${yourNickname}!`;
+  }, [yourNickname]);
 
-    const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
-    const [forceUserDataFetch, setForceUserDataFetch] = useState(false);
+  useEffect(() => {
+    if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
+      handleFetchAdminAppSettingsRequest();
+    }
+  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
 
-    const { sessionUsername, handleSetSessionRequest } = SendSetSessionRequest();
+  const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
-    const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
+  const [forceUserDataFetch, setForceUserDataFetch] = useState(false);
 
-    const handleRequests = async () => {
-      await handleSetSessionRequest();
+  const { sessionUsername, handleSetSessionRequest } = SendSetSessionRequest();
 
-      if (updateChecks < 1) {
-        await handleCheckUpdatesRequest();
-        setUpdateChecks(1);
-        setCheckUpdatesNotificationOpen(true);
-      }
+  const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-      setLoading(false);
+  const handleRequests = async () => {
+    await handleSetSessionRequest();
+
+    if (updateChecks < 1) {
+      await handleCheckUpdatesRequest();
+      setUpdateChecks(1);
+      setCheckUpdatesNotificationOpen(true);
     }
 
-    useEffect(() => {
-      handleRequests();
-    }, []);
+    setLoading(false);
+  }
 
-    const handleCheckUpdatesNotificationClose = () => {
-      setCheckUpdatesNotificationOpen(false);
-    };
+  useEffect(() => {
+    handleRequests();
+  }, []);
 
-    const [isUserDataNotificationOpen, setUserDataNotificationOpen] = useState(false);
+  const handleCheckUpdatesNotificationClose = () => {
+    setCheckUpdatesNotificationOpen(false);
+  };
 
-    const { userDataError, userDataResponse, handleFetchUserDataRequest } = SendFetchUserDataRequest();
-  
-    useEffect(() => {
-      if (userDataError) {
-        setUserDataNotificationOpen(true);
-      }
-    }, [userDataError])
+  const [isUserDataNotificationOpen, setUserDataNotificationOpen] = useState(false);
 
-    useEffect(() => {
-      if (forceUserDataFetch) {
-        handleFetchUserDataRequest();
-      } else {
-        handleFetchUserDataRequest();
-      }
-    }, [forceUserDataFetch])
-  
-    const handleUserDataUpdate = () => {
-      setForceUserDataFetch((prev) => !prev);
-    };
-  
-    const handleUserDataNotificationClose = () => {
-      setUserDataNotificationOpen(false);
-    };
+  const { userDataError, userDataResponse, handleFetchUserDataRequest } = SendFetchUserDataRequest();
 
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
-        <Box sx={{ padding: '8px', width: '100%' }}>
-          <Helmet>
-            <title>{t('admin-usersettings-pagetitle')} - Ask {yourNickname}!</title>
+  useEffect(() => {
+    if (userDataError) {
+      setUserDataNotificationOpen(true);
+    }
+  }, [userDataError])
 
-            <meta name="robots" content="noindex, nofollow" />
-          </Helmet>
+  useEffect(() => {
+    if (forceUserDataFetch) {
+      handleFetchUserDataRequest();
+    } else {
+      handleFetchUserDataRequest();
+    }
+  }, [forceUserDataFetch])
 
-          <AdminNavbar displayName={sessionUsername} />
+  const handleUserDataUpdate = () => {
+    setForceUserDataFetch((prev) => !prev);
+  };
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '64px' }}>
-            {isLoading ? (
-              <Box sx={{ minWidth: '300px' }}>
-                <Typography component='p'>{t('loading')}</Typography>
-                <LinearProgress sx={{ marginTop: '12px', width: '100%' }} />
-              </Box>
-            ) : (
-              <UserSettingsList userData={userDataResponse} handleUserDataUpdate={handleUserDataUpdate} />
-            )}
-          </Box>
+  const handleUserDataNotificationClose = () => {
+    setUserDataNotificationOpen(false);
+  };
 
-          <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
+      <Box sx={{ padding: '8px', width: '100%' }}>
+        <meta name="robots" content="noindex, nofollow" />
 
-          <CheckUpdatesResult open={isCheckUpdatesNotificationOpen} status={checkUpdatesStatus} response={checkUpdatesResponse} latestVersion={latestVersion} currentVersion={currentVersion} onClose={handleCheckUpdatesNotificationClose} />
+        <AdminNavbar displayName={sessionUsername} />
 
-          <CheckFetchUserDataResult open={isUserDataNotificationOpen} error={userDataError} response={userDataResponse} onClose={handleUserDataNotificationClose} />
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '64px' }}>
+          {isLoading ? (
+            <Box sx={{ minWidth: '300px' }}>
+              <Typography component='p'>{t('loading')}</Typography>
+              <LinearProgress sx={{ marginTop: '12px', width: '100%' }} />
+            </Box>
+          ) : (
+            <UserSettingsList userData={userDataResponse} handleUserDataUpdate={handleUserDataUpdate} />
+          )}
         </Box>
+
+        <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+
+        <CheckUpdatesResult open={isCheckUpdatesNotificationOpen} status={checkUpdatesStatus} response={checkUpdatesResponse} latestVersion={latestVersion} currentVersion={currentVersion} onClose={handleCheckUpdatesNotificationClose} />
+
+        <CheckFetchUserDataResult open={isUserDataNotificationOpen} error={userDataError} response={userDataResponse} onClose={handleUserDataNotificationClose} />
       </Box>
-    )
+    </Box>
+  )
 }
 
 export default AdminUserSettings

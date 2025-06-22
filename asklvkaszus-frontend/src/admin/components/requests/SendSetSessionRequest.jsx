@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
 export const SendSetSessionRequest = () => {
-  const { t } = useTranslation();
-
   const [sessionUsername, setSessionUsername] = useState('');
 
   const navigate = useNavigate();
@@ -39,7 +36,7 @@ export const SendSetSessionRequest = () => {
 
             navigate('/admin/login');
 
-            console.error(`${t('admin-error-sessionguard')} ${error}`);
+            console.error('An error occurred while sending a request to retrieve the current session state!', error);
         }
     }
   };

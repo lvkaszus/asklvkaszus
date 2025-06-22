@@ -11,9 +11,9 @@ export const SendFetchCsrfTokenRequest = async () => {
         return csrfToken;
 
     } catch (error) {
-        console.error(`${t('admin-error-fetchcsrftoken')} ${error}`);
+        console.error('An error occurred while sending a request to retrieve a CSRF token!', error);
         
-        throw error;
+        return '';
         
     }
 };
