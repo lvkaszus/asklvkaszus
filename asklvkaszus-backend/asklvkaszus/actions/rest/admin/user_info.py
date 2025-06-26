@@ -1,21 +1,28 @@
-from flask import jsonify, g
+from flask import g
+from ....modules.response_handler import jsonify_on_steroids
 from ....models.registered_users import RegisteredUsers
 
 def api_admin_user_info():
     api_key_result = getattr(g, 'api_key_result', {})
 
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     if "error" in api_key_result:
-        return jsonify(api_key_result)
+        return jsonify_on_steroids(api_key_result, headers=response_headers), 400
 
     username = api_key_result.get("username", "")
 
     if not username:
-        return jsonify(error="Invalid session username!"), 400
+        return jsonify_on_steroids(error="Invalid session username!", headers=response_headers), 400
 
     user = RegisteredUsers.query.filter_by(username=identity).first()
     
     if not user:
-        return jsonify(error="User not found!"), 404
+        return jsonify_on_steroids(error="User not found!", headers=response_headers), 404
 
     user_info_json = {
         'username': user.username,
@@ -30,4 +37,4 @@ def api_admin_user_info():
         'telegram_bot_chat_id': user.telegram_bot_chat_id
     }
 
-    return jsonify(user_info_json), 200
+    return jsonify_on_steroids(user_info_json, headers=response_headers), 200

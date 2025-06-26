@@ -1,14 +1,20 @@
 from ...extensions import csrf
-from flask import jsonify
+from ...modules.response_handler import jsonify_on_steroids
 from ...models.registered_users import RegisteredUsers
 
 def admin_user_info(identity):
     csrf.protect()
 
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     user = RegisteredUsers.query.filter_by(username=identity).first()
     
     if not user:
-        return jsonify(error="User not found!"), 404
+        return jsonify_on_steroids(error="User not found!", headers=response_headers), 404
 
     user_info_json = {
         'username': user.username,
@@ -23,4 +29,4 @@ def admin_user_info(identity):
         'telegram_bot_chat_id': user.telegram_bot_chat_id
     }
 
-    return jsonify(user_info_json), 200
+    return jsonify_on_steroids(user_info_json, headers=response_headers), 200

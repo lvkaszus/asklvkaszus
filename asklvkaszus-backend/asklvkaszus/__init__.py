@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 from .config import Config
 from .logger import setup_main_logger, main_logger
 from .extensions import wait_for_db, wait_for_redis, sql, csrf, limiter, cors
@@ -48,13 +48,29 @@ def create_app():
     limiter.init_app(app)
 
     cors_resources = {
-        "/api/app/admin/*": {"origins": Config.SERVER_URL},
-        "/api/app/user/*": {"origins": Config.SERVER_URL},
-        "/api/v3/*": {"origins": Config.API_ALLOWED_CLIENTS_URL},
+        r"/api/app/admin/*": {
+            "origins": Config.SERVER_URL,
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "supports_credentials": True,
+            "allow_headers": ["Content-Type", "X-CSRFToken"],
+            "expose_headers": ["X-CSRFToken"]
+        },
+        r"/api/app/user/*": {
+            "origins": Config.SERVER_URL,
+            "methods": ["GET", "POST"],
+            "supports_credentials": True,
+            "allow_headers": ["Content-Type", "X-CSRFToken"],
+            "expose_headers": ["X-CSRFToken"]
+        },
+        r"/api/v3/*": {
+            "origins": Config.API_ALLOWED_CLIENTS_URL,
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "supports_credentials": False,
+            "allow_headers": ["Content-Type", "Authorization"]
+        },
     }
 
     cors.init_app(app, resources=cors_resources)
-    
 
     app.register_blueprint(root_bp, url_prefix='/')
 
@@ -77,5 +93,35 @@ def create_app():
 
         sql.session.commit()
         sql.session.close()
-    
+
+    @app.after_request
+    def add_vary_header(response):
+        if 'Origin' in request.headers:
+            if 'Vary' in response.headers:
+                vary = response.headers['Vary']
+                if 'Origin' not in vary.split(', '):
+                    response.headers['Vary'] = f"{vary}, Origin"
+            else:
+                response.headers['Vary'] = 'Origin'
+        
+        if 'Set-Cookie' in response.headers:
+            if 'Vary' in response.headers:
+                if 'Cookie' not in response.headers['Vary']:
+                    response.headers['Vary'] += ', Cookie'
+            else:
+                response.headers['Vary'] = 'Cookie'
+        
+        # sensitive_paths = [
+        #     '/api/app/user',
+        #     '/api/app/admin',
+        #     '/api/v3'
+        # ]
+        
+        # if any(request.path.startswith(path) for path in sensitive_paths):
+        #     response.headers['Cache-Control'] = 'no-store, max-age=0'
+        #     response.headers['Pragma'] = 'no-cache'
+        #     response.headers['Expires'] = '0'
+
+        return response
+
     return app

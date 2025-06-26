@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
@@ -11,15 +10,7 @@ export const SendFetchAllQuestionsRequest = () => {
 
     const submitFetchAllQuestionsRequest = async () => {
         try {
-            const csrfToken = await SendFetchCsrfTokenRequest();
-
-            const response = await axios.post(`${domain}/api/app/user/fetch_all_questions`, {},
-                {
-                    headers: {
-                    'X-CSRFToken': csrfToken
-                    }
-                }
-            );
+            const response = await axios.get(`${domain}/api/app/user/fetch_all_questions`);
             
             const jsonData = response.data;
 

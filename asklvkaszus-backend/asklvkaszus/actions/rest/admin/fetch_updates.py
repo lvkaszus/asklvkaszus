@@ -1,12 +1,20 @@
-from flask import current_app, jsonify
+from flask import current_app
+from ....modules.response_handler import jsonify_on_steroids
 import requests
 from ....version import backend_version
 
 # Ask @lvkaszus! - Administrator REST API: Fetch Updates
 
 def api_admin_fetch_updates():
+    # Defining the error response headers to be added every JSON response return.
+    error_response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     # Defining a reusable generic error response for API failures.
-    error_response = lambda: (jsonify(error="Failed to fetch data from the GitHub API! Try again later."), 500)
+    error_response = lambda: (jsonify_on_steroids(error="Failed to fetch data from the GitHub API! Try again later.", headers=error_response_headers), 500)
 
     try:
         # Log that the currently logged in user initiated an update check.
@@ -87,6 +95,10 @@ def api_admin_fetch_updates():
                 current_app.logger.error(f"{logger_prefix} Invalid version format: %s", latest_version)
                 return error_response()
 
+            # Defining the response headers to be added every successful JSON response return.
+            success_response_headers = {
+                "Cache-Control": "private, max-age=60, must-revalidate"
+            }
 
             # Compare the latest version with the current backend version.
             if latest_version > backend_version:
@@ -98,14 +110,14 @@ def api_admin_fetch_updates():
                 current_app.logger.warning("Current version: %s", backend_version)
 
                 # Return a JSON response with a warning message and update details 
-                return jsonify(warning=warning_message, latest_version=latest_version, current_version=backend_version), 200
+                return jsonify_on_steroids(warning=warning_message, latest_version=latest_version, current_version=backend_version, headers=success_response_headers), 200
 
             else:
                 # Log that the application is up to date.
                 current_app.logger.info("No updates available! Backend is up to date.")
 
                 # Return a JSON response confirming the backend is up to date.
-                return jsonify(success="You are running the latest version."), 200
+                return jsonify_on_steroids(success="You are running the latest version.", headers=success_response_headers), 200
 
         else:
             # Log an error if the API response is not successful, including HTTP code and body.

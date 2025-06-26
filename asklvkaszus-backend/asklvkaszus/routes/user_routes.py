@@ -16,13 +16,13 @@ from ..actions.user.submit_question import user_submit_question
 user_bp = Blueprint('user', __name__)
 
 @user_bp.route('/fetch_backend_version', methods=['GET'])
-@limiter.limit('50 per hour')
+@limiter.limit('50000 per hour')
 def user_fetch_backend_version_route():
     return fetch_backend_version()
 
 
 @user_bp.route('/fetch_csrf_token', methods=['GET'])
-@limiter.limit('500 per hour')
+@limiter.limit('50000 per hour')
 def user_fetch_csrf_token_route():
     return fetch_csrf_token()
 
@@ -33,7 +33,7 @@ def user_app_settings_route():
     return user_app_settings()
 
 
-@user_bp.route('/fetch_all_questions', methods=['POST'])
+@user_bp.route('/fetch_all_questions', methods=['GET'])
 @limiter.limit(Config.USER_RATELIMIT)
 def user_fetch_all_questions_route():
     return user_fetch_all_questions()

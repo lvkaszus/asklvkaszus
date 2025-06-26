@@ -1,24 +1,31 @@
-from flask import request, jsonify
+from flask import request
+from ....modules.response_handler import jsonify_on_steroids
 from ....modules.fields import safe_get
 from ....extensions import sql
 import ipaddress
 from ....models.blocked_senders import BlockedSenders
 
 def api_admin_unblock_sender():
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     data = request.get_json()
 
     if not data:
-        return jsonify(error="Invalid JSON payload!"), 400
+        return jsonify_on_steroids(error="Invalid JSON payload!", headers=response_headers), 400
 
     sender_ip = safe_get(data, 'sender_ip', str)
 
     if not sender_ip:
-        return jsonify(error="Sender IP Address cannot be empty!"), 400
+        return jsonify_on_steroids(error="Sender IP Address cannot be empty!", headers=response_headers), 400
 
     try:
         ipaddress.ip_address(sender_ip)
     except ValueError:
-        return jsonify(error="Invalid Sender IP address format!"), 400
+        return jsonify_on_steroids(error="Invalid Sender IP address format!", headers=response_headers), 400
         
     blocked_sender = BlockedSenders.query.filter_by(ip_address=sender_ip).first()
 
@@ -26,7 +33,7 @@ def api_admin_unblock_sender():
         sql.session.delete(blocked_sender)
         sql.session.commit()
 
-        return jsonify(success=f"Sender with IP Address {sender_ip} unbanned successfully!"), 200
+        return jsonify_on_steroids(success=f"Sender with IP Address {sender_ip} unbanned successfully!", headers=response_headers), 200
 
     else:
-        return jsonify(error=f"Sender with IP Address {sender_ip} not found!"), 404
+        return jsonify_on_steroids(error=f"Sender with IP Address {sender_ip} not found!", headers=response_headers), 404

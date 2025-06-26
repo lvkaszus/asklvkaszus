@@ -1,9 +1,15 @@
 from ...extensions import csrf
-from flask import jsonify
+from ...modules.response_handler import jsonify_on_steroids
 from ...models.blocked_senders import BlockedSenders
 
 def admin_fetch_blocked_senders(identity):
     csrf.protect()
+
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
 
     blocked_senders = BlockedSenders.query.order_by(BlockedSenders.date.desc()).all()
     formatted_blocked_senders = []
@@ -17,7 +23,7 @@ def admin_fetch_blocked_senders(identity):
                 'date': sender.date,
             })
 
-        return jsonify(formatted_blocked_senders), 200
-                
     if formatted_blocked_senders == []:
-        return jsonify(message='No blocked senders yet!'), 200
+        return jsonify_on_steroids(message='No blocked senders yet!', headers=response_headers), 200
+
+    return jsonify_on_steroids(formatted_blocked_senders, headers=response_headers), 200

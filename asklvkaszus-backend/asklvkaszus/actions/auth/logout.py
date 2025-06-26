@@ -1,6 +1,7 @@
 from ...extensions import csrf
 from ...config import Config
-from flask import current_app, request, jsonify
+from flask import current_app, request, make_response
+from ...modules.response_handler import jsonify_on_steroids
 from ...modules.jwt_core import revoke_tokens
 from flask_wtf.csrf import CSRFError
 
@@ -12,6 +13,13 @@ def logout(identity):
     # by using function from Flask-WTF library.
     csrf.protect()
 
+    # Defining the response headers to be added into the JSON response return.
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
     # Then, it retrieves the access_token and refresh_token from the client's cookies
     access_token = request.cookies.get('access_token')
     refresh_token = request.cookies.get('refresh_token')
@@ -22,10 +30,8 @@ def logout(identity):
     if access_token and refresh_token:
         revoke_tokens(access_token, refresh_token)
 
-    # Prepare a JSON response indicating successful logout.
-    response = jsonify(success="Logged out successfully!")
-    # Set HTTP status code 200 (OK) for the response.
-    response.status_code = 200
+    # Prepare a JSON response indicating successful logout with HTTP 200 (OK) status code..
+    response = make_response(jsonify_on_steroids(success="Logged out successfully!", headers=response_headers), 200)
 
     # Clears the authentication cookies by setting:
     # - Empty values

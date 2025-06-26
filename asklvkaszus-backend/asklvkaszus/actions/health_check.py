@@ -4,7 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from redis import Redis
 from ..config import Config
 from redis.exceptions import RedisError
-from flask import jsonify, current_app
+from flask import current_app
+from ..modules.response_handler import jsonify_on_steroids
 
 def health_check():
     db_status = None
@@ -44,4 +45,10 @@ def health_check():
     if redis_status != "ok":
         current_app.logger.critical(f"Application Redis Database Error: {redis_error}")
 
-    return jsonify(status=overall_status), http_status
+    response_headers = {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
+    }
+
+    return jsonify_on_steroids(status=overall_status, headers=response_headers), http_status

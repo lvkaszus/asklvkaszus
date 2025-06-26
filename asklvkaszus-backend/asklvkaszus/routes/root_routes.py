@@ -12,6 +12,6 @@ root_bp = Blueprint('root', __name__)
 @root_bp.route('/api/', methods=['GET'])
 @root_bp.route('/api/v3', methods=['GET'])
 @root_bp.route('/api/v3/', methods=['GET'])
-@limiter.limit('2000 per hour')
+@limiter.limit('20000 per hour')
 def root_main_route():
     return main_endpoint()

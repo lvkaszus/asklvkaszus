@@ -48,11 +48,13 @@ class Config:
 
     YOUR_NICKNAME = config.get('your_nickname', '@me')
 
-    SERVER_URL = config.get('server_url')
-    API_ALLOWED_CLIENTS_URL = config.get('api_allowed_clients_url', '*')
+    SERVER_URL = config.get('server_url', 'https://domain.tld')
+    API_ALLOWED_CLIENTS_URL = config.get('api_allowed_clients_url', SERVER_URL)
 
     WTF_CSRF_CHECK_DEFAULT = False
     WTF_CSRF_METHODS = {'POST', 'PUT', 'DELETE'}
+    CORS_SUPPORTS_CREDENTIALS = True
+    CORS_VARY_HEADER = True
     SESSION_COOKIE_SAMESITE = "Strict"
     SESSION_COOKIE_SECURE = config.get('cookies_secure', True)
     SESSION_COOKIE_SECURE = SESSION_COOKIE_SECURE if isinstance(SESSION_COOKIE_SECURE, bool) else SESSION_COOKIE_SECURE.lower() == 'true'

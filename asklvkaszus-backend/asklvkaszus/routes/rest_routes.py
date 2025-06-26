@@ -39,7 +39,7 @@ def rest_health_check_route():
 
 
 @rest_bp.route('/fetch_backend_version', methods=['GET'])
-@limiter.limit('50 per hour')
+@limiter.limit('50000 per hour')
 @require_api_key
 def rest_fetch_backend_version_route():
     return fetch_backend_version()

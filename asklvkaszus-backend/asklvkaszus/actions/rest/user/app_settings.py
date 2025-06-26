@@ -1,5 +1,5 @@
-from flask import jsonify
 from ....models.app_settings import AppSettings
+from ....modules.response_handler import jsonify_on_steroids
 
 def api_user_app_settings():
     app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
@@ -11,7 +11,17 @@ def api_user_app_settings():
             'approve_questions_first': app_settings.approve_questions_first
         }
 
-        return jsonify(frontend_app_settings)
+        success_response_headers = {
+            "Cache-Control": "public, max-age=300, must-revalidate"
+        }
+
+        return jsonify_on_steroids(frontend_app_settings, headers=success_response_headers), 200
 
     else:
-        return jsonify(error="App Settings are not set yet!"), 404
+        error_response_headers = {
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        }
+
+        return jsonify_on_steroids(error="App Settings are not set yet!", headers=error_response_headers), 404
