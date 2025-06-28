@@ -34,6 +34,12 @@ const CheckLoginResult = ({ open, error, response, onClose }) => {
                                         {t('admin-error-login-invalidjsonpayload')}
                                     </Alert>
                                 );
+                            case 'CAPTCHA Verification Failed!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-login-invalidcaptcha')}
+                                    </Alert>
+                                );
                             case "Username and Password is required!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

@@ -41,7 +41,7 @@ const Home = ({ handleFetchUserAppSettingsRequest, isUserAppSettingsNotification
               {t('home-title', { nickname: yourNickname })}
             </Typography>
 
-            <SubmitQuestionForm markdownFrontendEnabled={userAppSettingsResponse?.markdown_frontend_enabled} questionsNeedApproval={userAppSettingsResponse?.approve_questions_first} forceQuestionsListDataFetch={handleQuestionsListUpdate}/>
+            <SubmitQuestionForm markdownFrontendEnabled={userAppSettingsResponse?.markdown_frontend_enabled} questionsNeedApproval={userAppSettingsResponse?.approve_questions_first} captchaEnabled={userAppSettingsResponse?.captcha_enabled} captchaProvider={userAppSettingsResponse?.captcha_provider} captchaSiteKey={userAppSettingsResponse?.captcha_site_key} forceQuestionsListDataFetch={handleQuestionsListUpdate}/>
 
             <Divider />
 

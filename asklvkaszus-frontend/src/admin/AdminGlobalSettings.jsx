@@ -4,9 +4,9 @@ import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
 import CheckUpdatesResult from "./components/results/CheckUpdatesResult";
 import { SendCheckUpdatesRequest } from "./components/requests/SendCheckUpdatesRequest";
-import GlobalSettingsControls from "./components/global_settings/GlobalSettingsControls";
 import CheckFetchAdminAppSettingsResult from "./components/results/CheckFetchAdminAppSettingsResult";
 import { SendSetSessionRequest } from "./components/requests/SendSetSessionRequest";
+import GlobalSettingsTabView from "./components/global_settings/GlobalSettingsTabView";
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
@@ -66,7 +66,7 @@ const AdminGlobalSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminApp
               <LinearProgress sx={{ marginTop: '12px', width: '100%' }} />
             </Box>
           ) : (
-            <GlobalSettingsControls appSettings={adminAppSettingsResponse} forceDataFetch={handleForceAdminAppSettingsDataFetch} />
+            <GlobalSettingsTabView appSettings={adminAppSettingsResponse} forceDataFetch={handleForceAdminAppSettingsDataFetch} />
           )}
         </Box>
 

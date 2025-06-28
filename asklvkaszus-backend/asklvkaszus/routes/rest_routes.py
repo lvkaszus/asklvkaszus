@@ -9,6 +9,7 @@ from ..actions.fetch_backend_version import fetch_backend_version
 from ..actions.rest.admin.answer_question import api_admin_answer_question
 from ..actions.rest.admin.app_settings import api_admin_app_settings
 from ..actions.rest.admin.block_sender import api_admin_block_sender
+from ..actions.rest.admin.configure_captcha import api_admin_configure_captcha
 from ..actions.rest.admin.configure_notifications import api_admin_configure_notifications
 from ..actions.rest.admin.fetch_all_questions import api_admin_fetch_all_questions
 from ..actions.rest.admin.fetch_blocked_senders import api_admin_fetch_blocked_senders
@@ -63,6 +64,18 @@ def rest_admin_app_settings_route():
 @require_api_key
 def rest_admin_block_sender_route():
     return api_admin_block_sender()
+
+@rest_bp.route('/admin/configure_captcha', methods=['GET'])
+@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@require_api_key
+def rest_admin_get_captcha_settings_route(identity):
+    return admin_configure_captcha(identity)
+
+@rest_bp.route('/admin/configure_captcha', methods=['PUT'])
+@limiter.limit(Config.API_ADMIN_RATELIMIT)
+@require_api_key
+def rest_admin_configure_captcha_route(identity):
+    return admin_configure_captcha(identity)
 
 @rest_bp.route('/admin/configure_notifications', methods=['PUT'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)

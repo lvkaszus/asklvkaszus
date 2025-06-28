@@ -10,6 +10,7 @@ from ..actions.auth.fetch_csrf_token import fetch_csrf_token
 from ..actions.admin.answer_question import admin_answer_question
 from ..actions.admin.app_settings import admin_app_settings
 from ..actions.admin.block_sender import admin_block_sender
+from ..actions.admin.configure_captcha import admin_configure_captcha
 from ..actions.admin.configure_notifications import admin_configure_notifications
 from ..actions.admin.fetch_all_questions import admin_fetch_all_questions
 from ..actions.admin.fetch_blocked_senders import admin_fetch_blocked_senders
@@ -66,6 +67,18 @@ def admin_update_app_settings_route(identity):
 @token_required
 def admin_block_sender_route(identity):
     return admin_block_sender(identity)
+
+@admin_bp.route('/configure_captcha', methods=['GET'])
+@limiter.limit(Config.ADMIN_RATELIMIT)
+@token_required
+def admin_get_captcha_settings_route(identity):
+    return admin_configure_captcha(identity)
+
+@admin_bp.route('/configure_captcha', methods=['PUT'])
+@limiter.limit(Config.ADMIN_RATELIMIT)
+@token_required
+def admin_configure_captcha_route(identity):
+    return admin_configure_captcha(identity)
 
 @admin_bp.route('/configure_notifications', methods=['PUT'])
 @limiter.limit(Config.ADMIN_RATELIMIT)

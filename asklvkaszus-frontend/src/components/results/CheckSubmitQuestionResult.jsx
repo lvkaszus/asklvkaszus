@@ -35,6 +35,12 @@ const CheckSubmitQuestionResult = ({ open, error, response, onClose }) => {
                                         {t('error-submitquestion-invalidjsonpayload')}
                                     </Alert>
                                 );
+                            case 'CAPTCHA Verification Failed!':
+                                return (
+                                    <Alert severity='error' onClose={onClose} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {t('error-submitquestion-invalidcaptcha')}
+                                    </Alert>
+                                );
                             case 'Sending question failed. Empty messages are not allowed!':
                                 return (
                                     <Alert severity='error' onClose={onClose} sx={{ display: 'flex', alignItems: 'center' }}>

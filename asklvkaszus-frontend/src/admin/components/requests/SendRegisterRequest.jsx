@@ -11,13 +11,18 @@ export const SendRegisterRequest = (username, password, confirmPassword) => {
 
   const navigate = useNavigate();
 
-  const submitRegisterRequest = async () => {
+  const submitRegisterRequest = async (captcha_token) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
         const response = await axios.post(
             `${domain}/api/app/admin/register`,
-            { username: username, password: password, confirm_password: confirmPassword },
+            {
+              username: username,
+              password: password,
+              confirm_password: confirmPassword,
+              captcha_token: captcha_token,
+            },
             {
               headers: {
                 'X-CSRFToken': csrfToken,
@@ -51,8 +56,8 @@ export const SendRegisterRequest = (username, password, confirmPassword) => {
     }
   };
 
-  const handleRegisterRequest = async () => {
-    await submitRegisterRequest();
+  const handleRegisterRequest = async (captcha_token) => {
+    await submitRegisterRequest(captcha_token);
   };
 
   return {

@@ -8,8 +8,9 @@ import CheckSubmitQuestionResult from '../results/CheckSubmitQuestionResult';
 import { css } from '@emotion/react';
 import { SendSubmitQuestionRequest } from '../requests/SendSubmitQuestionRequest';
 import { Link } from 'react-router-dom';
+import CaptchaDialog from '../captcha/CaptchaDialog';
 
-const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, forceQuestionsListDataFetch }) => {
+const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, captchaEnabled, captchaProvider, captchaSiteKey, forceQuestionsListDataFetch }) => {
     const { t } = useTranslation();
 
     const [questionText, setQuestionText] = useState('');
@@ -17,6 +18,8 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
 
     const [isMarkdownDialogOpen, setMarkdownDialogOpen] = useState(false);
     const [isSubmitDialogOpen, setSubmitDialogOpen] = useState(false);
+    const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
+
     const [isButtonDisabled, setButtonDisabled] = useState(false);
 
     const handleQuestionTextFieldChange = (event) => {
@@ -42,10 +45,27 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
 
     const { submitQuestionError, submitQuestionResponse, handleSubmitQuestionRequest } = SendSubmitQuestionRequest(questionText);
 
-    const handleSendQuestion = async (event) => {
+    const handleCaptchaDialogOpen = () => {
+      setCaptchaDialogOpen(true);
+    }
+
+    const handleCaptchaDialogClose = () => {
+      setCaptchaDialogOpen(false);
+    }
+
+    const handleSendQuestionFormSubmit = async (event) => {
       event.preventDefault();
+
+      if (captchaEnabled) {
+        handleCaptchaDialogOpen();
+      } else {
+        await handleSendQuestion(null);
+      }
+    }
+
+    const handleSendQuestion = async (captcha_token) => {
       setButtonDisabled(true);
-      await handleSubmitQuestionRequest();
+      await handleSubmitQuestionRequest(captcha_token);
       setQuestionText('');
       setButtonDisabled(false);
       setSubmitDialogOpen(true);
@@ -54,7 +74,7 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
 
     const handleEnterKeyPress = async (event) => {
       if (event.key === 'Enter') {
-        await handleSendQuestion(event);
+        await handleSendQuestionFormSubmit(event);
       }
     };
     
@@ -63,7 +83,7 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
     };
 
     return (
-        <Box component="form" onSubmit={handleSendQuestion} sx={{ marginBottom: '16px', textAlign: 'left' }}>
+        <Box component="form" onSubmit={handleSendQuestionFormSubmit} sx={{ marginBottom: '16px', textAlign: 'left' }}>
             <Typography component='p' sx={{ fontWeight: 400, marginTop: '12px', marginBottom: '6px' }}>
                 {t('sqf-title')}
             </Typography>
@@ -89,7 +109,7 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
                 <Typography component='p' sx={{ marginTop: '4px', fontWeight: 300, fontSize: '14px' }}>{t('sqf-approvalenabled')}</Typography>
             )}
 
-            <Button type="submit" onClick={handleSendQuestion} disabled={isButtonDisabled} fullWidth>
+            <Button type="submit" disabled={isButtonDisabled} fullWidth>
                 <ChatBubbleIcon />
                 {t('sqf-button')}
             </Button>
@@ -110,6 +130,8 @@ const SubmitQuestionForm = ({ markdownFrontendEnabled, questionsNeedApproval, fo
 
 
             <MarkdownDescription open={isMarkdownDialogOpen} onClose={handleMarkdownDialogClose} />
+
+            <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={(token) => {handleCaptchaDialogClose(); handleSendQuestion(token)}} captchaProvider={captchaProvider} captchaSiteKey={captchaSiteKey} />
 
             <CheckSubmitQuestionResult open={isSubmitDialogOpen} error={submitQuestionError} response={submitQuestionResponse} onClose={handleSubmitDialogClose}/>
         </Box>

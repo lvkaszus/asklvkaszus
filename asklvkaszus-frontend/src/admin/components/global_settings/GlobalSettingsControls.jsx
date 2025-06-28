@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, FormControlLabel, Switch, Divider, Card, CardContent, Button, Dialog, DialogContent, IconButton } from "@mui/material";
+import { Box, Typography, FormControlLabel, Switch, Divider, CardContent, Button, Dialog, DialogContent, IconButton } from "@mui/material";
 import { SendUpdateAppSettingsRequest } from "../requests/SendUpdateAppSettingsRequest";
 import CheckUpdateAppSettingsResult from "../results/CheckUpdateAppSettingsResult";
 import { CheckBox, Close, InfoRounded } from "@mui/icons-material";
@@ -52,84 +52,76 @@ const GlobalSettingsControls = ({ appSettings, forceDataFetch }) => {
 
     return (
         <>
-            <Card variant="outlined" sx={{ width: '100%', maxWidth: '600px' }} className="fade-in">
-                <CardContent>
-                    <Typography variant="h5" component='h5' sx={{ textAlign: 'center' }}>
-                        {t('admin-gsc-title')}
+            <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <Typography component="p">
+                        {t('admin-gsc-globalapienabled')}
                     </Typography>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={globalApiEnabled}
+                                onChange={(e) => setGlobalApiEnabled(e.target.checked)}
+                            />
+                        }
+                        label={globalApiEnabled ? t('enabled') : t('disabled')}
+                    />
+                </Box>
 
-                    <Divider sx={{ marginY: '16px' }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <Typography component="p">
+                        {t('admin-gsc-adminmarkdownenabled')}
+                    </Typography>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={markdownAdminEnabled}
+                                onChange={(e) => setMarkdownAdminEnabled(e.target.checked)}
+                            />
+                        }
+                        label={markdownAdminEnabled ? t('enabled') : t('disabled')}
+                    />
+                </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <Typography component="p">
-                            {t('admin-gsc-globalapienabled')}
-                        </Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={globalApiEnabled}
-                                    onChange={(e) => setGlobalApiEnabled(e.target.checked)}
-                                />
-                            }
-                            label={globalApiEnabled ? t('enabled') : t('disabled')}
-                        />
-                    </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <Typography component="p">
+                        {t('admin-gsc-usermarkdownenabled')}
+                    </Typography>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={markdownFrontendEnabled}
+                                onChange={(e) => setMarkdownFrontendEnabled(e.target.checked)}
+                            />
+                        }
+                        label={markdownFrontendEnabled ? t('enabled') : t('disabled')}
+                    />
+                </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <Typography component="p">
-                            {t('admin-gsc-adminmarkdownenabled')}
-                        </Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={markdownAdminEnabled}
-                                    onChange={(e) => setMarkdownAdminEnabled(e.target.checked)}
-                                />
-                            }
-                            label={markdownAdminEnabled ? t('enabled') : t('disabled')}
-                        />
-                    </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Typography component="p">
+                        {t('admin-gsc-questionsapprovalenabled')}
+                    </Typography>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={questionsNeedApproval}
+                                onChange={(e) => setQuestionsNeedApproval(e.target.checked)}
+                            />
+                        }
+                        label={questionsNeedApproval ? t('enabled') : t('disabled')}
+                    />
+                </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                        <Typography component="p">
-                            {t('admin-gsc-usermarkdownenabled')}
-                        </Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={markdownFrontendEnabled}
-                                    onChange={(e) => setMarkdownFrontendEnabled(e.target.checked)}
-                                />
-                            }
-                            label={markdownFrontendEnabled ? t('enabled') : t('disabled')}
-                        />
-                    </Box>
+                <Divider sx={{ marginY: '16px' }} />
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Typography component="p">
-                            {t('admin-gsc-questionsapprovalenabled')}
-                        </Typography>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={questionsNeedApproval}
-                                    onChange={(e) => setQuestionsNeedApproval(e.target.checked)}
-                                />
-                            }
-                            label={questionsNeedApproval ? t('enabled') : t('disabled')}
-                        />
-                    </Box>
-
-                    <Divider sx={{ marginY: '16px' }} />
-
-                    <Box>
-                        <Button variant="contained" onClick={handleOpenConfirmDialog} fullWidth>
-                            <CheckBox />
-                            {t('admin-gsc-savesettings')}
-                        </Button>
-                    </Box>
-                </CardContent>
-            </Card>
+                <Box>
+                    <Button variant="contained" onClick={handleOpenConfirmDialog} fullWidth>
+                        <CheckBox />
+                        {t('admin-gsc-savesettings')}
+                    </Button>
+                </Box>
+            </CardContent>
 
             <Dialog
                 open={dialogOpen}

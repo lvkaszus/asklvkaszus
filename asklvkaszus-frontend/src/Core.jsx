@@ -169,8 +169,8 @@ const Core = () => {
 
                     {/* Admin Panel Routes */}
 
-                    <Route path="/admin/login" element={ <AdminLogin /> } />
-                    <Route path="/admin/register" element={ <AdminRegister /> } />
+                    <Route path="/admin/login" element={ <AdminLogin handleFetchAdminAppSettingsRequest={handleFetchAdminAppSettingsRequest} isAdminAppSettingsNotificationOpen={isAdminAppSettingsNotificationOpen} adminAppSettingsError={adminAppSettingsError} adminAppSettingsResponse={adminAppSettingsResponse} handleAdminAppSettingsNotificationClose={handleAdminAppSettingsNotificationClose} /> } />
+                    <Route path="/admin/register" element={ <AdminRegister handleFetchAdminAppSettingsRequest={handleFetchAdminAppSettingsRequest} isAdminAppSettingsNotificationOpen={isAdminAppSettingsNotificationOpen} adminAppSettingsError={adminAppSettingsError} adminAppSettingsResponse={adminAppSettingsResponse} handleAdminAppSettingsNotificationClose={handleAdminAppSettingsNotificationClose} /> } />
 
 
                     <Route exact path="/admin" element={ <AdminHome handleFetchAdminAppSettingsRequest={handleFetchAdminAppSettingsRequest} forceAdminAppSettingsDataFetch={forceAdminAppSettingsDataFetch} isAdminAppSettingsNotificationOpen={isAdminAppSettingsNotificationOpen} adminAppSettingsError={adminAppSettingsError} adminAppSettingsResponse={adminAppSettingsResponse} handleAdminAppSettingsNotificationClose={handleAdminAppSettingsNotificationClose} updateChecks={updateChecks} setUpdateChecks={setUpdateChecks} /> } />

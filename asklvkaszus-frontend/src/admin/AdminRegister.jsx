@@ -8,10 +8,12 @@ import CheckRegisterResult from "./components/results/CheckRegisterResult";
 import { Link } from "react-router-dom";
 import { SendCheckSessionRequest } from "./components/requests/SendCheckSessionRequest";
 import { SendRegistrationEnabledRequest } from "./components/requests/SendRegistrationEnabledRequest";
+import CheckFetchAdminAppSettingsResult from "./components/results/CheckFetchAdminAppSettingsResult";
+import CaptchaDialog from "../components/captcha/CaptchaDialog";
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const AdminRegister = () => {
+const AdminRegister = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose }) => {
     const theme = useTheme();
 
     const { t } = useTranslation();
@@ -22,6 +24,12 @@ const AdminRegister = () => {
     }, [yourNickname]);
 
     const [isLoading, setLoading] = useState(true);
+
+    useEffect(() => {
+      if (!adminAppSettingsError) {
+        handleFetchAdminAppSettingsRequest();
+      }
+    }, [adminAppSettingsError])
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -39,6 +47,9 @@ const AdminRegister = () => {
 
     const { registerError, registerResponse, handleRegisterRequest } = SendRegisterRequest(username, password, confirmPassword);
     const [isSubmitNotificationOpen, setSubmitNotificationOpen] = useState(false);
+
+    const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
+
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     
     const { handleCheckSessionRequest } = SendCheckSessionRequest();
@@ -116,10 +127,27 @@ const AdminRegister = () => {
         setConfirmPassword(event.target.value);
     };
 
-    const handleFormSubmit = async (event) => {
-      event.preventDefault();
+    const handleCaptchaDialogOpen = () => {
+      setCaptchaDialogOpen(true);
+    }
+
+    const handleCaptchaDialogClose = () => {
+      setCaptchaDialogOpen(false);
+    }
+
+  const handleRegisterFormSubmit = async (event) => {
+    event.preventDefault();
+
+    if (adminAppSettingsResponse?.captcha_enabled) {
+      handleCaptchaDialogOpen();
+    } else {
+      await handleRegister(null);
+    }
+  }
+
+    const handleRegister = async (captcha_token) => {
       setButtonDisabled(true);
-      await handleRegisterRequest();
+      await handleRegisterRequest(captcha_token);
       setUsername('');
       setPassword('');
       setConfirmPassword('');
@@ -157,7 +185,7 @@ const AdminRegister = () => {
                     <Typography variant='h5' component='h5'>{t('register-hello')}</Typography>
                     <Typography component='p' sx={{ fontSize: '14px' }}>{t('register-description')}</Typography>
 
-                    <Box component='form' onSubmit={handleFormSubmit}>
+                    <Box component='form' onSubmit={handleRegisterFormSubmit}>
                       <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '32px' }}>
                         <Person />
                         <TextField
@@ -404,6 +432,10 @@ const AdminRegister = () => {
             )}
           </CardContent>
         </Card>
+
+        <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+
+        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={(token) => {handleCaptchaDialogClose(); handleRegister(token)}} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
 
         <CheckRegisterResult open={isSubmitNotificationOpen} error={registerError} response={registerResponse} onClose={handleSubmitNotificationClose}/>
       </Box>

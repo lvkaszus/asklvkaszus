@@ -11,10 +11,12 @@ import { SendCheckSessionRequest } from "./components/requests/SendCheckSessionR
 import { SendRegistrationEnabledRequest } from "./components/requests/SendRegistrationEnabledRequest";
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import CheckFetchAdminAppSettingsResult from "./components/results/CheckFetchAdminAppSettingsResult";
+import CaptchaDialog from "../components/captcha/CaptchaDialog";
 
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
-const AdminLogin = () => {
+const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -23,6 +25,12 @@ const AdminLogin = () => {
   }, [yourNickname]);
 
   const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!adminAppSettingsError) {
+      handleFetchAdminAppSettingsRequest();
+    }
+  }, [adminAppSettingsError])
 
   const [isRecoverPasswordDialogOpen, setRecoverPasswordDialogOpen] = useState(false);
 
@@ -33,6 +41,9 @@ const AdminLogin = () => {
   const [passwordError, setPasswordError] = useState('');
 
   const [isSubmitNotificationOpen, setSubmitNotificationOpen] = useState(false);
+
+  const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
+
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   
   const { handleCheckSessionRequest } = SendCheckSessionRequest();
@@ -92,10 +103,27 @@ const AdminLogin = () => {
     setPassword(event.target.value);
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleCaptchaDialogOpen = () => {
+    setCaptchaDialogOpen(true);
+  }
+
+  const handleCaptchaDialogClose = () => {
+    setCaptchaDialogOpen(false);
+  }
+
+  const handleLoginFormSubmit = async (event) => {
     event.preventDefault();
+
+    if (adminAppSettingsResponse?.captcha_enabled) {
+      handleCaptchaDialogOpen();
+    } else {
+      await handleLogin(null);
+    }
+  }
+
+  const handleLogin = async (captcha_token) => {
     setButtonDisabled(true);
-    await handleLoginRequest();
+    await handleLoginRequest(captcha_token);
     setUsername('');
     setPassword('');
     setSubmitNotificationOpen(true);
@@ -138,7 +166,7 @@ const AdminLogin = () => {
                 <Typography variant='h5' component='h5'>{t('login-hello')}</Typography>
                 <Typography component='p' sx={{ fontSize: '14px' }}>{t('login-description')}</Typography>
 
-                <Box component='form' onSubmit={handleFormSubmit}>
+                <Box component='form' onSubmit={handleLoginFormSubmit}>
                   <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '32px' }}>
                     <Person />
                     <TextField
@@ -204,7 +232,11 @@ const AdminLogin = () => {
           </CardContent>
         </Card>
 
+        <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
+
         <RecoverPasswordDescription open={isRecoverPasswordDialogOpen} onClose={handleRecoverPasswordDialogClose} />
+
+        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={(token) => {handleCaptchaDialogClose(); handleLogin(token)}} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
 
         <CheckLoginResult open={isSubmitNotificationOpen} error={loginError} response={loginResponse} onClose={handleSubmitNotificationClose}/>
       </Box>

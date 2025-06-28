@@ -23,21 +23,25 @@ def admin_app_settings(identity):
         # Fetch global application settings from the database (named "asklvkaszus" by default)
         app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
-        # If settings exist, prepare and return them as a JSON response
-        if app_settings is not None:
-            app_settings_json = {
-                'global_api_enabled': app_settings.global_api_enabled,
-                'markdown_admin_enabled': app_settings.markdown_admin_enabled,
-                'markdown_frontend_enabled': app_settings.markdown_frontend_enabled,
-                'approve_questions_first': app_settings.approve_questions_first,
-            }
+        # If global application settings does not exist, create default ones
+        if app_settings is None:
+            app_settings = AppSettings(username="asklvkaszus")
+            sql.session.add(app_settings)
+            sql.session.commit()
 
-            # Return application settings with HTTP 200 (OK)
-            return jsonify_on_steroids(app_settings_json, headers=get_response_headers), 200
+        # Prepare and return them as a JSON response
+        app_settings_json = {
+            'global_api_enabled': app_settings.global_api_enabled,
+            'markdown_admin_enabled': app_settings.markdown_admin_enabled,
+            'markdown_frontend_enabled': app_settings.markdown_frontend_enabled,
+            'approve_questions_first': app_settings.approve_questions_first,
+            'captcha_enabled': app_settings.captcha_enabled,
+            'captcha_provider': app_settings.captcha_provider,
+            'captcha_site_key': app_settings.captcha_site_key
+        }
 
-        else:
-            # If settings are not yet configured, return a 404 error
-            return jsonify_on_steroids(error="App Settings are not set yet!", headers=get_response_headers), 404
+        # Return application settings with HTTP 200 (OK)
+        return jsonify_on_steroids(app_settings_json, headers=get_response_headers), 200
 
     # Handle POST request - update application settings
     elif request.method == 'POST':
@@ -58,9 +62,11 @@ def admin_app_settings(identity):
         # Fetch global application settings from the database (named "asklvkaszus" by default)
         app_settings = AppSettings.query.filter_by(username="asklvkaszus").first()
 
-        # If settings do not exist, return a 404 error
+        # If settings does NOT EXIST, create defaults
         if not app_settings:
-            return jsonify_on_steroids(error="App Settings not found!", headers=post_response_headers), 404
+            app_settings = AppSettings(username="asklvkaszus")
+            sql.session.add(app_settings)
+            sql.session.commit()
 
 
         # Update settings based on the provided JSON data

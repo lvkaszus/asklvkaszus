@@ -11,13 +11,17 @@ export const SendLoginRequest = (username, password) => {
 
   const navigate = useNavigate();
 
-  const submitLoginRequest = async () => {
+  const submitLoginRequest = async (captcha_token) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
         const response = await axios.post(
             `${domain}/api/app/admin/login`,
-            { username: username, password: password },
+            {
+              username: username,
+              password: password,
+              captcha_token: captcha_token,
+            },
             {
               headers: {
                 'X-CSRFToken': csrfToken,
@@ -51,8 +55,8 @@ export const SendLoginRequest = (username, password) => {
     }
   };
 
-  const handleLoginRequest = async () => {
-    await submitLoginRequest();
+  const handleLoginRequest = async (captcha_token) => {
+    await submitLoginRequest(captcha_token);
   };
 
   return {

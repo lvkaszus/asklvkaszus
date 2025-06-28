@@ -2,6 +2,7 @@ import os
 from ...extensions import csrf, sql
 from ...modules.fields import safe_get
 from flask import current_app, request
+from ...modules.captcha_verification import verify_captcha
 from ...modules.response_handler import jsonify_on_steroids
 from ...models.registered_users import RegisteredUsers
 import re
@@ -60,6 +61,12 @@ def register():
         if not data:
             return jsonify_on_steroids(error="Invalid JSON payload!", headers=response_headers), 400
 
+        # Get captcha token from the JSON data.
+        captcha_token = safe_get(data, 'captcha_token', str)
+
+        # If captcha token verification failed, return an error.
+        if not verify_captcha(captcha_token):
+            return jsonify_on_steroids(error="CAPTCHA Verification Failed!", headers=response_headers), 403
 
         # Next, extract username, password, and confirm_password fields from the JSON data.
         username = safe_get(data, 'username', str)

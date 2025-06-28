@@ -1,4 +1,5 @@
 from flask import current_app ,request
+from ...modules.captcha_verification import verify_captcha
 from ...modules.response_handler import jsonify_on_steroids
 import bleach
 from ...modules.fields import safe_get
@@ -28,6 +29,10 @@ def user_submit_question():
     if not data:
         return jsonify_on_steroids(error="Invalid JSON payload!", headers=response_headers), 400
 
+    captcha_token = safe_get(data, 'captcha_token', str)
+
+    if not verify_captcha(captcha_token):
+        return jsonify_on_steroids(error="CAPTCHA Verification Failed!", headers=response_headers), 403
 
     question = safe_get(data, 'question', str)
 

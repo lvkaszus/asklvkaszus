@@ -36,6 +36,12 @@ const CheckRegisterResult = ({ open, error, response, onClose }) => {
                                         {t('admin-error-register-invalidjsonpayload')}
                                     </Alert>
                                 );
+                            case 'CAPTCHA Verification Failed!':
+                                return (
+                                    <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>
+                                        {t('admin-error-register-invalidcaptcha')}
+                                    </Alert>
+                                );
                             case "Username, Password and Confirmed Password is required!":
                                 return (
                                     <Alert onClose={onClose} severity="error" sx={{ width: '100%' }}>

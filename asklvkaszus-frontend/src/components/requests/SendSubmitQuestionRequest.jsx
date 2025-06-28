@@ -8,13 +8,15 @@ export const SendSubmitQuestionRequest = (question) => {
     const [submitQuestionResponse, setSubmitQuestionResponse] = useState('');
     const [submitQuestionError, setSubmitQuestionError] = useState(false);
 
-    const submitQuestionRequest = async () => {
+    const submitQuestionRequest = async (captcha_token) => {
         try {
             const csrfToken = await SendFetchCsrfTokenRequest();
 
             const response = await axios.post(`${domain}/api/app/user/submit_question`,
-                { question: question },
-
+                { 
+                    question: question,
+                    captcha_token: captcha_token,
+                },
                 {
                     headers: {
                         'X-CSRFToken': csrfToken,
@@ -44,8 +46,8 @@ export const SendSubmitQuestionRequest = (question) => {
         }
     };
 
-    const handleSubmitQuestionRequest = async () => {
-        await submitQuestionRequest();
+    const handleSubmitQuestionRequest = async (captcha_token) => {
+        await submitQuestionRequest(captcha_token);
     };
 
     return {

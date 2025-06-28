@@ -87,10 +87,6 @@ def create_app():
 
         check_vapid_keys()
 
-        if not AppSettings.query.filter_by(username="asklvkaszus").first():
-            default_global_settings = AppSettings(username="asklvkaszus")
-            sql.session.add(default_global_settings)
-
         sql.session.commit()
         sql.session.close()
 
