@@ -16,6 +16,7 @@
     "error-technicaldetails-title": "Technical details",
     "error-technicaldetails-description": "If the problem repeatedly recurs, contact the application administrator ({{username}}) or the application developer (@lvkaszus)!",
 
+
     "navbar-homepage": "home",
     "navbar-info": "information",
 
@@ -109,6 +110,7 @@
     "recoverpassword-title": "Account password recovery",
     "recoverpassword-description": "If you don't remember your account password, you can reset it using the built-in tool located in the Backend's directory.",
 
+
     "register-pagetitle": "Registration",
     "register-hello": "Welcome!",
     "register-description": "Create a new user by entering a username and password.",
@@ -118,7 +120,12 @@
     "register-register": "Register now",
     "register-backtologin": "Back to Login page",
 
-    "register-password-allowedchars": "Password may contain only Latin letters (a–z, A–Z), digits (0–9), and the following special characters: !, @, #, $, %, ^, &, *!",
+    "register-username-toofewusernamecharacters": "Username must be at least 4 characters!",
+    "register-username-toomuchusernamecharacters": "Username must be less than 32 characters!",
+    "register-username-forbiddenusernamecharacters": "Username can only contain letters of the Latin alphabet (a-z, A-Z), digits (0-9), hyphens (-) and underscores (_)!",
+    "register-username-consecutivecharacters": "Username must not contain more than one hyphen (-) or underscore (_)!",
+
+    "register-password-allowedchars": "Password only contains letters of the Latin alphabet (a-z, A-Z), digits (0–9), and the following special characters: !, @, #, $, %, ^, &, *!",
     "register-password-length": "Password has at least 12 characters",
     "register-password-uppercase": "Password has at least 1 capital letter",
     "register-password-digit": "Password has at least 1 digit",
@@ -134,6 +141,7 @@
     "admin-navbar-management": "Management",
     "admin-navbar-logout": "Log out",
     "admin-navbar-hellouser": "Hello, {{display_name}}!",
+
 
     "admin-home-pagetitle": "Administrator Panel",
 
@@ -191,6 +199,7 @@
     "admin-csc-savesettings": "Save your settings",
     "admin-csc-dialog-save-title": "Saving CAPTCHA settings",
     "admin-csc-dialog-save-description": "Setting an invalid CAPTCHA provider, site key or private key will result in a TOTAL BLOCKING of users ability to submit new questions and will LOCK ADMINISTRATOR LOGIN AND REGISTRATION! Are you sure you want to save the new CAPTCHA settings?",
+
 
     "admin-usersettings-pagetitle": "User settings",
 
@@ -270,6 +279,7 @@
     "admin-cp-dialog-confirm-title": "Confirmation of password change",
     "admin-cp-dialog-confirm-description": "Are you sure you want to change the password for the currently logged in user?",
 
+
     "admin-management-pagetitle": "Management",
     
     "admin-mt-title": "Managing blocked senders",
@@ -287,6 +297,7 @@
     "admin-us-dialog-confirm-title": "Unlocking the sender",
     "admin-us-dialog-confirm-description": "Are you sure you want to unblock the blocked sender with IP address \"{{sender_ip}}\"?",
 
+    
     "admin-success-login": "Logged in successfully!",
     "admin-success-register": "Registered successfully!",
     "admin-success-checkupdates": "You are currently using the latest version of the application.",

@@ -110,6 +110,7 @@
     "recoverpassword-title": "Odzyskiwanie hasła do konta",
     "recoverpassword-description": "Jeżeli nie pamiętasz hasła do swojego konta, możesz je zresetować korzystając z wbudowanego narzędzia znajdującego się w katalogu Backend'u.",
 
+
     "register-pagetitle": "Rejestracja",
     "register-hello": "Witaj!",
     "register-description": "Utwórz nowego użytkownika, wpisując nazwę użytkownika i hasło.",
@@ -140,6 +141,7 @@
     "admin-navbar-management": "Zarządzanie",
     "admin-navbar-logout": "Wyloguj się",
     "admin-navbar-hellouser": "Witaj, {{display_name}}!",
+
 
     "admin-home-pagetitle": "Panel Administratora",
 
@@ -277,6 +279,7 @@
     "admin-cp-dialog-confirm-title": "Potwierdzenie zmiany hasła",
     "admin-cp-dialog-confirm-description": "Czy napewno chcesz zmienić hasło dla aktualnie zalogowanego użytkownika?",
 
+
     "admin-management-pagetitle": "Zarządzanie",
 
     "admin-mt-title": "Zarządzanie zablokowanymi nadawcami",
@@ -294,6 +297,7 @@
     "admin-us-dialog-confirm-title": "Odblokowanie nadawcy",
     "admin-us-dialog-confirm-description": "Czy napewno chcesz odblokować zablokowanego nadawcę o adresie IP \"{{sender_ip}}\"?",
 
+    
     "admin-success-login": "Zalogowano pomyślnie!",
     "admin-success-register": "Zarejestrowano pomyślnie!",
     "admin-success-checkupdates": "Aktualnie używasz najnowszej wersji aplikacji.",
