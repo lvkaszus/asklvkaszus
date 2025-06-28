@@ -40,7 +40,7 @@ def rest_health_check_route():
 
 
 @rest_bp.route('/fetch_backend_version', methods=['GET'])
-@limiter.limit('50000 per hour')
+@limiter.limit('50 per hour')
 @require_api_key
 def rest_fetch_backend_version_route():
     return fetch_backend_version()
@@ -65,17 +65,11 @@ def rest_admin_app_settings_route():
 def rest_admin_block_sender_route():
     return api_admin_block_sender()
 
-@rest_bp.route('/admin/configure_captcha', methods=['GET'])
+@rest_bp.route('/admin/configure_captcha', methods=['GET', 'PUT'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)
 @require_api_key
-def rest_admin_get_captcha_settings_route(identity):
-    return admin_configure_captcha(identity)
-
-@rest_bp.route('/admin/configure_captcha', methods=['PUT'])
-@limiter.limit(Config.API_ADMIN_RATELIMIT)
-@require_api_key
-def rest_admin_configure_captcha_route(identity):
-    return admin_configure_captcha(identity)
+def rest_admin_configure_captcha_route():
+    return admin_configure_captcha()
 
 @rest_bp.route('/admin/configure_notifications', methods=['PUT'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)

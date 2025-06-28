@@ -1,12 +1,10 @@
 from flask import request
 from ....modules.response_handler import jsonify_on_steroids
-from ....extensions import csrf, sql
+from ....extensions import sql
 from ....modules.fields import safe_get
 from ....models.app_settings import AppSettings
 
 def api_admin_configure_captcha():
-    csrf.protect()
-
     response_headers = {
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
         "Pragma": "no-cache",

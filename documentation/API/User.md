@@ -43,17 +43,20 @@ This endpoint is used to retrieve global application settings.
    {
      "markdown_admin_enabled": true,
      "markdown_frontend_enabled": false,
-     "approve_questions_first": true
+     "approve_questions_first": true,
+     "captcha_enabled": false,
+     "captcha_provider": "cf-turnstile",
+     "captcha_site_key": ""
    }
    ```
 
-2. **HTTP 404 - Not Found**:
-   If the application settings are not yet set, it will return a 404 error.
+2. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
 
    **Example Response**:
    ```json
    {
-     "error": "App Settings are not set yet!"
+     "error": "Rate-limit exceeded! Try again later."
    }
    ```
 
@@ -63,14 +66,13 @@ This endpoint is used to retrieve global application settings.
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while loading application settings! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
 #### **Functionality**:
 1. The endpoint fetches the current application settings stored in the database.
 2. If the settings exist, they are returned as a JSON response.
-3. If the settings do not exist, a 404 error is returned.
 
 
 ### Fetch All Questions
@@ -132,13 +134,23 @@ This endpoint allows users to fetch all questions stored in the database, ordere
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If an error occurs while retrieving questions from the database.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while fetching questions list! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -146,8 +158,7 @@ This endpoint allows users to fetch all questions stored in the database, ordere
 1. Queries all records from the `Questions` table, ordering by date in descending order.
 2. Iterates through the results, formatting each question into a structured JSON format.
 3. If no questions are found, returns a `"message": "No questions yet!"` response.
-4. If any errors occur, logs the error and returns a `500` response.
-5. Ensures proper closing of the SQL session in the `finally` block.
+4. If any errors occur, returns a `500` response.
 
 
 ### Submit New Question
@@ -201,12 +212,26 @@ This endpoint allows users to submit a new question. Depending on the applicatio
    ```
 
 2. **HTTP 400 - Bad Request**:
-   If the question is empty or invalid, it will return a message indicating the error.
+   If the request is invalid, it will return a message indicating the error.
 
-   **Example Response**:
+   **Example Response when request data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when question is empty**:
    ```json
    {
      "error": "Sending question failed. Empty messages are not allowed!"
+   }
+   ```
+
+   **Example Response when question is too long**:
+   ```json
+   {
+     "error": "Sending question failed. Message is too long (maximum of 5000 characters)!"
    }
    ```
 
@@ -220,24 +245,34 @@ This endpoint allows users to submit a new question. Depending on the applicatio
    }
    ```
 
-4. **HTTP 500 - Internal Server Error**:
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
    If an error occurs while processing the request, it will return an error message with a 500 status code.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while sending your message! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
 #### **Functionality**:
 1. The endpoint accepts a `POST` request with a `question` in the request body.
-2. It checks if the question is empty; if so, it returns a `400` error.
+2. It checks if the question is empty or too long; if so, it returns a `400` error.
 3. It checks if the sender's IP address is blocked; if so, it returns a `403` error.
 4. The question is assigned a unique `UUID` and added to the `Questions` table.
 5. If the `approve_questions_first` setting is enabled, the question is marked as hidden until approved by the administrator.
 6. Notifications are sent to the administrator (via push and Telegram) whenever a new question is submitted.
-7. If any error occurs during processing, it logs the error and returns a `500` error response.
+7. If any error occurs during processing, it returns a `500` error response.
 
 
 <div align="center">

@@ -34,13 +34,13 @@ admin_bp = Blueprint('admin', __name__)
 
 
 @admin_bp.route('/fetch_backend_version', methods=['GET'])
-@limiter.limit('50000 per hour')
+@limiter.limit('50 per hour')
 def admin_fetch_backend_version_route():
     return fetch_backend_version()
 
 
 @admin_bp.route('/fetch_csrf_token', methods=['GET'])
-@limiter.limit('200000 per hour')
+@limiter.limit('2000 per hour')
 def admin_fetch_csrf_token_route():
     return fetch_csrf_token()
 

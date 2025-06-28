@@ -54,22 +54,50 @@ The request must contain JSON data with the following fields:
    ```
 
 2. **HTTP 400 - Bad Request**:
-   If the request contains an empty answer, it will return an error message with a 400 status code.
+   If the request contains incorrect JSON data or an empty answer, it will return an error message with a 400 status code.
 
-   **Example Response**:
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when question ID is missing**:
+   ```json
+   {
+     "error": "Please provide a Question ID!"
+   }
+   ```
+
+  **Example Response when question with specified ID does not exist**:
+   ```json
+   {
+     "error": "Question with selected ID does not exist."
+   }
+   ```
+
+  **Example Response when answer to specified question is empty**:
    ```json
    {
      "error": "Sending question reply failed. Empty replies are not allowed!"
    }
    ```
 
-3. **HTTP 404 - Not Found**:
-   If no question exists with the specified `question_id`, it will return a 404 error.
+  **Example Response when answer to specified question is too long (over 5000 characters)**:
+   ```json
+   {
+     "error": "Sending question reply failed. Message is too long (maximum of 5000 characters)!"
+   }
+   ```
+
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
 
    **Example Response**:
    ```json
    {
-     "error": "Question with selected ID does not exist."
+     "error": "Rate-limit exceeded! Try again later."
    }
    ```
 
@@ -79,15 +107,15 @@ The request must contain JSON data with the following fields:
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while updating answer to selected question! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
 #### **Functionality**:
 1. The endpoint is secured using the `@require_api_key` decorator, meaning every request must include a valid API key.
 2. The request body must include the `question_id` and the `question_answer`.
-3. The endpoint checks if the question exists using the provided `question_id`. If not, it returns a 404 error.
-4. If the answer is empty, it will return a 400 error.
+3. The endpoint checks if the question exists using the provided `question_id`. If not, it returns an error.
+4. If the answer is empty, it will return an error.
 5. If the question exists and the answer is valid, the `question.answer` is updated, and the changes are committed to the database.
 6. In case of any exception, a 500 error is returned with an appropriate message.
 
@@ -115,15 +143,17 @@ This endpoint is used to retrieve or update global application settings.
 
 #### **Request Body**:
 For `POST` requests, the request must contain JSON data with the following fields:
-- `markdown_frontend_enabled` (boolean, required): Toggles Markdown support for the frontend.
-- `markdown_admin_enabled` (boolean, required): Toggles Markdown support for the admin panel.
-- `approve_questions_first` (boolean, required): Toggles whether questions need to be approved before being shown.
+- `global_api_enabled` (boolean): Toggles Application API enable state.
+- `markdown_frontend_enabled` (boolean): Toggles Markdown support for the frontend.
+- `markdown_admin_enabled` (boolean): Toggles Markdown support for the admin panel.
+- `approve_questions_first` (boolean): Toggles whether questions need to be approved before being shown.
 
 **Example Request for `POST`**:
 ```json
 {
-  "markdown_frontend_enabled": false,
+  "global_api_enabled": true,
   "markdown_admin_enabled": true,
+  "markdown_frontend_enabled": false,
   "approve_questions_first": false
 }
 ```
@@ -139,21 +169,14 @@ For `POST` requests, the request must contain JSON data with the following field
      "global_api_enabled": true,
      "markdown_admin_enabled": true,
      "markdown_frontend_enabled": false,
-     "approve_questions_first": true
+     "approve_questions_first": true,
+     "captcha_enabled": true,
+     "captcha_provider": "cf-turnstile",
+     "captcha_site_key": "captchapublickey"
    }
    ```
 
-2. **HTTP 404 - Not Found**:
-   If the application settings are not yet set, it will return a 404 error.
-
-   **Example Response for `GET`**:
-   ```json
-   {
-     "error": "App Settings are not set yet!"
-   }
-   ```
-
-3. **HTTP 200 - OK** (POST):
+2. **HTTP 200 - OK** (POST):
    If the request to update the application settings is successful, it will return a success message.
 
    **Example Response for `POST`**:
@@ -163,30 +186,40 @@ For `POST` requests, the request must contain JSON data with the following field
    }
    ```
 
-4. **HTTP 400 - Bad Request** (POST):
-   If any required field is empty during the `POST` request, it will return a 400 error with an appropriate message.
+3. **HTTP 400 - Bad Request** (POST):
+   If any required field has incorrect data during the `POST` request, it will return a 400 error with an appropriate message.
 
-   **Example Response for `POST`**:
+   **Example Response when JSON data is invalid**:
    ```json
    {
-     "error": "markdown_frontend_enabled cannot be empty!"
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when data type is invalid**:
+   ```json
+   {
+     "error": "markdown_frontend_enabled must be boolean!"
+   }
+   ```
+
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
    }
    ```
 
 5. **HTTP 500 - Internal Server Error**:
    If a server error occurs while processing the request, it will return an error message with a 500 status code.
 
-   **Example Response for `GET`**:
+   **Example Response**:
    ```json
    {
-     "error": "An error occurred while loading application settings! Try again later."
-   }
-   ```
-
-   **Example Response for `POST`**:
-   ```json
-   {
-     "error": "An error occurred while updating application settings! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -194,14 +227,10 @@ For `POST` requests, the request must contain JSON data with the following field
 
 - **GET Request**:
   1. The endpoint fetches the current application settings stored in the database.
-  2. If the settings exist, they are returned as a JSON response.
-  3. If the settings do not exist, a 404 error is returned.
 
 - **POST Request**:
   1. The request body contains multiple settings to update.
-  2. The endpoint validates the input for empty values and ensures that none of the fields are left blank.
-  3. If any of the fields are invalid (empty), it will return a 400 error.
-  4. After validating and updating the settings in the database, the changes are committed and a success message is returned.
+  2. After validating and updating the settings in the database, the changes are committed and a success message is returned.
 
 
 ### Block Sender
@@ -249,10 +278,24 @@ The request must contain JSON data with the following field:
    ```
 
 2. **HTTP 400 - Bad Request**:
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
    **Example Response for missing IP**:
    ```json
    {
      "error": "Sender IP Address cannot be empty!"
+   }
+   ```
+
+   **Example Response for incorrect IP address format**:
+   ```json
+   {
+     "error": "Invalid Sender IP Address format!"
    }
    ```
 
@@ -263,13 +306,23 @@ The request must contain JSON data with the following field:
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If a server error occurs while processing the request, it will return a 500 error.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while blocking sender! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -283,6 +336,144 @@ The request must contain JSON data with the following field:
    - `last_question`: The last question submitted by the sender.
    - `date`: The timestamp of when the sender was blocked.
 6. The new blocked sender record is saved to the database, and a success message is returned.
+
+
+### CAPTCHA Settings
+
+#### **HTTP Method(s)**:
+```
+GET, PUT
+```
+
+#### **Endpoint URI**:
+```
+/api/v3/admin/configure_captcha
+```
+
+#### **Endpoint Description**:
+This endpoint is used to retrieve or update application CAPTCHA protection settings.
+
+#### **HTTP Headers**:
+- **Authorization**: Requires an API key (api_key) for authorization (`Authorization: Ask-lvkaszus-API-Key: xxxxxxxxxx`). This is enforced by the `@require_api_key` decorator.
+
+#### **Ratelimiting**:
+- Request limit: Defined by `Config.API_ADMIN_RATELIMIT` (admin-specific rate limit).
+
+#### **Request Body**:
+For `PUT` requests, the request must contain JSON data with the following fields:
+- `captcha_enabled` (boolean): Toggles Application CAPTCHA protection enable state.
+- `captcha_provider` (string: `cf-turnstile` or `google-recaptcha-v2` only, required if `captcha_enabled` is `true`): Describes the current CAPTCHA service provider.
+- `captcha_site_key` (string, required if `captcha_enabled` is `true`): Site key required by CAPTCHA service provider to generate matching verification tokens.
+- `captcha_secret_key` (string, required if `captcha_enabled` is `true`): Secret key required by the CAPTCHA service provider to verify a request that is protected by a CAPTCHA challenge.
+
+**Example Request for `PUT`**:
+```json
+{
+  "captcha_enabled": true,
+  "captcha_provider": "cf-turnstile",
+  "captcha_site_key": "ABCDEF123456",
+  "captcha_secret_key": "123456abcdef"
+}
+```
+
+#### **Possible Responses**:
+
+1. **HTTP 200 - OK** (GET):
+   If the request is successful, it will return the current CAPTCHA settings.
+
+   **Example Response for `GET`**:
+   ```json
+   {
+     "captcha_enabled": true,
+     "captcha_provider": "google-recaptcha-v2",
+     "captcha_site_key": "ABCDEF123456",
+     "captcha_secret_key": "123456abcdef"
+   }
+   ```
+
+2. **HTTP 200 - OK** (PUT):
+   If the request to update the application settings is successful, it will return a success message.
+
+   **Example Response for `PUT`**:
+   ```json
+   {
+     "success": "CAPTCHA Settings have been updated."
+   }
+   ```
+
+3. **HTTP 400 - Bad Request** (PUT):
+   If any required field has incorrect data during the `PUT` request, it will return a 400 error with an appropriate message.
+
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when Enable Captcha data type is invalid**:
+   ```json
+   {
+     "error": "captcha_enabled must be boolean!"
+   }
+   ```
+
+   **Example Response when required fields are missing**:
+   ```json
+   {
+     "error": "All CAPTCHA fields are required when enabling!"
+   }
+   ```
+
+   **Example Response when specified Captcha Provider is unsupported**:
+   ```json
+   {
+     "error": "Unsupported CAPTCHA Provider!"
+   }
+   ```
+
+   **Example Response when Captcha Site Key data type is invalid**:
+   ```json
+   {
+     "error": "captcha_site_key must be string!"
+   }
+   ```
+
+   **Example Response when Captcha Secret Key data type is invalid**:
+   ```json
+   {
+     "error": "captcha_secret_key must be string!"
+   }
+   ```
+
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
+   If a server error occurs while processing the request, it will return an error message with a 500 status code.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Internal Server Error!"
+   }
+   ```
+
+#### **Functionality**:
+
+- **GET Request**:
+  1. The endpoint fetches the current application CAPTCHA settings stored in the database.
+
+- **PUT Request**:
+  1. The request body contains multiple CAPTCHA settings to update.
+  2. After validating and updating the CAPTCHA settings in the database, the changes are committed and a success message is returned.
 
 
 ### Configure Notifications
@@ -308,8 +499,8 @@ This endpoint allows an admin to configure notification settings, including Web 
 
 #### **Request Body**:
 The request must contain JSON data with optional fields for enabling/disabling notifications.
-- `webpush_enabled` (boolean, optional): Enables or disables Web Push notifications.
-- `telegram_enabled` (boolean, optional): Enables or disables Telegram notifications.
+- `webpush_enabled` (boolean): Enables or disables Web Push notifications.
+- `telegram_enabled` (boolean): Enables or disables Telegram notifications.
 - `telegram_bot_token` (string, required if `telegram_enabled` is `true`): Telegram Bot Token.
 - `telegram_bot_chat_id` (string, required if `telegram_enabled` is `true`): Telegram Chat ID.
 
@@ -336,12 +527,54 @@ The request must contain JSON data with optional fields for enabling/disabling n
    ```
 
 2. **HTTP 400 - Bad Request**:
-   - If Telegram is enabled but `telegram_bot_token` or `telegram_bot_chat_id` is missing.
+   If any required field has incorrect data during the `PUT` request, it will return a 400 error with an appropriate message.
+
+   **Example Response when the username taken from the API key is empty**:
+   ```json
+   {
+     "error": "Invalid session username!"
+   }
+   ```
+
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response for invalid Web Push Enabled parameter data type**:
+   ```json
+   {
+     "error": "webpush_enabled must be boolean!"
+   }
+   ```
+
+   **Example Response for invalid Telegram Enabled parameter data type**:
+   ```json
+   {
+     "error": "telegram_enabled must be boolean!"
+   }
+   ```
 
    **Example Response for missing bot token**:
    ```json
    {
      "error": "telegram_bot_token cannot be empty!"
+   }
+   ```
+
+   **Example Response when Telegram bot token is invalid**:
+   ```json
+   {
+     "error": "Invalid Telegram Bot Token!"
+   }
+   ```
+
+   **Example Response when Telegram bot token verification unexpectedly fails**:
+   ```json
+   {
+     "error": "Failed to verify provided Telegram Bot Token! Try again later."
    }
    ```
 
@@ -352,7 +585,48 @@ The request must contain JSON data with optional fields for enabling/disabling n
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:  
+   **Example Response for invalid Telegram chat ID parameter data type**:
+   ```json
+   {
+     "error": "telegram_bot_chat_id must be a number!"
+   }
+   ```
+
+   **Example Response when Telegram chat ID is equal to zero**:
+   ```json
+   {
+     "error": "telegram_bot_chat_id cannot be zero!"
+   }
+   ```
+
+   **Example Response when Telegram chat ID is too long**:
+   ```json
+   {
+     "error": "telegram_bot_chat_id cannot be longer than 20 characters!"
+   }
+   ```
+
+3. **HTTP 404 - Not Found**:
+   If the user does not exist.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "User not found!"
+   }
+   ```
+
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:  
    If a server error occurs while generating required Web Push keypair.
 
    **Example Response**:
@@ -367,7 +641,27 @@ The request must contain JSON data with optional fields for enabling/disabling n
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while updating notifications configuration! Try again later."
+     "error": "Internal Server Error!"
+   }
+   ```
+
+6. **HTTP 502 - Bad Gateway**:
+   If Telegram API returns an error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Failed to verify provided Telegram Bot Token because Telegram API returned an error!"
+   }
+   ```
+
+7. **HTTP 504 - Gateway Timeout**:
+   If request to Telegram API times out.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Failed to verify provided Telegram Bot Token because of Telegram API Timeout Error!"
    }
    ```
 
@@ -447,13 +741,23 @@ This endpoint allows an admin to fetch all questions stored in the database, ord
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If an error occurs while retrieving questions from the database.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while fetching questions list! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -461,8 +765,7 @@ This endpoint allows an admin to fetch all questions stored in the database, ord
 1. Queries all records from the `Questions` table, ordering by date in descending order.
 2. Iterates through the results, formatting each question into a structured JSON format.
 3. If no questions are found, returns a `"message": "No questions yet!"` response.
-4. If any errors occur, logs the error and returns a `500` response.
-5. Ensures proper closing of the SQL session in the `finally` block.
+4. If any errors occur, returns a `500` response.
 
 
 ### Fetch Blocked Senders
@@ -521,13 +824,23 @@ This endpoint allows an admin to retrieve a list of all blocked senders (IP addr
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If an error occurs while retrieving blocked senders from the database.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while fetching blocked senders list! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -535,8 +848,7 @@ This endpoint allows an admin to retrieve a list of all blocked senders (IP addr
 1. Queries all records from the `BlockedSenders` table, ordering by date in descending order.
 2. Iterates through the results, formatting each blocked sender into a structured JSON format.
 3. If no blocked senders are found, returns a `"message": "No blocked senders yet!"` response.
-4. If any errors occur, logs the error and returns a `500` response.
-5. Ensures proper closing of the SQL session in the `finally` block.
+4. If any errors occur, returns a `500` response.
 
 
 ### Fetch Available Updates
@@ -585,7 +897,17 @@ The response depends on the result of the `check_for_updates()` function:
    }
    ```
 
-2. **HTTP 500 - Internal Server Error**
+2. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+3. **HTTP 500 - Internal Server Error**
 If an error occurs while fetching the update information.
 
    **GitHub API Failure**
@@ -598,7 +920,7 @@ If an error occurs while fetching the update information.
    **Internal Server Error**
    ```json
    {
-     "error": "An error occurred while fetching available updates! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -608,7 +930,7 @@ If an error occurs while fetching the update information.
    - `"error"` → Returns a **500 Internal Server Error**.
    - `"success"` → Returns a **200 OK** (indicating no updates are available).
    - `"warning"` → Returns a **200 OK** (indicating an update is available).
-3. If an exception occurs, logs the error and returns a **500 Internal Server Error**.
+3. If an exception occurs, returns a **500 Internal Server Error**.
 
 
 ### Fetch Public Key for Web Push Notifications
@@ -648,7 +970,17 @@ This endpoint allows an admin to retrieve Public Key used for Web Push Notificat
    }
    ```
 
-2. **HTTP 500 - Internal Server Error**:
+2. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+3. **HTTP 500 - Internal Server Error**:
    If an error occurs while generating new Keypair for Web Push Notifications.
 
    **Generate Web Push Notifications Keypair Failure**:
@@ -675,7 +1007,7 @@ This endpoint allows an admin to retrieve Public Key used for Web Push Notificat
    **Internal Server Error**
    ```json
    {
-     "error": "An unexpected error occurred while fetching VAPID public key."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -723,13 +1055,23 @@ This endpoint allows an admin to purge all questions from the database.
    }
    ```
 
-2. **HTTP 500 - Internal Server Error**:
+2. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+3. **HTTP 500 - Internal Server Error**:
    If an error occurs while attempting to purge all questions from the database.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while purging all questions! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -737,7 +1079,6 @@ This endpoint allows an admin to purge all questions from the database.
 1. Deletes all questions from the `Questions` table in the database.
 2. Commits the changes to the database.
 3. If an error occurs during the process, an error message is returned.
-4. Logs the error and provides a generic failure response if the purge cannot be completed.
 
 
 ### Purge Specific Question
@@ -784,7 +1125,24 @@ The request must contain JSON data with the following fields:
    }
    ```
 
-2. **HTTP 404 - Not Found**:
+2. **HTTP 400 - Bad Request**:
+   If any required field has incorrect data during the `DELETE` request, it will return a 400 error with an appropriate message.
+
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when question ID is missing**:
+   ```json
+   {
+     "error": "Please provide a Question ID!"
+   }
+   ```
+
+3. **HTTP 404 - Not Found**:
    If the question with the provided `question_id` does not exist.
 
    **Example Response**:
@@ -794,7 +1152,17 @@ The request must contain JSON data with the following fields:
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
    If an error occurs while attempting to purge the specified question from the database.
 
    **Example Response**:
@@ -809,7 +1177,6 @@ The request must contain JSON data with the following fields:
 2. If the question does not exist, it returns a 404 error with an appropriate message.
 3. If the question exists, it is deleted from the database, and changes are committed.
 4. In case of an error during the process, an error message is returned.
-5. Logs the error if something goes wrong and provides a failure response.
 
 
 ### Subscribe to Push Notifications
@@ -875,14 +1242,52 @@ The request must contain JSON data with the following fields:
 2. **HTTP 400 - Bad Request**:
    If the provided subscription data is invalid or missing required information.
 
-   **Example Response**:
+   **Example Response when the username taken from the API key is empty**:
    ```json
    {
-     "error": "Invalid subscription data!"
+     "error": "Invalid session username!"
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when web push notifications endpoint is invalid**:
+   ```json
+   {
+     "error": "Invalid endpoint!"
+   }
+   ```
+
+   **Example Response when web push notifications auth key is invalid**:
+   ```json
+   {
+     "error": "Invalid auth key!"
+   }
+   ```
+
+   **Example Response when web push notifications P256DH key is invalid**:
+   ```json
+   {
+     "error": "Invalid p256dh key!"
+   }
+   ```
+
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If an error occurs while subscribing to push notifications.
 
    **Example Response**:
@@ -899,7 +1304,7 @@ The request must contain JSON data with the following fields:
 4. If no subscription exists, creates a new subscription in the database.
 5. If the total number of subscriptions exceeds 25, removes the oldest subscription.
 6. Commits changes to the database and returns the appropriate success message.
-7. In case of an error, logs the error and returns a failure response.
+7. In case of an error, returns a failure response.
 
 
 ### Toggle Visibility of All Questions
@@ -960,13 +1365,23 @@ This endpoint allows an admin to toggle the visibility of all questions in the d
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+4. **HTTP 500 - Internal Server Error**:
    If an error occurs while attempting to toggle the visibility of all questions.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while changing all questions visibility! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -976,7 +1391,7 @@ This endpoint allows an admin to toggle the visibility of all questions in the d
 3. If all questions are hidden, it sets them to visible.
 4. If any questions are visible, it sets them to hidden.
 5. Commits the changes to the database and returns a success message indicating the new visibility state.
-6. If an error occurs during the process, logs the error and returns a failure message.
+6. If an error occurs during the process, returns a failure message.
 
 
 ### Toggle Visibility of a Specific Question
@@ -1033,7 +1448,24 @@ This endpoint allows an admin to toggle the visibility of a specific question ba
      }
      ```
 
-2. **HTTP 404 - Not Found**:
+2. **HTTP 400 - Bad Request**:
+   If any required field has incorrect data during the `POST` request, it will return a 400 error with an appropriate message.
+
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when question ID is missing**:
+   ```json
+   {
+     "error": "Please provide a Question ID!"
+   }
+   ```
+
+3. **HTTP 404 - Not Found**:
    If the question with the provided ID does not exist in the database.
 
    **Example Response**:
@@ -1043,13 +1475,23 @@ This endpoint allows an admin to toggle the visibility of a specific question ba
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
    If an error occurs while attempting to toggle the visibility of the question.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while changing question visibility! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -1098,20 +1540,30 @@ This endpoint allows an admin to unblock all blocked senders by deleting all ent
    }
    ```
 
-2. **HTTP 500 - Internal Server Error**:
+2. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+3. **HTTP 500 - Internal Server Error**:
    If an error occurs while unblocking the senders.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while unbanning all senders! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
 #### **Functionality**:
 1. Deletes all entries in the `BlockedSenders` table to unblock all senders.
 2. Commits the change to the database and returns a success message.
-3. If an error occurs during the unblocking process, it logs the error and returns a failure message.
+3. If an error occurs during the unblocking process, returns a failure message.
 
 
 ### Unblock Blocked Sender
@@ -1158,12 +1610,26 @@ This endpoint allows an admin to unblock a specific sender by their IP address.
    ```
 
 2. **HTTP 400 - Bad Request**:
-   If the sender IP address is not provided in the request.
+   If any required field has incorrect data during the `DELETE` request, it will return a 400 error with an appropriate message.
 
-   **Example Response**:
+   **Example Response when JSON data is invalid**:
+   ```json
+   {
+     "error": "Invalid JSON payload!"
+   }
+   ```
+
+   **Example Response when sender IP address is missing**:
    ```json
    {
      "error": "Sender IP Address cannot be empty!"
+   }
+   ```
+
+   **Example Response when sender IP address is in invalid format**:
+   ```json
+   {
+     "error": "Invalid Sender IP address format!"
    }
    ```
 
@@ -1177,13 +1643,23 @@ This endpoint allows an admin to unblock a specific sender by their IP address.
    }
    ```
 
-4. **HTTP 500 - Internal Server Error**:
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
    If an error occurs while unblocking the sender.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while unbanning sender! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
@@ -1192,7 +1668,7 @@ This endpoint allows an admin to unblock a specific sender by their IP address.
 2. Searches for the sender's IP in the `BlockedSenders` table.
 3. If the sender is found, deletes the entry to unblock the sender and commits the change.
 4. If the sender is not found, returns an error message.
-5. If any error occurs during the process, logs the error and returns a failure message.
+5. If any error occurs during the process, returns a failure message.
 
 
 ### Get Current User Info
@@ -1247,17 +1723,37 @@ This endpoint allows an admin to retrieve detailed information about the current
    **Example Response**:
    ```json
    {
-     "error": "No username was provided!"
+     "error": "Invalid session username!"
    }
    ```
 
-3. **HTTP 500 - Internal Server Error**:
+3. **HTTP 404 - Not Found**:
+   If the user does not exist.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "User not found!"
+   }
+   ```
+
+4. **HTTP 429 - Too Many Requests**:
+   If too many requests have been already sent, it will return a 429 error.
+
+   **Example Response**:
+   ```json
+   {
+     "error": "Rate-limit exceeded! Try again later."
+   }
+   ```
+
+5. **HTTP 500 - Internal Server Error**:
    If an error occurs while fetching the user information.
 
    **Example Response**:
    ```json
    {
-     "error": "An error occurred while fetching user info! Try again later."
+     "error": "Internal Server Error!"
    }
    ```
 
