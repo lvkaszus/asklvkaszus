@@ -7,8 +7,6 @@ ENV TZ="Europe/Warsaw"
 ENV DOMAIN="https://ask.lvkasz.us"
 ENV YOUR_NICKNAME="@me"
 
-ENV NODE_ENV="production"
-
 COPY package*.json ./
 
 RUN npm install
@@ -16,5 +14,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 3031
+
+ENV NODE_ENV="production"
 
 CMD ["sh", "start.sh"]
