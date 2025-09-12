@@ -69,12 +69,12 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, question
                           <Card variant="outlined" sx={{ marginY: 2, height: '100%' }}>
                             <CardContent style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', height: '100%', width: '100%' }}>
                               {markdownFrontendEnabled ? (
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                                <Box sx={{ marginBottom: '8px' }}>
                                   <HelpIcon />
                                   <MarkdownRenderer content={question} />
                                 </Box>
                               ) : (
-                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                                <Box sx={{ marginBottom: '8px' }}>
                                   <HelpIcon />
                                   <Typography component='p'>{question}</Typography>
                                 </Box>
@@ -88,12 +88,12 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, question
                                 </Typography>
                               ) : (
                                 markdownAdminEnabled ? (
-                                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginY: '16px' }}>
+                                  <Box sx={{ marginY: '16px' }}>
                                     <MessageIcon/>
                                     <MarkdownRenderer content={answer} />
                                   </Box>
                                 ) : (
-                                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                                  <Box sx={{ marginBottom: '8px' }}>
                                     <MessageIcon/>
                                     <Typography component='p'>{answer}</Typography>
                                   </Box>

@@ -51,12 +51,12 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
                 <Card variant="outlined" sx={{ marginY: '8px' }}>
                   <CardContent>
                     {markdownFrontendEnabled ? (
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                      <Box sx={{ marginBottom: '8px' }}>
                         <HelpIcon />
                         <MarkdownRenderer content={question} />
                       </Box>
                     ) : (
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                      <Box sx={{ marginBottom: '8px' }}>
                         <HelpIcon />
                         <Typography component='p'>{question}</Typography>
                       </Box>
@@ -70,12 +70,12 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
                       </Typography>
                     ) : (
                       markdownAdminEnabled ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginY: '16px' }}>
+                        <Box sx={{ marginY: '16px' }}>
                           <MessageIcon/>
                           <MarkdownRenderer content={answer} />
                         </Box>
                       ) : (
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                        <Box sx={{ marginBottom: '8px' }}>
                           <MessageIcon/>
                           <Typography component='p'>{answer}</Typography>
                         </Box>
