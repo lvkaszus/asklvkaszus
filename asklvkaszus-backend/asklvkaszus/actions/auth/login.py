@@ -11,51 +11,31 @@ import bcrypt
 from ...modules.jwt_core import create_access_token, create_refresh_token
 from flask_wtf.csrf import CSRFError
 
-# Ask @lvkaszus! - Auth System REST API: User Login
-
 def login():
-    # Check CSRF token and session cookie when HTTP request method is POST
-    # as defined in the application configuration script (config.py: WTF_CSRF_METHODS)
-    # by using function from Flask-WTF library.
     csrf.protect()
 
-    # Defining the response headers to be added into the JSON response return.
     response_headers = {
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
     }
 
-    # If the CSRF validation passed, this API route expects a request with JSON
-    # data as a payload.
     data = request.get_json()
 
-    # When request has been sent without any JSON data, then we return an error about
-    # invalid JSON payload.
     if not data:
         return jsonify_on_steroids(error="Invalid JSON payload!", headers=response_headers), 400
 
-    # Get captcha token from the JSON data.
     captcha_token = safe_get(data, 'captcha_token', str)
 
-    # If captcha token verification failed, return an error.
     if not verify_captcha(captcha_token):
         return jsonify_on_steroids(error="CAPTCHA Verification Failed!", headers=response_headers), 403
 
-    # Next, extract username and password fields from the JSON data.
     username = safe_get(data, 'username', str)
     password = safe_get(data, 'password', str)
 
-    # If any required field is missing, return an error.
     if not username or not password:
         return jsonify_on_steroids(error="Username and Password is required!", headers=response_headers), 400
 
-    # Now, validate the username and password according to security requirements:
-    # - Username must have maximum of 32 characters
-    # - Password must have maximum of 100 characters
-    # - Username may contain only Latin letters, digits, hyphens and underscores
-    # - Username cannot contain consecutive special characters such as "--" or "__"
-    # - Password may contain only Latin letters, digits and special characters
     if len(username) > 32:
         return jsonify_on_steroids(error="Username must be less than 32 characters long!", headers=response_headers), 400
 
@@ -72,40 +52,22 @@ def login():
         return jsonify_on_steroids(error="Password may contain only Latin letters (a–z, A–Z), digits (0–9), and the following special characters: !, @, #, $, %, ^, &, *!", headers=response_headers), 400
 
 
-    # If all checks pass, we check if a user account with the provided username exists
-    # in the database by fetching the first matching record.
     user = RegisteredUsers.query.filter_by(username=username).first()
     
-    # If an user with the provided username exists in the database and the provided
-    # password matches the stored (hashed) password, proceed with successful 
-    # authentication.
     if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-        # Generate a new access token (JWT) for the authenticated user.
         access_token = create_access_token(username)
-        # Generate a new refresh token for the authenticated user.
         refresh_token = create_refresh_token(username)
 
-        # Prepare a JSON response indicating successful login with HTTP 202 (Accepted!) status code.
         response = make_response(jsonify_on_steroids(success="Successfully logged in!", headers=response_headers), 202)
 
-        # Set the access token as an HttpOnly, SameSite and Secure cookie (if enabled
-        # in the application configuration file (config.yml: cookies_secure)).
         response.set_cookie('access_token', access_token, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
-        # Set the refresh token as an HttpOnly, SameSite and Secure cookie (if enabled
-        # in the application configuration file (config.yml: cookies_secure)).
         response.set_cookie('refresh_token', refresh_token, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
 
-        # Log the successful login event with the username.
         current_app.logger.info('%s logged in successfully!', username)
         
-        # Return the prepared response to the client.
         return response
 
-    # If an user with the provided username DOES NOT exist or when the password DOES NOT
-    # match the stored (hashed) password, proceed with failure message.
     else:
-        # Log the failed login attempt with the provided username.
         current_app.logger.info('%s entered incorrect password!', username)
 
-        # Return a JSON error message with HTTP status 401 (Unauthorized).
         return jsonify_on_steroids(error='Incorrect username or password!', headers=response_headers), 401

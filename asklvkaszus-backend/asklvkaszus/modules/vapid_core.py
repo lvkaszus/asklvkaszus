@@ -13,10 +13,7 @@ import traceback
 # - Better error handling: Full logging, safe error responses
 # - Cleaning resources: Session closing
 # - Maybe (?) storing ECDSA keys in encrypted form - I must think how! :)
-# TODO! Comments in the code as in other files.
 
-
-# Ask @lvkaszus! - VAPID Core for Web Push Notifications System:
 
 def generate_vapid_keys():
     # https://gist.github.com/cjies/cc014d55976db80f610cd94ccb2ab21e

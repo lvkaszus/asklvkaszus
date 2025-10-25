@@ -4,29 +4,20 @@ from flask import current_app
 import requests
 from ...version import backend_version
 
-# Ask @lvkaszus! - Administrator Application API: Fetch Updates
-
 def admin_fetch_updates(identity):
-    # Check CSRF token and session cookie when HTTP request method is POST
-    # as defined in the application configuration script (config.py: WTF_CSRF_METHODS)
-    # by using function from Flask-WTF library.
     csrf.protect()
 
-    # Defining the error response headers to be added every JSON response return.
     error_response_headers = {
         "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
     }
 
-    # Defining a reusable generic error response for API failures.
     error_response = lambda: (jsonify_on_steroids(error="Failed to fetch data from the GitHub API! Try again later.", headers=error_response_headers), 500)
 
     try:
-        # Log that the currently logged in user initiated an update check.
         current_app.logger.info("%s requested /api/app/admin/fetch_updates endpoint - Checking application updates...", identity)
 
-        # Prepare HTTP headers for the GitHub API request, including a custom User-Agent and JSON response format.
         headers = {
             "User-Agent": f"Ask @lvkaszus! - Update Checker/{backend_version}",
             "Accept": "application/json"
@@ -60,92 +51,69 @@ def admin_fetch_updates(identity):
         # 
         #
 
-        # Prefix for consistent error logging.
         logger_prefix = "Failed to fetch latest release data from GitHub API! -"
 
-        # If the API response is successful (HTTP 200), process the response.
         if response.status_code == 200:
             try:
-                # Attempt to parse the response body as JSON.
                 data = response.json()
             except ValueError as e:
-                # Log and return an error if the response is not valid JSON.
                 current_app.logger.error(f"{logger_prefix} Response is not valid JSON: %s", str(e))
                 return error_response()
 
-            # Validate that the JSON response is an object (dict).
             if not isinstance(data, dict):
                 current_app.logger.error(f"{logger_prefix} Response JSON is not an object")
                 return error_response()
 
-            # Ensure the response contains the 'data' field in the API response.
             if "data" not in data:
                 current_app.logger.error(f"{logger_prefix} Missing 'data' in response")
                 return error_response()
 
-            # Validate that 'data' is an object.
             if not isinstance(data["data"], dict):
                 current_app.logger.error(f"{logger_prefix} 'data' is not an object")
                 return error_response()
 
-            # Check for the presence of the 'tag_name' field, which contains the version string.
             if "tag_name" not in data["data"]:
                 current_app.logger.error(f"{logger_prefix} Missing 'tag_name' in data")
                 return error_response()
 
-            # Extract the latest version string from the API response.
             latest_version = data["data"]["tag_name"]
 
-            # Validate the format of the version string (must be a string of digits and dots).
             if not isinstance(latest_version, str) or not latest_version.replace('.', '').isdigit():
                 current_app.logger.error(f"{logger_prefix} Invalid version format: %s", latest_version)
                 return error_response()
 
-            # Defining the response headers to be added every successful JSON response return.
             success_response_headers = {
                 "Cache-Control": "private, max-age=60, must-revalidate"
             }
 
-            # Compare the latest version with the current backend version.
             if latest_version > backend_version:
                 warning_message = "A newer version of this application is available. Please upgrade!"
 
-                # Log a warning about the available update.
                 current_app.logger.warning(warning_message)
                 current_app.logger.warning("Latest version: %s", latest_version)
                 current_app.logger.warning("Current version: %s", backend_version)
 
-                # Return a JSON response with a warning message and update details 
                 return jsonify_on_steroids(warning=warning_message, latest_version=latest_version, current_version=backend_version, headers=success_response_headers), 200
 
             else:
-                # Log that the application is up to date.
                 current_app.logger.info("No updates available! Backend is up to date.")
 
-                # Return a JSON response confirming the backend is up to date.
                 return jsonify_on_steroids(success="You are running the latest version.", headers=success_response_headers), 200
 
         else:
-            # Log an error if the API response is not successful, including HTTP code and body.
             current_app.logger.error("Failed to fetch latest release data from the GitHub API! - HTTP Response Code: %s, HTTP Response Body: %s", response.status_code, response.text)
 
 
-    # Handle specific exceptions for robust error management.
     except requests.exceptions.Timeout:
-        # Log a warning if the request to API server times out.
         current_app.logger.warning("Failed to fetch latest release data from GitHub API! - API Request timed out!")
         
     except requests.exceptions.SSLError:
-        # Log an error if there is an SSL/TLS certificate verification failure.
         current_app.logger.error("Failed to fetch latest release data from GitHub API! - SSL/TLS Certificate verification failed!")
         
     except requests.exceptions.ConnectionError:
-        # Log an error if there is a network connection error.
         current_app.logger.error("Failed to fetch latest release data from GitHub API! - Network connection error!")
         
     except requests.exceptions.RequestException as e:
-        # Log any other request-related exception.
         current_app.logger.error(f"Failed to fetch latest release data from GitHub API! - Request exception!: {str(e)}")
 
-    # Return a generic error response if any error occurred during the process.
     return error_response()
