@@ -8,15 +8,17 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
-import { Button } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { AdminPanelSettings, Home, Logout, ManageAccounts, Settings } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SendLogout } from '../requests/SendLogoutRequest';
 import CheckLogoutResult from '../results/CheckLogoutResult';
+import { alpha } from '@mui/material/styles';
 
 const AdminNavbar = ({ displayName }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
 
@@ -52,72 +54,100 @@ const AdminNavbar = ({ displayName }) => {
 
             <Menu id="menu-appbar" anchorEl={anchorElNav} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} keepMounted transformOrigin={{ vertical: 'top', horizontal: 'left' }} open={Boolean(anchorElNav)} onClose={handleCloseNavMenu} sx={{ display: { xs: 'block', lg: 'none' } }}>
 
-              <NavLink exact="true" to="/admin/home">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Home />
-                  <Typography textAlign="center">{t('admin-navbar-home')}</Typography>
-                </MenuItem>
-              </NavLink>
+              <MenuItem component={NavLink} to="/admin/home" onClick={handleCloseNavMenu}>
+                <Home />
+                <Typography textAlign="center">
+                  {t('admin-navbar-home')}
+                </Typography>
+              </MenuItem>
 
-              <NavLink to="/admin/global_settings">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Settings />
-                  <Typography textAlign="center">{t('admin-navbar-globalsettings')}</Typography>
-                </MenuItem>
-              </NavLink>
+              <MenuItem component={NavLink} to="/admin/global_settings" onClick={handleCloseNavMenu}>
+                <Settings />
+                <Typography textAlign="center">
+                  {t('admin-navbar-globalsettings')}
+                </Typography>
+              </MenuItem>
 
-              <NavLink to="/admin/user_settings">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <ManageAccounts />
-                  <Typography textAlign="center">{t('admin-navbar-usersettings')}</Typography>
-                </MenuItem>
-              </NavLink>
+              <MenuItem component={NavLink} to="/admin/user_settings" onClick={handleCloseNavMenu}>
+                <ManageAccounts />
+                <Typography textAlign="center">
+                  {t('admin-navbar-usersettings')}
+                </Typography>
+              </MenuItem>
 
-              <NavLink to="/admin/management">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <AdminPanelSettings />
-                  <Typography textAlign="center">{t('admin-navbar-management')}</Typography>
-                </MenuItem>
-              </NavLink>
+              <MenuItem component={NavLink} to="/admin/management" onClick={handleCloseNavMenu}>
+                <AdminPanelSettings />
+                <Typography textAlign="center">
+                  {t('admin-navbar-management')}
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
-              <NavLink exact="true" to="/admin/home">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Home />
-                  <Typography textAlign="center">
-                    {t('admin-navbar-home')}
-                  </Typography>
-                </MenuItem>
-              </NavLink>
+              <Button
+                component={NavLink}
+                to="/admin/home"
+                onClick={handleCloseNavMenu}
+                startIcon={<Home />}
+                color="inherit"
+                sx={{
+                  backgroundColor: 'unset',
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
+                  }
+                }}
+              >
+                {t('admin-navbar-home')}
+              </Button>
 
-              <NavLink to="/admin/global_settings">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <Settings />
-                  <Typography textAlign="center">
-                    {t('admin-navbar-globalsettings')}
-                  </Typography>
-                </MenuItem>
-              </NavLink>
+              <Button
+                component={NavLink}
+                to="/admin/global_settings"
+                onClick={handleCloseNavMenu}
+                startIcon={<Settings />}
+                color="inherit"
+                sx={{
+                  backgroundColor: 'unset',
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
+                  }
+                }}
+              >
+                {t('admin-navbar-globalsettings')}
+              </Button>
 
-              <NavLink to="/admin/user_settings">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <ManageAccounts />
-                  <Typography textAlign="center">
-                    {t('admin-navbar-usersettings')}
-                  </Typography>
-                </MenuItem>
-              </NavLink>
+              <Button
+                component={NavLink}
+                to="/admin/user_settings"
+                onClick={handleCloseNavMenu}
+                startIcon={<ManageAccounts />}
+                color="inherit"
+                sx={{
+                  backgroundColor: 'unset',
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
+                  }
+                }}
+              >
+                {t('admin-navbar-usersettings')}
+              </Button>
 
-              <NavLink to="/admin/management">
-                <MenuItem onClick={handleCloseNavMenu}>
-                  <AdminPanelSettings />
-                  <Typography textAlign="center">
-                    {t('admin-navbar-management')}
-                  </Typography>
-                </MenuItem>
-              </NavLink>
+              <Button
+                component={NavLink}
+                to="/admin/management"
+                onClick={handleCloseNavMenu}
+                startIcon={<AdminPanelSettings />}
+                color="inherit"
+                sx={{
+                  backgroundColor: 'unset',
+                  "&:hover": {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
+                  }
+                }}
+              >
+                {t('admin-navbar-management')}
+              </Button>
           </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', flexGrow: 0 }}>
