@@ -8,27 +8,27 @@ mysql:
   host: "localhost"
   port: "3306"
   username: "asklvkaszus"
-  password: "asklvkaszus"
+  password: "ChangeMePlease"
   database: "asklvkaszus"
 
 redis:
   host: "localhost"
   port: "6379"
   username: "asklvkaszus"
-  password: "asklvkaszus"
+  password: "ChangeMePlease"
   rate_limiting_db: "0"
   blacklisted_tokens_db: "1"
 
-your_nickname: "@lvkaszus"
+your_nickname: "@yourNickname"
 
-server_url: "https://ask.lvkasz.us"
+server_url: "http://domain.tld"
 api_allowed_clients_url: "*"
 
-cookies_secure: true
+cookies_secure: false
 
 rate_limits:
   auth: "35 per hour"
   admin: "500 per hour"
   api_admin: "250 per hour"
-  user: "250 per hour"
+  user: "10 per hour"
   api_user: "10 per hour"
