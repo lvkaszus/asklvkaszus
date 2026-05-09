@@ -59,7 +59,7 @@ services:
       - "127.0.0.1:3031:3031"
     environment:
       TZ: "Europe/Warsaw" # Update that with your current timezone!
-      DOMAIN: "https://domain.tld" # Update that with your application domain name!
+      DOMAIN: "http://domain.tld" # Update that with your application domain name!
       YOUR_NICKNAME: "@yourNickname" # Update that with your nickname that will be displayed in the application!
     depends_on:
       - asklvkaszus-backend
