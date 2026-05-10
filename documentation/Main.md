@@ -13,6 +13,7 @@
 
 - [Installation Guide](Installation/Installation.md)
 - [Reverse Proxy Setup](Installation/Reverse_Proxy_Setup.md)
+- [HTTPS Configuration Guide](Installation/HTTPS_Configuration.md)
 
 **Usage & How-To**
 
