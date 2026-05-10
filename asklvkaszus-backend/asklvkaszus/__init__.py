@@ -1,7 +1,7 @@
-import os
 from flask import Flask, request
 from .config import Config
 from .logger import setup_main_logger, main_logger
+from werkzeug.middleware.proxy_fix import ProxyFix
 from .extensions import wait_for_db, wait_for_redis, sql, csrf, limiter, cors
 from .errors import register_error_handlers
 from flask_migrate import Migrate
@@ -27,15 +27,18 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    setup_main_logger(Config.LOGFILE, Config.DEBUG)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
-    if not wait_for_db(db_uri=Config.SQLALCHEMY_DATABASE_URI, logger=main_logger()):
-        main_logger.error("Application SQL Database initialization failed! Aborting application startup...")
+    setup_main_logger(Config.LOGFILE, Config.DEBUG)
+    logger = main_logger()
+
+    if not wait_for_db(db_uri=Config.SQLALCHEMY_DATABASE_URI, logger=logger):
+        logger.error("Application SQL Database initialization failed! Aborting application startup...")
 
         raise ConnectionError("Application SQL Database does not respond after attempting to connect to it for 60 seconds!")
 
-    if not wait_for_redis(redis_uri=Config.REDIS_SERVER_URI, logger=main_logger()):
-        main_logger.error(f"Application Redis Database initialization failed! Aborting application startup...")
+    if not wait_for_redis(redis_uri=Config.REDIS_SERVER_URI, logger=logger):
+        logger.error(f"Application Redis Database initialization failed! Aborting application startup...")
 
         raise ConnectionError("Application Redis Database does not respond after attempting to connect to it for 60 seconds!")
 
@@ -106,18 +109,8 @@ def create_app():
                     response.headers['Vary'] += ', Cookie'
             else:
                 response.headers['Vary'] = 'Cookie'
-        
-        # sensitive_paths = [
-        #     '/api/app/user',
-        #     '/api/app/admin',
-        #     '/api/v3'
-        # ]
-        
-        # if any(request.path.startswith(path) for path in sensitive_paths):
-        #     response.headers['Cache-Control'] = 'no-store, max-age=0'
-        #     response.headers['Pragma'] = 'no-cache'
-        #     response.headers['Expires'] = '0'
 
         return response
+
 
     return app
