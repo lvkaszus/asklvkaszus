@@ -3,8 +3,8 @@ bin/
 include/
 lib/
 lib64/
+config/config.yml
+config/redis.conf
 pyvenv.cfg
-config.yml
-redis.conf
 *.log
 *.log*
