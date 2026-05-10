@@ -12,27 +12,27 @@
 
 2. **Point your domain name to your server by editing DNS records in your domain registrar** - Detailed help: [OVHcloud](https://support.us.ovhcloud.com/hc/en-us/articles/360012042099-How-to-Connect-Your-VPS-to-Your-Domain-Name) / [GoDaddy](https://www.godaddy.com/help/change-an-a-record-19239) / [Namecheap](https://www.namecheap.com/support/knowledgebase/article.aspx/9837/46/how-to-connect-a-domain-to-a-server-or-hosting/)
 
-3. **Open ports `80` and `443` to enable HTTP and HTTPS on your server.** Below is an example how to enable incoming traffic on those ports using `iptables`.
+3. **Open ports `80` to enable incoming HTTP traffic (and `443` to also enable HTTPS traffic to your server.)** Below is an example how to enable incoming traffic on those ports using `iptables`.
 
-- IPv4:
-```
+IPv4:
+```bash
 # Enable incoming HTTP and HTTPS traffic
 sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 # Save new iptables rules
-sudo iptables-save > /etc/iptables/rules.v4
+sudo iptables-save | sudo tee /etc/iptables/rules.v4 > /dev/null
 
 ```
 
-- IPv6:
-```
+IPv6:
+```bash
 # Enable incoming HTTP and HTTPS traffic
 sudo ip6tables -A INPUT -p tcp --dport 80 -j ACCEPT
 sudo ip6tables -A INPUT -p tcp --dport 443 -j ACCEPT
 
 # Save new iptables rules
-sudo ip6tables-save > /etc/iptables/rules.v6
+sudo ip6tables-save | sudo tee /etc/iptables/rules.v6 > /dev/null
 
 ```
 
@@ -81,7 +81,7 @@ sudo ip6tables-save > /etc/iptables/rules.v6
 
 6. **Update required configuration inside `docker-compose.yml` file to match your setup.**
 
-```
+```yml
 volumes:
   asklvkaszus_mariadb_data:
   asklvkaszus_config_data:
@@ -143,7 +143,7 @@ services:
       - "127.0.0.1:3031:3031"
     environment:
       TZ: "Europe/Warsaw" # Update that with your current timezone!
-      DOMAIN: "https://domain.tld" # Update that with your application domain name!
+      DOMAIN: "http://domain.tld" # Update that with your application domain name!
       YOUR_NICKNAME: "@yourNickname" # Update that with your nickname that will be displayed in the application!
     depends_on:
       - asklvkaszus-backend
@@ -180,7 +180,7 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 - `docker volume inspect asklvkaszus_asklvkaszus_config_data`
 
-```
+```json
 [
     {
         "CreatedAt": "2024-08-29T10:22:03Z",
@@ -212,7 +212,7 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 16. **Update required configuration inside `config.yml` file to match your setup.**
 
-```
+```yml
 debug: true
 logfile: ""
 
@@ -220,30 +220,30 @@ secret_key: "ChangeMeAsSoonAsPossible" # Secret key used for sessions
 jwt_secret_key: "ChangeMeAsSoonAsPossible" # Secret key used for JWT cookies (you can provide the same value as in secret_key variable)
 
 mysql:
-  host: "localhost" # MySQL database container name
+  host: "asklvkaszus-mariadb" # MySQL database container name
   port: "3306"
   username: "asklvkaszus"
-  password: "asklvkaszus" # MySQL database user password
+  password: "ChangeMePlease" # MySQL database user password
   database: "asklvkaszus"
 
 redis:
-  host: "localhost" # Redis database container name
+  host: "asklvkaszus-redis" # Redis database container name
   port: "6379"
   username: "asklvkaszus" # Redis username from the Redis configuration file
-  password: "asklvkaszus" # Redis user password from the Redis configuration file
+  password: "ChangeMePlease" # Redis user password from the Redis configuration file
   rate_limiting_db: "0"
   blacklisted_tokens_db: "1"
 
-your_nickname: "@lvkaszus" # Update that with your nickname that will be displayed in the application!
+your_nickname: "@yourNickname" # Update that with your nickname that will be displayed in the application!
 
-server_url: "https://ask.lvkasz.us" # Update that with your application domain name!
+server_url: "http://domain.tld" # Update that with your application domain name!
 api_allowed_clients_url: "*"
 
-cookies_secure: true # Change only to false when you are using insecure (HTTP) connection!
+cookies_secure: false # Change to true only when you are using secure (HTTPS) connection!
 
 rate_limits:
   auth: "35 per hour"
-  admin: "250 per hour"
+  admin: "500 per hour"
   api_admin: "250 per hour"
   user: "10 per hour"
   api_user: "10 per hour"
@@ -297,7 +297,7 @@ Please visit [Reverse Proxy Setup](Reverse_Proxy_Setup.md) page for exposing it 
 
 - Update `MYSQL_PASSWORD` and `MYSQL_ROOT_PASSWORD` with strong MySQL root and user password!
 
-```
+```bash
 docker run -d \
   --name asklvkaszus-mariadb \
   --network asklvkaszus-network \
@@ -312,7 +312,7 @@ docker run -d \
 
 9. **Run application Redis database Docker container.**
 
-```
+```bash
 docker run -d \
   --name asklvkaszus-redis \
   --network asklvkaszus-network \
@@ -326,7 +326,7 @@ docker run -d \
 
 - Update `TZ` with your current timezone!
 
-```
+```bash
 docker run -d \
   --name asklvkaszus-backend \
   --network asklvkaszus-network \
@@ -344,13 +344,13 @@ docker run -d \
 
 - Update `TZ` with your current timezone, `DOMAIN` with your application domain name and also `YOUR_NICKNAME` to your nickname that will be displayed in the application!
 
-```
+```bash
 docker run -d \
   --name asklvkaszus-frontend \
   --network asklvkaszus-network \
   -p 127.0.0.1:3031:3031 \
   -e TZ="Europe/Warsaw" \
-  -e DOMAIN="https://domain.tld" \
+  -e DOMAIN="http://domain.tld" \
   -e YOUR_NICKNAME="@yourNickname" \
   --restart unless-stopped \
   lvkaszus/asklvkaszus-frontend:latest
@@ -378,7 +378,7 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 - `docker volume inspect asklvkaszus_config_data`
 
-```
+```json
 [
     {
         "CreatedAt": "2024-08-29T11:22:03Z",
@@ -406,7 +406,7 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 19. **Update required configuration inside `config.yml` file to match your setup.**
 
-```
+```yml
 debug: true
 logfile: ""
 
@@ -414,30 +414,30 @@ secret_key: "ChangeMeAsSoonAsPossible" # Secret key used for sessions
 jwt_secret_key: "ChangeMeAsSoonAsPossible" # Secret key used for JWT cookies (you can provide the same value as in secret_key variable)
 
 mysql:
-  host: "localhost" # MySQL database container name
+  host: "asklvkaszus-mariadb" # MySQL database container name
   port: "3306"
   username: "asklvkaszus"
-  password: "asklvkaszus" # MySQL database user password
+  password: "ChangeMePlease" # MySQL database user password
   database: "asklvkaszus"
 
 redis:
-  host: "localhost" # Redis database container name
+  host: "asklvkaszus-redis" # Redis database container name
   port: "6379"
   username: "asklvkaszus" # Redis username from the Redis configuration file
-  password: "asklvkaszus" # Redis user password from the Redis configuration file
+  password: "ChangeMePlease" # Redis user password from the Redis configuration file
   rate_limiting_db: "0"
   blacklisted_tokens_db: "1"
 
-your_nickname: "@lvkaszus" # Update that with your nickname that will be displayed in the application!
+your_nickname: "@yourNickname" # Update that with your nickname that will be displayed in the application!
 
-server_url: "https://ask.lvkasz.us" # Update that with your application domain name!
+server_url: "http://domain.tld" # Update that with your application domain name!
 api_allowed_clients_url: "*"
 
-cookies_secure: true # Change only to false when you are using insecure (HTTP) connection!
+cookies_secure: false # Change to true only when you are using secure (HTTPS) connection!
 
 rate_limits:
   auth: "35 per hour"
-  admin: "250 per hour"
+  admin: "500 per hour"
   api_admin: "250 per hour"
   user: "10 per hour"
   api_user: "10 per hour"
@@ -535,11 +535,11 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 16. **Create a new Python virtual environment inside Backend folder of the cloned application.**
 
-- `python3 -m venv .`
+- `python3 -m venv venv`
 
 17. **Activate the freshly created Backend Python virtual environment.**
 
-- `source bin/activate`
+- `source venv/bin/activate`
 
 18. **Install all packages required by the application backend inside virtual environment**
 
@@ -559,7 +559,7 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 22. **Update required configuration inside `config.yml` file to match your setup.**
 
-```
+```yml
 debug: true
 logfile: ""
 
@@ -570,27 +570,27 @@ mysql:
   host: "localhost" # MySQL database host
   port: "3306"
   username: "asklvkaszus"
-  password: "asklvkaszus" # MySQL database user password
+  password: "ChangeMePlease" # MySQL database user password
   database: "asklvkaszus"
 
 redis:
   host: "localhost" # Redis database host
   port: "6379"
   username: "asklvkaszus" # Redis username from the Redis configuration file
-  password: "asklvkaszus" # Redis user password from the Redis configuration file
+  password: "ChangeMePlease" # Redis user password from the Redis configuration file
   rate_limiting_db: "0"
   blacklisted_tokens_db: "1"
 
-your_nickname: "@lvkaszus" # Update that with your nickname that will be displayed in the application!
+your_nickname: "@yourNickname" # Update that with your nickname that will be displayed in the application!
 
-server_url: "https://ask.lvkasz.us" # Update that with your application domain name!
+server_url: "http://domain.tld" # Update that with your application domain name!
 api_allowed_clients_url: "*"
 
-cookies_secure: true # Change only to false when you are using insecure (HTTP) connection!
+cookies_secure: false # Change to true only when you are using secure (HTTPS) connection!
 
 rate_limits:
   auth: "35 per hour"
-  admin: "250 per hour"
+  admin: "500 per hour"
   api_admin: "250 per hour"
   user: "10 per hour"
   api_user: "10 per hour"
@@ -616,7 +616,7 @@ After=network.target
 [Service]
 User=YOUR_USER
 WorkingDirectory=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend
-Environment="PATH=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend/bin"
+Environment="PATH=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend/venv/bin"
 ExecStart=/home/YOUR_USER/asklvkaszus/asklvkaszus-backend/start.sh
 Restart=always
 
@@ -642,9 +642,9 @@ WantedBy=multi-user.target
 
 30. **Set required environment variables for Frontend to match your setup.**
 
-- Update `https://domain.tld` with your application domain and `@yourNickname` to your nickname that will be displayed in the application!
+- Update `http://domain.tld` with your application domain and `@yourNickname` to your nickname that will be displayed in the application!
 
-- `export DOMAIN=https://domain.tld ; export YOUR_NICKNAME=@yourNickname`
+- `export DOMAIN=http://domain.tld ; export YOUR_NICKNAME=@yourNickname`
 
 31. **Build Application Frontend.**
 
