@@ -3,6 +3,7 @@ import { Close, InfoRounded, Reply } from "@mui/icons-material";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import MarkdownDescription from "../../../components/markdown/MarkdownDescription";
+import { decodeHtmlEntities } from "../../../components/utils/decodeHtmlEntities";
 import { SendAnswerQuestionRequest } from "../requests/SendAnswerQuestionRequest";
 import { Link } from "react-router-dom";
 import { css } from '@emotion/react';
@@ -19,7 +20,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
 
     const handleReplyDialogOpen = () => {
         if (answer !== "Not answered yet!") {
-            setAnswerText(answer);
+            setAnswerText(decodeHtmlEntities(answer));
         } else {
             setAnswerText('');
         }
@@ -101,7 +102,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
                         <Typography component='p' sx={{ fontWeight: 500, fontSize: '18px' }}>
                             <InfoRounded />
 
-                            {t('admin-aq-dialog-reply-title')} "<Typography component='span'>{questionText}</Typography>"
+                            {t('admin-aq-dialog-reply-title')} "<Typography component='span'>{decodeHtmlEntities(questionText)}</Typography>"
                         </Typography>
                     </Box>
 

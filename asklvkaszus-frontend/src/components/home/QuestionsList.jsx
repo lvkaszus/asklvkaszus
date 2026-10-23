@@ -3,6 +3,7 @@ import { Alert, Box, Card, CardContent, Divider, LinearProgress, Typography } fr
 import HelpIcon from '@mui/icons-material/Help';
 import MessageIcon from '@mui/icons-material/Message';
 import MarkdownRenderer from '../markdown/MarkdownRenderer';
+import { decodeHtmlEntities } from '../utils/decodeHtmlEntities';
 import { useTranslation } from 'react-i18next';
 import { SendFetchAllQuestionsRequest } from '../requests/SendFetchAllQuestionsRequest';
 
@@ -55,7 +56,7 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
                     ) : (
                       <Box sx={{ marginBottom: '8px' }}>
                         <HelpIcon />
-                        <Typography component='p'>{question}</Typography>
+                        <Typography component='span'>{decodeHtmlEntities(question)}</Typography>
                       </Box>
                     )}
 
@@ -72,9 +73,9 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
                           <MarkdownRenderer content={answer} />
                         </Box>
                       ) : (
-                        <Box sx={{ marginBottom: '8px' }}>
+                        <Box sx={{ marginY: '16px' }}>
                           <MessageIcon/>
-                          <Typography component='p'>{answer}</Typography>
+                          <Typography component='span'>{decodeHtmlEntities(answer)}</Typography>
                         </Box>
                       )
                     )}
