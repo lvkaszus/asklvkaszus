@@ -9,7 +9,7 @@ ENV YOUR_NICKNAME="@me"
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
