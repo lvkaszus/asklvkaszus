@@ -1,6 +1,7 @@
 from ...extensions import csrf, sql
 from ...modules.fields import safe_get
 from flask import current_app, request
+from ...modules.get_remote_address import get_remote_address
 from ...modules.response_handler import jsonify_on_steroids
 import bcrypt
 import re
@@ -56,6 +57,8 @@ def change_password(identity):
 
     user = RegisteredUsers.query.filter_by(username=identity).first()
 
+    client_ip = get_remote_address()
+
     if user and bcrypt.checkpw(old_password.encode('utf-8'), user.password.encode('utf-8')):
         salt = bcrypt.gensalt(rounds=14)
         hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), salt).decode('utf-8')
@@ -67,11 +70,12 @@ def change_password(identity):
 
         sql.session.commit()
 
-        current_app.logger.info('%s changed password successfully!', user.username)
+        current_app.logger.info('%s (IP: %s) changed password successfully!', user.username, client_ip)
 
         return jsonify_on_steroids(success='Password change successful!', headers=response_headers), 200
 
     else:
-        current_app.logger.info('%s entered an incorrect password while changing current password!', user.username)
+        username = identity if identity else "Unknown"
+        current_app.logger.info('%s (IP: %s) entered an incorrect password while changing current password!', username, client_ip)
 
         return jsonify_on_steroids(error='Incorrect old password!', headers=response_headers), 401

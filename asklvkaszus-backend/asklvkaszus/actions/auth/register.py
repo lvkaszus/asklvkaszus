@@ -3,6 +3,7 @@ from ...extensions import csrf, sql
 from ...modules.fields import safe_get
 from flask import current_app, request
 from ...modules.captcha_verification import verify_captcha
+from ...modules.get_remote_address import get_remote_address
 from ...modules.response_handler import jsonify_on_steroids
 from ...models.registered_users import RegisteredUsers
 import re
@@ -99,5 +100,7 @@ def register():
         sql.session.add(new_user_credentials)
         sql.session.commit()
 
+        client_ip = get_remote_address()
+        current_app.logger.info('%s (IP: %s) registered successfully!', username, client_ip)
 
         return jsonify_on_steroids(success="Registration successful!", headers=response_headers), 201

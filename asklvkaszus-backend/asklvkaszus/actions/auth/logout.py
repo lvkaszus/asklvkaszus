@@ -1,6 +1,7 @@
 from ...extensions import csrf
 from ...config import Config
 from flask import current_app, request, make_response
+from ...modules.get_remote_address import get_remote_address
 from ...modules.response_handler import jsonify_on_steroids
 from ...modules.jwt_core import revoke_tokens
 from flask_wtf.csrf import CSRFError
@@ -25,6 +26,7 @@ def logout(identity):
     response.set_cookie('access_token', '', expires=0, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
     response.set_cookie('refresh_token', '', expires=0, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
 
-    current_app.logger.info('%s logged out successfully!', identity)
+    client_ip = get_remote_address()
+    current_app.logger.info('%s (IP: %s) logged out successfully!', identity, client_ip)
 
     return response

@@ -2,6 +2,7 @@ from flask import current_app, request, jsonify, make_response
 from ..config import Config
 from ..extensions import jwt_blacklist_redis_client
 from ..models.registered_users import RegisteredUsers
+from ..modules.get_remote_address import get_remote_address
 import jwt
 from datetime import datetime, timezone, timedelta
 from functools import wraps
@@ -74,7 +75,9 @@ def token_required(f):
 
         user = RegisteredUsers.query.filter_by(username=identity).first()
         if not user:
-            current_app.logger.warning("User with username %s from JWT access token does not exist in the database! Deauthenticating...", identity)
+            client_ip = get_remote_address()
+
+            current_app.logger.warning("User with username %s (IP: %s) from JWT access token does not exist in the database! Deauthenticating...", identity, client_ip)
 
             revoke_tokens(access_token, refresh_token)
 
@@ -84,7 +87,7 @@ def token_required(f):
             response.set_cookie('access_token', '', expires=0, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
             response.set_cookie('refresh_token', '', expires=0, httponly=True, samesite='Strict', secure=Config.COOKIES_SECURE)
 
-            current_app.logger.warning("User with username %s has been deauthenticated!", identity)
+            current_app.logger.warning("User with username %s (IP: %s) has been deauthenticated!", identity, client_ip)
 
             return response
 
