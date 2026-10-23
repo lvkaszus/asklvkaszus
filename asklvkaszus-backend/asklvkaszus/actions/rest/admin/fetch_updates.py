@@ -2,6 +2,7 @@ from flask import current_app
 from ....modules.response_handler import jsonify_on_steroids
 import requests
 from ....version import backend_version
+from ....modules.version_compare import parse_version
 
 def api_admin_fetch_updates():
     error_response_headers = {
@@ -13,7 +14,7 @@ def api_admin_fetch_updates():
     error_response = lambda: (jsonify_on_steroids(error="Failed to fetch data from the GitHub API! Try again later.", headers=error_response_headers), 500)
 
     try:
-        current_app.logger.info("%s requested /api/app/admin/fetch_updates endpoint - Checking application updates...", identity)
+        current_app.logger.info("Administrator REST API requested the fetch_updates endpoint - Checking application updates...")
 
         headers = {
             "User-Agent": f"Ask @lvkaszus! - Update Checker/{backend_version}",
@@ -75,7 +76,9 @@ def api_admin_fetch_updates():
 
             latest_version = data["data"]["tag_name"]
 
-            if not isinstance(latest_version, str) or not latest_version.replace('.', '').isdigit():
+            latest_version_parsed = parse_version(latest_version)
+
+            if latest_version_parsed is None:
                 current_app.logger.error(f"{logger_prefix} Invalid version format: %s", latest_version)
                 return error_response()
 
@@ -83,7 +86,7 @@ def api_admin_fetch_updates():
                 "Cache-Control": "private, max-age=60, must-revalidate"
             }
 
-            if latest_version > backend_version:
+            if latest_version_parsed > parse_version(backend_version):
                 warning_message = "A newer version of this application is available. Please upgrade!"
 
                 current_app.logger.warning(warning_message)
