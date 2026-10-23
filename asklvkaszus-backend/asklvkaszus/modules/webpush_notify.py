@@ -108,10 +108,17 @@ def send_push_notification(recipient, question, now, senders_ip_address):
         if not subscribers:
             current_app.logger.warning("asklvkaszus/modules/webpush_notify module - send_push_notification: No notification subscribers found!")
 
-        message = f"❓: {question}\n🕒: {now}\n\n🌐️: {senders_ip_address}"
+        message = f"❓: {question}\n🕒: {now} UTC\n\n🌐️: {senders_ip_address}"
+
+        # "now" is UTC in "%Y-%m-%d %H:%M:%S" format. The date is also sent as ISO 8601 together
+        # with the raw fields, so the service worker can show the time in the timezone of the
+        # recipient's device. The "body" stays as a fallback for older cached service workers.
         payload = {
             "title": f"Ask {current_app.config['YOUR_NICKNAME']}!",
-            "body": message
+            "body": message,
+            "question": question,
+            "date": f"{now.replace(' ', 'T')}Z",
+            "ip": senders_ip_address
         }
 
         app = current_app._get_current_object()

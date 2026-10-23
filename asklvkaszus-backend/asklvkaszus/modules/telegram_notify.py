@@ -48,7 +48,7 @@ def send_test_telegram_notification(recipient):
         telegram_api_url = f"https://api.telegram.org/bot{user.telegram_bot_token}/sendMessage"
         telegram_api_params = {
             'chat_id': user.telegram_bot_chat_id,
-            'text': message
+            'text': test_message
         }
 
         thread = threading.Thread(target=send_telegram_request_thread, args=(app, telegram_api_url, telegram_api_params), daemon=True)
@@ -83,7 +83,7 @@ def send_telegram_notification(recipient, question, date, ip_address):
 
         message_lines = [
             f"❓: {question}",
-            f"🕒: {date}",
+            f"🕒: {date} UTC",
             "",
             f"🌐️: {ip_address}"
         ]
