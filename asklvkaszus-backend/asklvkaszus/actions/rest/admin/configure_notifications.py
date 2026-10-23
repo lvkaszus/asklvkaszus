@@ -1,5 +1,6 @@
 from flask import current_app, request, jsonify, g
 from ....modules.fields import safe_get
+from ....modules.response_handler import jsonify_on_steroids
 from ....extensions import sql
 from ....models.registered_users import RegisteredUsers
 from ....modules.vapid_core import generate_vapid_keys

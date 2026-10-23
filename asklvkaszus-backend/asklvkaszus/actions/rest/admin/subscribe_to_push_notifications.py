@@ -70,6 +70,6 @@ def api_admin_subscribe_to_push_notifications():
 
     sql.session.commit()
 
-    current_app.logger.info(f"User {identity} subscribed to push notifications: {endpoint}")
+    current_app.logger.info(f"User {username} subscribed to push notifications: {endpoint}")
 
     return jsonify_on_steroids(success=message, headers=response_headers), 200

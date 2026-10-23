@@ -19,7 +19,7 @@ def api_admin_user_info():
     if not username:
         return jsonify_on_steroids(error="Invalid session username!", headers=response_headers), 400
 
-    user = RegisteredUsers.query.filter_by(username=identity).first()
+    user = RegisteredUsers.query.filter_by(username=username).first()
     
     if not user:
         return jsonify_on_steroids(error="User not found!", headers=response_headers), 404

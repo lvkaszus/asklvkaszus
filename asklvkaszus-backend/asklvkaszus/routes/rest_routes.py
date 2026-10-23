@@ -69,7 +69,7 @@ def rest_admin_block_sender_route():
 @limiter.limit(Config.API_ADMIN_RATELIMIT)
 @require_api_key
 def rest_admin_configure_captcha_route():
-    return admin_configure_captcha()
+    return api_admin_configure_captcha()
 
 @rest_bp.route('/admin/configure_notifications', methods=['PUT'])
 @limiter.limit(Config.API_ADMIN_RATELIMIT)
