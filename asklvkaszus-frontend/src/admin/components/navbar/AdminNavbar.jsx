@@ -26,6 +26,17 @@ const AdminNavbar = ({ displayName }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
+  const navButtonSx = {
+    backgroundColor: "unset",
+    borderRadius: 0,
+    "& .MuiButton-startIcon": {
+      marginRight: "4px",
+    },
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.primary.main, 0.07),
+    },
+  };
+
   const [anchorElNav, setAnchorElNav] = useState(null);
 
   const [isLogoutNotificationOpen, setLogoutNotificationOpen] = useState(false);
@@ -128,12 +139,7 @@ const AdminNavbar = ({ displayName }) => {
               onClick={handleCloseNavMenu}
               startIcon={<Home />}
               color="inherit"
-              sx={{
-                backgroundColor: "unset",
-                "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
-                },
-              }}
+              sx={navButtonSx}
             >
               {t("admin-navbar-home")}
             </Button>
@@ -144,12 +150,7 @@ const AdminNavbar = ({ displayName }) => {
               onClick={handleCloseNavMenu}
               startIcon={<Settings />}
               color="inherit"
-              sx={{
-                backgroundColor: "unset",
-                "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
-                },
-              }}
+              sx={navButtonSx}
             >
               {t("admin-navbar-globalsettings")}
             </Button>
@@ -160,12 +161,7 @@ const AdminNavbar = ({ displayName }) => {
               onClick={handleCloseNavMenu}
               startIcon={<ManageAccounts />}
               color="inherit"
-              sx={{
-                backgroundColor: "unset",
-                "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
-                },
-              }}
+              sx={navButtonSx}
             >
               {t("admin-navbar-usersettings")}
             </Button>
@@ -176,12 +172,7 @@ const AdminNavbar = ({ displayName }) => {
               onClick={handleCloseNavMenu}
               startIcon={<AdminPanelSettings />}
               color="inherit"
-              sx={{
-                backgroundColor: "unset",
-                "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
-                },
-              }}
+              sx={navButtonSx}
             >
               {t("admin-navbar-management")}
             </Button>
