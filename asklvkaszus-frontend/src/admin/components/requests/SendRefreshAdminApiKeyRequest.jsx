@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ export const SendRefreshAdminApiKeyRequest = () => {
 
   const navigate = useNavigate();
 
-  const refreshAdminApiKeyRequest = async () => {
+  const handleRefreshAdminApiKeyRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -61,11 +61,7 @@ export const SendRefreshAdminApiKeyRequest = () => {
 
           }
     }
-  };
-
-  const handleRefreshAdminApiKeyRequest = async () => {
-    await refreshAdminApiKeyRequest();
-  };
+  }, [navigate]);
 
   return {
     refreshAdminApiKeyError,

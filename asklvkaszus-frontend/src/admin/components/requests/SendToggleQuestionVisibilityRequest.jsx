@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendToggleQuestionVisibilityRequest = (questionId) => {
+export const SendToggleQuestionVisibilityRequest = () => {
   const [toggleQuestionVisibilityError, setToggleQuestionVisibilityError] = useState(false);
   const [toggleQuestionVisibilityResponse, setToggleQuestionVisibilityResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitToggleQuestionVisibilityRequest = async () => {
+  const handleToggleQuestionVisibilityRequest = useCallback(async ({ questionId }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -56,11 +56,7 @@ export const SendToggleQuestionVisibilityRequest = (questionId) => {
 
         }
     }
-  };
-
-  const handleToggleQuestionVisibilityRequest = async () => {
-    await submitToggleQuestionVisibilityRequest();
-  };
+  }, [navigate]);
 
   return {
     toggleQuestionVisibilityError,

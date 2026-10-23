@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendPurgeAllQuestionsRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitPurgeAllQuestionsRequest = async () => {
+  const handlePurgeAllQuestionsRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -53,11 +53,7 @@ export const SendPurgeAllQuestionsRequest = () => {
           console.error('An error occurred while sending a request to delete all questions!', error);
         }
     }
-  };
-
-  const handlePurgeAllQuestionsRequest = async () => {
-    await submitPurgeAllQuestionsRequest();
-  };
+  }, [navigate]);
 
   return {
     purgeAllQuestionsError,

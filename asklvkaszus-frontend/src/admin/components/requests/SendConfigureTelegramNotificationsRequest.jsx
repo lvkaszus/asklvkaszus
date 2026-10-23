@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendConfigureTelegramNotificationsRequest = (telegramEnabled, telegramBotToken, telegramBotChatId) => {
+export const SendConfigureTelegramNotificationsRequest = () => {
   const [configureTelegramNotificationsError, setConfigureTelegramNotificationsError] = useState(false);
   const [configureTelegramNotificationsResponse, setConfigureTelegramNotificationsResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitConfigureTelegramNotificationsRequest = async () => {
+  const handleConfigureTelegramNotificationsRequest = useCallback(async ({ telegramEnabled, telegramBotToken, telegramBotChatId }) => {
     try {
       const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -60,11 +60,7 @@ export const SendConfigureTelegramNotificationsRequest = (telegramEnabled, teleg
           console.error('An error occurred while sending a request to change the notification configuration!', error)
         }
     }
-  };
-
-  const handleConfigureTelegramNotificationsRequest = async () => {
-    await submitConfigureTelegramNotificationsRequest();
-  };
+  }, [navigate]);
 
   return {
     configureTelegramNotificationsError,

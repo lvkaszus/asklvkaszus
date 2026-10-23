@@ -23,13 +23,26 @@ const CaptchaSettingsControls = () => {
     const [isFetchCaptchaSettingsNotificationOpen, setFetchCaptchaSettingsNotificationOpen] = useState(false);
     const [isUpdateCaptchaSettingsNotificationOpen, setUpdateCaptchaSettingsNotificationOpen] = useState(false);
 
-    const { fetchCaptchaSettingsResponse, fetchCaptchaSettingsError, handleFetchCaptchaSettings } = SendFetchCaptchaSettingsRequest();
+    const { fetchCaptchaSettingsResponse, fetchCaptchaSettingsError, handleFetchCaptchaSettingsRequest } = SendFetchCaptchaSettingsRequest();
 
     useEffect(() => {
-        handleFetchCaptchaSettings();
-    }, [])
+        handleFetchCaptchaSettingsRequest();
+    }, [handleFetchCaptchaSettingsRequest])
 
-    useEffect(() => {
+    const [prevFetchCaptchaSettings, setPrevFetchCaptchaSettings] = useState({
+        error: fetchCaptchaSettingsError,
+        response: fetchCaptchaSettingsResponse
+    });
+
+    if (
+        prevFetchCaptchaSettings.error !== fetchCaptchaSettingsError ||
+        prevFetchCaptchaSettings.response !== fetchCaptchaSettingsResponse
+    ) {
+        setPrevFetchCaptchaSettings({
+            error: fetchCaptchaSettingsError,
+            response: fetchCaptchaSettingsResponse
+        });
+
         if (!fetchCaptchaSettingsError) {
             setCaptchaEnabled(fetchCaptchaSettingsResponse?.captcha_enabled || false);
             setCaptchaProvider(fetchCaptchaSettingsResponse?.captcha_provider || 'cf-turnstile');
@@ -38,19 +51,24 @@ const CaptchaSettingsControls = () => {
         } else {
             setFetchCaptchaSettingsNotificationOpen(true);
         }
-    }, [fetchCaptchaSettingsError, fetchCaptchaSettingsResponse]);
+    }
 
     const handleOpenConfirmDialog = () => {
         setDialogOpen(true);
     };
 
-    const { updateCaptchaSettingsResponse, updateCaptchaSettingsError, handleUpdateCaptchaSettings } = SendUpdateCaptchaSettingsRequest(captchaEnabled, captchaProvider, captchaSiteKey, captchaSecretKey);
+    const { updateCaptchaSettingsResponse, updateCaptchaSettingsError, handleUpdateCaptchaSettingsRequest } = SendUpdateCaptchaSettingsRequest();
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);
-        await handleUpdateCaptchaSettings();
+        await handleUpdateCaptchaSettingsRequest({
+            captcha_enabled: captchaEnabled,
+            captcha_provider: captchaProvider,
+            captcha_site_key: captchaSiteKey,
+            captcha_secret_key: captchaSecretKey
+        });
         setUpdateCaptchaSettingsNotificationOpen(true);
-        await handleFetchCaptchaSettings();
+        await handleFetchCaptchaSettingsRequest();
         setDialogYesButtonDisabled(false);
         setDialogOpen(false);
     };

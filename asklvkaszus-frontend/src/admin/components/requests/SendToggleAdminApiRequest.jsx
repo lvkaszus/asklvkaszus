@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendToggleAdminApiRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitToggleAdminApiRequest = async () => {
+  const handleToggleAdminApiRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -55,11 +55,7 @@ export const SendToggleAdminApiRequest = () => {
           console.error('', error);
         }
     }
-  };
-
-  const handleToggleAdminApiRequest = async () => {
-    await submitToggleAdminApiRequest();
-  };
+  }, [navigate]);
 
   return {
     toggleAdminApiError,

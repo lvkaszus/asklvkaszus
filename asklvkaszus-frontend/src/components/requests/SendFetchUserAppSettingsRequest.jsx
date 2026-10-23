@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
@@ -7,7 +7,7 @@ export const SendFetchUserAppSettingsRequest = () => {
   const [userAppSettingsResponse, setUserAppSettingsResponse] = useState('');
   const [userAppSettingsError, setUserAppSettingsError] = useState(false);
 
-  const submitFetchUserAppSettingsRequest = async () => {
+  const handleFetchUserAppSettingsRequest = useCallback(async () => {
     try {
       const response = await axios.get(`${domain}/api/app/user/app_settings`);
         
@@ -31,11 +31,7 @@ export const SendFetchUserAppSettingsRequest = () => {
 
       }
     }
-  };
-
-  const handleFetchUserAppSettingsRequest = async () => {
-    await submitFetchUserAppSettingsRequest();
-  };
+  }, []);
 
   return {
     userAppSettingsResponse,

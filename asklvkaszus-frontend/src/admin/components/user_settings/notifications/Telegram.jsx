@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, FormControlLabel, IconButton, Switch, TextField, Typography, InputAdornment, FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { Close, InfoOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -15,13 +15,17 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
 
     const [showTelegramBotToken, setShowTelegramBotToken] = useState(false);
 
-    useEffect(() => {
+    const [prevUserData, setPrevUserData] = useState(null);
+
+    if (userData !== prevUserData) {
+        setPrevUserData(userData);
+
         if (userData) {
             setTelegramEnabled(userData.telegram_enabled || false);
             setTelegramBotToken(userData.telegram_bot_token || '');
             setTelegramBotChatId(userData.telegram_bot_chat_id || '');
         }
-    }, [userData]);
+    }
 
     const [isDialogConfirmButtonDisabled, setDialogConfirmButtonDisabled] = useState(false);
 
@@ -37,11 +41,18 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
         setTelegramBotChatId(event.target.value);
     }
 
-    const { configureTelegramNotificationsError, configureTelegramNotificationsResponse, handleConfigureTelegramNotificationsRequest } = SendConfigureTelegramNotificationsRequest(telegramEnabled, telegramBotToken, telegramBotChatId);
+    const { configureTelegramNotificationsError, configureTelegramNotificationsResponse, handleConfigureTelegramNotificationsRequest } = SendConfigureTelegramNotificationsRequest();
 
     useEffect(() => {
-        configureTelegramNotificationsOutputData(configureTelegramNotificationsError, configureTelegramNotificationsResponse);
-    }, [configureTelegramNotificationsError, configureTelegramNotificationsResponse]);
+        configureTelegramNotificationsOutputData(
+            configureTelegramNotificationsError,
+            configureTelegramNotificationsResponse
+        );
+    }, [
+        configureTelegramNotificationsError,
+        configureTelegramNotificationsResponse,
+        configureTelegramNotificationsOutputData
+    ]);
 
     const handleDialogSettingsConfirm = async () => {
         setDialogConfirmOpen(true);
@@ -50,7 +61,11 @@ const Telegram = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, con
     const handleDialogConfirm = async () => {
         setDialogConfirmButtonDisabled(true);
 
-        await handleConfigureTelegramNotificationsRequest();
+        await handleConfigureTelegramNotificationsRequest({
+            telegramEnabled,
+            telegramBotToken,
+            telegramBotChatId
+        });
         setConfigureTelegramNotificationsNotifyOpen(true);
 
         setDialogConfirmButtonDisabled(false);

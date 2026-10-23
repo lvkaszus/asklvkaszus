@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendToggleUserApiRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitToggleUserApiRequest = async () => {
+  const handleToggleUserApiRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -54,11 +54,7 @@ export const SendToggleUserApiRequest = () => {
           console.error('An error occurred while sending a request to change the state of the user\'s API!', error);
         }
     }
-  };
-
-  const handleToggleUserApiRequest = async () => {
-    await submitToggleUserApiRequest();
-  };
+  }, [navigate]);
 
   return {
     toggleUserApiError,

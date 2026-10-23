@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,10 +10,9 @@ export const SendFetchVapidPublicKeyRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitFetchVapidPublicKeyRequest = async () => {
+  const handleFetchVapidPublicKeyRequest = useCallback(async () => {
     try {
       const response = await axios.get(`${domain}/api/app/admin/fetch_vapid_public_key`);
-      
       const { public_key } = response.data;
 
       setFetchVapidPublicKeyResponse(public_key);
@@ -29,9 +28,7 @@ export const SendFetchVapidPublicKeyRequest = () => {
         ) {
           setFetchVapidPublicKeyResponse('Please login again!');
           setFetchVapidPublicKeyError(true);
-
           navigate('/admin/login');
-
         } else {
           setFetchVapidPublicKeyResponse(responseError);
           setFetchVapidPublicKeyError(true);
@@ -39,16 +36,10 @@ export const SendFetchVapidPublicKeyRequest = () => {
       } else {
         setFetchVapidPublicKeyResponse('');
         setFetchVapidPublicKeyError(true);
-
         console.error('An error occurred while sending a request for a VAPID public key!', error);
-        
       }
     }
-  };
-
-  const handleFetchVapidPublicKeyRequest = async () => {
-    await submitFetchVapidPublicKeyRequest();
-  };
+  }, [navigate]);
 
   return {
     fetchVapidPublicKeyError,

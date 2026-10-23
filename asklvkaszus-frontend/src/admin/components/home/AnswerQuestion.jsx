@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Close, InfoRounded, Reply } from "@mui/icons-material";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import MarkdownDescription from "../../../components/markdown/MarkdownDescription";
 import { SendAnswerQuestionRequest } from "../requests/SendAnswerQuestionRequest";
 import { Link } from "react-router-dom";
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
 const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnabled, answerQuestionOutputData, AnswerQuestionNotifyOpen, handleForceDataFetch }) => {
@@ -27,7 +26,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
         setDialogOpen(true);
     }
 
-    const handleAnswerChange = (event) => {
+    const handleAnswerChange = useCallback((event) => {
         const text = event.target.value;  
         setAnswerText(text);
 
@@ -38,7 +37,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
             setAnswerTextError(false);
             setDialogYesButtonDisabled(false);
         }
-    }
+    }, []);
 
     const handleMarkdownDialogOpen = () => {
         setMarkdownDialogOpen(true);
@@ -48,11 +47,11 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
         setMarkdownDialogOpen(false);
     };
 
-    const { answerQuestionError, answerQuestionResponse, handleAnswerQuestionRequest } = SendAnswerQuestionRequest(question_id, answerText);
+    const { answerQuestionError, answerQuestionResponse, handleAnswerQuestionRequest } = SendAnswerQuestionRequest();
 
     useEffect(() => {
         answerQuestionOutputData(answerQuestionError, answerQuestionResponse);
-    }, [answerQuestionError, answerQuestionResponse]);
+    }, [answerQuestionError, answerQuestionResponse, answerQuestionOutputData]);
 
     const handleConfirm = async () => {
         if (answer !== "Not answered yet!" && answer !== answerText) {
@@ -64,7 +63,7 @@ const AnswerQuestion = ({ question_id, questionText, answer, markdownAdminEnable
 
     const handleAnswerSubmit = async () => {
         setDialogYesButtonDisabled(true);
-        await handleAnswerQuestionRequest();
+        await handleAnswerQuestionRequest({ questionId: question_id, answerText });
         AnswerQuestionNotifyOpen(true);
         setAnswerText('');
         setDialogYesButtonDisabled(false);

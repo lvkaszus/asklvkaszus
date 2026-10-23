@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ export const SendSetSessionRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitSetSessionRequest = async () => {
+  const handleSetSessionRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -39,11 +39,7 @@ export const SendSetSessionRequest = () => {
             console.error('An error occurred while sending a request to retrieve the current session state!', error);
         }
     }
-  };
-
-  const handleSetSessionRequest = async () => {
-    await submitSetSessionRequest();
-  };
+  }, [navigate]);
 
   return {
     sessionUsername,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ export const SendFetchCaptchaSettingsRequest = () => {
 
     const navigate = useNavigate();
 
-    const submitFetchCaptchaSettingsRequest = async () => {
+    const handleFetchCaptchaSettingsRequest = useCallback(async () => {
         try {
             const response = await axios.get(`${domain}/api/app/admin/configure_captcha`);
             
@@ -44,15 +44,11 @@ export const SendFetchCaptchaSettingsRequest = () => {
                 console.error('An error occurred while sending a request to download CAPTCHA settings!', error);
               }
           }
-    };
-
-    const handleFetchCaptchaSettings = async () => {
-        await submitFetchCaptchaSettingsRequest();
-    };
+    }, [navigate]);
 
     return {
         fetchCaptchaSettingsResponse,
         fetchCaptchaSettingsError,
-        handleFetchCaptchaSettings,
+        handleFetchCaptchaSettingsRequest,
     };
 };

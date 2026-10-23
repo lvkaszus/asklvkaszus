@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,7 @@ const urlBase64ToUint8Array = (base64String) => {
     return outputArray;
 };
 
-export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
+export const SendSubscribeToPushNotificationsRequest = () => {
     const [subscribeToPushNotificationsError, setSubscribeToPushNotificationsError] = useState(false);
     const [subscribeToPushNotificationsResponse, setSubscribeToPushNotificationsResponse] = useState('');
 
@@ -26,7 +26,7 @@ export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
 
     const navigate = useNavigate();
 
-    const submitSubscribeToPushNotificationsRequest = async () => {
+    const handleSubscribeToPushNotificationsRequest = useCallback(async ({ publicKey }) => {
         if ('serviceWorker' in navigator) {
             try {
                 const registration = await navigator.serviceWorker.register('/sw.js');
@@ -87,11 +87,7 @@ export const SendSubscribeToPushNotificationsRequest = (publicKey) => {
 
             console.error('Service Worker is not available in this browser!');
         }
-    };
-
-    const handleSubscribeToPushNotificationsRequest = async () => {
-        await submitSubscribeToPushNotificationsRequest();
-    };
+    }, [navigate]);
 
     return {
         subscribeToPushNotificationsError,

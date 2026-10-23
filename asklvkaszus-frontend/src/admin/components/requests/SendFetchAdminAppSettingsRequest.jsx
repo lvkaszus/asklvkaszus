@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
@@ -7,46 +7,42 @@ export const SendFetchAdminAppSettingsRequest = () => {
   const [adminAppSettingsError, setAdminAppSettingsError] = useState(false);
   const [adminAppSettingsResponse, setAdminAppSettingsResponse] = useState('');
 
-  const submitAdminAppSettingsRequest = async () => {
+  const handleFetchAdminAppSettingsRequest = useCallback(async () => {
     try {
-        const response = await axios.get(
-            `${domain}/api/app/admin/app_settings`
-          );
-        
-        const data = response.data;
+      setAdminAppSettingsError(false);
 
-        setAdminAppSettingsResponse(data);
-        setAdminAppSettingsError(false);
+      const response = await axios.get(
+        `${domain}/api/app/admin/app_settings`
+      );
+
+      setAdminAppSettingsResponse(response.data);
 
     } catch (error) {
-        if (error.response) {
-            const { error: responseError } = error.response.data;
+      if (error.response) {
+        const { error: responseError } = error.response.data;
 
-            if (
-              responseError.includes("Token") ||
-              responseError.includes("CSRF")
-            ) {
-              setAdminAppSettingsError(true);
-              setAdminAppSettingsResponse('Please login again!');
+        if (
+          responseError?.includes("Token") ||
+          responseError?.includes("CSRF")
+        ) {
+          setAdminAppSettingsResponse('Please login again!');
+        } else {
+          setAdminAppSettingsResponse(responseError);
+        }
 
-            } else {
-              setAdminAppSettingsResponse(responseError);
-              setAdminAppSettingsError(true);
-            
-            }            
-          } else {
-            setAdminAppSettingsResponse('');
-            setAdminAppSettingsError(true);
+        setAdminAppSettingsError(true);
 
-            console.error('An error occurred while sending a request to download the admin application settings!', error);
+      } else {
+        console.error(
+          'An error occurred while sending a request to download the admin application settings!',
+          error
+        );
 
-          }
+        setAdminAppSettingsResponse('');
+        setAdminAppSettingsError(true);
+      }
     }
-  };
-
-  const handleFetchAdminAppSettingsRequest = async () => {
-    await submitAdminAppSettingsRequest();
-  };
+  }, []);
 
   return {
     adminAppSettingsError,

@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendUpdateCaptchaSettingsRequest = (captcha_enabled, captcha_provider, captcha_site_key, captcha_secret_key) => {
+export const SendUpdateCaptchaSettingsRequest = () => {
     const [updateCaptchaSettingsResponse, setUpdateCaptchaSettingsResponse] = useState('');
     const [updateCaptchaSettingsError, setUpdateCaptchaSettingsError] = useState(false);
 
     const navigate = useNavigate();
 
-    const submitUpdateCaptchaSettingsRequest = async () => {
+    const handleUpdateCaptchaSettingsRequest = useCallback(async ({ captcha_enabled, captcha_provider, captcha_site_key, captcha_secret_key }) => {
         try {
             const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -59,15 +59,11 @@ export const SendUpdateCaptchaSettingsRequest = (captcha_enabled, captcha_provid
                 console.error('An error occurred while sending a request to download CAPTCHA settings!', error);
               }
           }
-    };
-
-    const handleUpdateCaptchaSettings = async () => {
-        await submitUpdateCaptchaSettingsRequest();
-    };
+    }, [navigate]);
 
     return {
         updateCaptchaSettingsResponse,
         updateCaptchaSettingsError,
-        handleUpdateCaptchaSettings,
+        handleUpdateCaptchaSettingsRequest,
     };
 };

@@ -1,20 +1,26 @@
-import React, { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import MenuItem from '@mui/material/MenuItem';
-import { Button, useTheme } from '@mui/material';
-import { AdminPanelSettings, Home, Logout, ManageAccounts, Settings } from '@mui/icons-material';
-import { NavLink } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { SendLogout } from '../requests/SendLogoutRequest';
-import CheckLogoutResult from '../results/CheckLogoutResult';
-import { alpha } from '@mui/material/styles';
+import React, { useState } from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import MenuItem from "@mui/material/MenuItem";
+import { Button, useTheme } from "@mui/material";
+import {
+  AdminPanelSettings,
+  Home,
+  Logout,
+  ManageAccounts,
+  Settings,
+} from "@mui/icons-material";
+import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { SendLogoutRequest } from "../requests/SendLogoutRequest";
+import CheckLogoutResult from "../results/CheckLogoutResult";
+import { alpha } from "@mui/material/styles";
 
 const AdminNavbar = ({ displayName }) => {
   const { t } = useTranslation();
@@ -24,7 +30,7 @@ const AdminNavbar = ({ displayName }) => {
 
   const [isLogoutNotificationOpen, setLogoutNotificationOpen] = useState(false);
 
-  const { logoutError, logoutResponse, handleLogoutRequest } = SendLogout();
+  const { logoutError, logoutResponse, handleLogoutRequest } = SendLogoutRequest();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -37,134 +43,185 @@ const AdminNavbar = ({ displayName }) => {
   const handleLogoutButton = async () => {
     await handleLogoutRequest();
     setLogoutNotificationOpen(true);
-  }
+  };
 
   const handleLogoutNotificationClose = () => {
     setLogoutNotificationOpen(false);
   };
 
   return (
-    <AppBar position="fixed" color='text' sx={{ backgroundImage: 'inherit' }}>
+    <AppBar position="fixed" color="text" sx={{ backgroundImage: "inherit" }}>
       <Container maxWidth={false}>
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', lg: 'none' } }}>
-            <IconButton size="large" aria-label={t('navbar-label-useraccount')} aria-controls="menu-appbar" aria-haspopup="true" onClick={handleOpenNavMenu} color="inherit">
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", lg: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label={t("navbar-label-useraccount")}
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
               <MenuIcon />
             </IconButton>
 
-            <Menu id="menu-appbar" anchorEl={anchorElNav} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} keepMounted transformOrigin={{ vertical: 'top', horizontal: 'left' }} open={Boolean(anchorElNav)} onClose={handleCloseNavMenu} sx={{ display: { xs: 'block', lg: 'none' } }}>
-
-              <MenuItem component={NavLink} to="/admin/home" onClick={handleCloseNavMenu}>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              keepMounted
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: "block", lg: "none" } }}
+            >
+              <MenuItem
+                component={NavLink}
+                to="/admin/home"
+                onClick={handleCloseNavMenu}
+              >
                 <Home />
                 <Typography textAlign="center">
-                  {t('admin-navbar-home')}
+                  {t("admin-navbar-home")}
                 </Typography>
               </MenuItem>
 
-              <MenuItem component={NavLink} to="/admin/global_settings" onClick={handleCloseNavMenu}>
+              <MenuItem
+                component={NavLink}
+                to="/admin/global_settings"
+                onClick={handleCloseNavMenu}
+              >
                 <Settings />
                 <Typography textAlign="center">
-                  {t('admin-navbar-globalsettings')}
+                  {t("admin-navbar-globalsettings")}
                 </Typography>
               </MenuItem>
 
-              <MenuItem component={NavLink} to="/admin/user_settings" onClick={handleCloseNavMenu}>
+              <MenuItem
+                component={NavLink}
+                to="/admin/user_settings"
+                onClick={handleCloseNavMenu}
+              >
                 <ManageAccounts />
                 <Typography textAlign="center">
-                  {t('admin-navbar-usersettings')}
+                  {t("admin-navbar-usersettings")}
                 </Typography>
               </MenuItem>
 
-              <MenuItem component={NavLink} to="/admin/management" onClick={handleCloseNavMenu}>
+              <MenuItem
+                component={NavLink}
+                to="/admin/management"
+                onClick={handleCloseNavMenu}
+              >
                 <AdminPanelSettings />
                 <Typography textAlign="center">
-                  {t('admin-navbar-management')}
+                  {t("admin-navbar-management")}
                 </Typography>
               </MenuItem>
             </Menu>
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
-              <Button
-                component={NavLink}
-                to="/admin/home"
-                onClick={handleCloseNavMenu}
-                startIcon={<Home />}
-                color="inherit"
-                sx={{
-                  backgroundColor: 'unset',
-                  "&:hover": {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
-                  }
-                }}
-              >
-                {t('admin-navbar-home')}
-              </Button>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", lg: "flex" } }}>
+            <Button
+              component={NavLink}
+              to="/admin/home"
+              onClick={handleCloseNavMenu}
+              startIcon={<Home />}
+              color="inherit"
+              sx={{
+                backgroundColor: "unset",
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
+                },
+              }}
+            >
+              {t("admin-navbar-home")}
+            </Button>
 
-              <Button
-                component={NavLink}
-                to="/admin/global_settings"
-                onClick={handleCloseNavMenu}
-                startIcon={<Settings />}
-                color="inherit"
-                sx={{
-                  backgroundColor: 'unset',
-                  "&:hover": {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
-                  }
-                }}
-              >
-                {t('admin-navbar-globalsettings')}
-              </Button>
+            <Button
+              component={NavLink}
+              to="/admin/global_settings"
+              onClick={handleCloseNavMenu}
+              startIcon={<Settings />}
+              color="inherit"
+              sx={{
+                backgroundColor: "unset",
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
+                },
+              }}
+            >
+              {t("admin-navbar-globalsettings")}
+            </Button>
 
-              <Button
-                component={NavLink}
-                to="/admin/user_settings"
-                onClick={handleCloseNavMenu}
-                startIcon={<ManageAccounts />}
-                color="inherit"
-                sx={{
-                  backgroundColor: 'unset',
-                  "&:hover": {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
-                  }
-                }}
-              >
-                {t('admin-navbar-usersettings')}
-              </Button>
+            <Button
+              component={NavLink}
+              to="/admin/user_settings"
+              onClick={handleCloseNavMenu}
+              startIcon={<ManageAccounts />}
+              color="inherit"
+              sx={{
+                backgroundColor: "unset",
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
+                },
+              }}
+            >
+              {t("admin-navbar-usersettings")}
+            </Button>
 
-              <Button
-                component={NavLink}
-                to="/admin/management"
-                onClick={handleCloseNavMenu}
-                startIcon={<AdminPanelSettings />}
-                color="inherit"
-                sx={{
-                  backgroundColor: 'unset',
-                  "&:hover": {
-                    backgroundColor: alpha(theme.palette.primary.main, 0.07)
-                  }
-                }}
-              >
-                {t('admin-navbar-management')}
-              </Button>
+            <Button
+              component={NavLink}
+              to="/admin/management"
+              onClick={handleCloseNavMenu}
+              startIcon={<AdminPanelSettings />}
+              color="inherit"
+              sx={{
+                backgroundColor: "unset",
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.07),
+                },
+              }}
+            >
+              {t("admin-navbar-management")}
+            </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', flexGrow: 0 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              flexGrow: 0,
+            }}
+          >
             {displayName && (
-              <Typography variant="subtitle1" component='p' sx={{ marginRight: '8px' }}>{t('admin-navbar-hellouser', { display_name: displayName })}</Typography>
+              <Typography
+                variant="subtitle1"
+                component="p"
+                sx={{ marginRight: "8px" }}
+              >
+                {t("admin-navbar-hellouser", { display_name: displayName })}
+              </Typography>
             )}
 
             <Button variant="outlined" onClick={handleLogoutButton}>
-                <Logout />
-                <Typography textAlign="center">{t('admin-navbar-logout')}</Typography>
-              </Button>
+              <Logout />
+              <Typography textAlign="center">
+                {t("admin-navbar-logout")}
+              </Typography>
+            </Button>
           </Box>
         </Toolbar>
       </Container>
 
-      <CheckLogoutResult open={isLogoutNotificationOpen} error={logoutError} response={logoutResponse} onClose={handleLogoutNotificationClose} />
+      <CheckLogoutResult
+        open={isLogoutNotificationOpen}
+        error={logoutError}
+        response={logoutResponse}
+        onClose={handleLogoutNotificationClose}
+      />
     </AppBar>
   );
-}
+};
 export default AdminNavbar;

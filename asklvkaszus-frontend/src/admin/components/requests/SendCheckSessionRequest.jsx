@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +8,7 @@ const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 export const SendCheckSessionRequest = () => {
   const navigate = useNavigate();
 
-  const submitCheckSessionRequest = async () => {
+  const handleCheckSessionRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -32,11 +33,7 @@ export const SendCheckSessionRequest = () => {
           
         }
     }
-  };
-
-  const handleCheckSessionRequest = async () => {
-    await submitCheckSessionRequest();
-  };
+  }, [navigate]);
 
   return {
     handleCheckSessionRequest,

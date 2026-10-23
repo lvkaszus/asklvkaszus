@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendUpdateAppSettingsRequest = (globalApiEnabled, markdownFrontendEnabled, markdownAdminEnabled, approveQuestionsFirst) => {
+export const SendUpdateAppSettingsRequest = () => {
   const [updateAppSettingsError, setUpdateAppSettingsError] = useState(false);
   const [updateAppSettingsResponse, setUpdateAppSettingsResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitUpdateAppSettingsRequest = async () => {
+  const handleUpdateAppSettingsRequest = useCallback(async ({ globalApiEnabled, markdownFrontendEnabled, markdownAdminEnabled, approveQuestionsFirst }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -60,11 +60,7 @@ export const SendUpdateAppSettingsRequest = (globalApiEnabled, markdownFrontendE
           console.error('An error occurred while sending a request to update the application settings!', error);
         }
     }
-  };
-
-  const handleUpdateAppSettingsRequest = async () => {
-    await submitUpdateAppSettingsRequest();
-  };
+  }, [navigate]);
 
   return {
     updateAppSettingsError,

@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendChangePasswordRequest = (oldPassword, newPassword, confirmNewPassword) => {
+export const SendChangePasswordRequest = () => {
   const [changePasswordError, setChangePasswordError] = useState(false);
   const [changePasswordResponse, setChangePasswordResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitChangePasswordRequest = async () => {
+  const handleChangePasswordRequest = useCallback(async ({ oldPassword, newPassword, confirmNewPassword }) => {
     try {
       const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -59,11 +59,7 @@ export const SendChangePasswordRequest = (oldPassword, newPassword, confirmNewPa
           console.error('An error occurred while sending a password change request!', error)
         }
     }
-  };
-
-  const handleChangePasswordRequest = async () => {
-    await submitChangePasswordRequest();
-  };
+  }, [navigate]);
 
   return {
     changePasswordError,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ export const SendFetchAllQuestionsRequest = () => {
 
     const navigate = useNavigate();
 
-    const submitFetchAllQuestionsRequest = async () => {
+    const handleFetchAllQuestionsRequest = useCallback(async () => {
         try {
             const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -58,11 +58,7 @@ export const SendFetchAllQuestionsRequest = () => {
                 console.error('An error occurred while sending a request to download questions list!', error);
               }
           }
-    };
-
-    const handleFetchAllQuestionsRequest = async () => {
-        await submitFetchAllQuestionsRequest();
-    };
+    }, [navigate]);
 
     return {
         isFetchAllQuestionsLoading,

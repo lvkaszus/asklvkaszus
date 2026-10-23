@@ -14,16 +14,16 @@ const UnblockSenderButton = ({ sender_ip, unblockSenderOutputData, setUnblockSen
         setDialogOpen(true);
     };
 
-    const { unblockSenderError, unblockSenderResponse, handleUnblockSenderRequest } = SendUnblockSenderRequest(sender_ip);
+    const { unblockSenderError, unblockSenderResponse, handleUnblockSenderRequest } = SendUnblockSenderRequest();
 
     useEffect(() => {
         unblockSenderOutputData(unblockSenderError, unblockSenderResponse, sender_ip);
-    }, [unblockSenderError, unblockSenderResponse]);
+    }, [unblockSenderError, unblockSenderResponse, sender_ip, unblockSenderOutputData]);
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);
 
-        await handleUnblockSenderRequest();
+        await handleUnblockSenderRequest({ senderIp: sender_ip });
         setUnblockSenderNotifyOpen(true);
 
         setDialogYesButtonDisabled(false);

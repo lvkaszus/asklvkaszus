@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendFetchUserDataRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitFetchUserDataRequest = async () => {
+  const handleFetchUserDataRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -55,11 +55,7 @@ export const SendFetchUserDataRequest = () => {
           console.error('An error occurred while sending a request to retrieve user information!', error);
         }
     }
-  };
-
-  const handleFetchUserDataRequest = async () => {
-    await submitFetchUserDataRequest();
-  };
+  }, [navigate]);
 
   return {
     userDataError,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
@@ -8,7 +8,7 @@ export const SendSubmitQuestionRequest = (question) => {
     const [submitQuestionResponse, setSubmitQuestionResponse] = useState('');
     const [submitQuestionError, setSubmitQuestionError] = useState(false);
 
-    const submitQuestionRequest = async (captcha_token) => {
+    const handleSubmitQuestionRequest = useCallback(async (captcha_token) => {
         try {
             const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -44,11 +44,7 @@ export const SendSubmitQuestionRequest = (question) => {
 
             }
         }
-    };
-
-    const handleSubmitQuestionRequest = async (captcha_token) => {
-        await submitQuestionRequest(captcha_token);
-    };
+    }, [question]);
 
     return {
         submitQuestionResponse,

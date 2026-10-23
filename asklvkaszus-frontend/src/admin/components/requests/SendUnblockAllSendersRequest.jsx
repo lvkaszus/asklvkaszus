@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendUnblockAllSendersRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitUnblockAllSendersRequest = async () => {
+  const handleUnblockAllSendersRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -54,11 +54,7 @@ export const SendUnblockAllSendersRequest = () => {
             console.error('An error occurred while sending a request to unblock all blocked senders!', error);
         }
     }
-  };
-
-  const handleUnblockAllSendersRequest = async () => {
-    await submitUnblockAllSendersRequest();
-  };
+  }, [navigate]);
 
   return {
     unblockAllSendersError,

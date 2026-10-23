@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -12,7 +12,7 @@ export const SendFetchBlockedSendersRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitFetchBlockedSendersRequest = async () => {
+  const handleFetchBlockedSendersRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -60,11 +60,7 @@ export const SendFetchBlockedSendersRequest = () => {
           console.error('An error occurred while sending a request to retrieve the list of blocked senders!', error);
         }
     }
-  };
-
-  const handleFetchBlockedSendersRequest = async () => {
-    await submitFetchBlockedSendersRequest();
-  };
+  }, [navigate]);
 
   return {
     isBlockedSendersLoading,

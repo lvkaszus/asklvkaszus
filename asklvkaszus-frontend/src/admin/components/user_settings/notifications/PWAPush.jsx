@@ -14,35 +14,43 @@ const PWAPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetc
 
     const [webPushEnabled, setWebPushEnabled] = useState(true);
 
-    useEffect(() => {
+    const [prevUserData, setPrevUserData] = useState(null);
+
+    if (userData !== prevUserData) {
+        setPrevUserData(userData);
+
         if (userData) {
             setWebPushEnabled(userData.push_notifications_enabled || false);
         }
-    }, [userData]);
+    }
 
-
-    const [vapidPublicKey, setVapidPublicKey] = useState(null);
 
     const { fetchVapidPublicKeyError, fetchVapidPublicKeyResponse, handleFetchVapidPublicKeyRequest } = SendFetchVapidPublicKeyRequest();
 
+    const vapidPublicKey = fetchVapidPublicKeyResponse && fetchVapidPublicKeyError === false
+        ? fetchVapidPublicKeyResponse
+        : null;
+
     useEffect(() => {
-        if (fetchVapidPublicKeyResponse) {
-            fetchVapidPublicKeyOutputData(fetchVapidPublicKeyError, fetchVapidPublicKeyResponse);
-        }
+        if (!fetchVapidPublicKeyResponse) return;
 
-        if (fetchVapidPublicKeyError === false) {
-            setVapidPublicKey(fetchVapidPublicKeyResponse);
-            setFetchVapidPublicKeyNotifyOpen(false);
-            
-        } else {
-            setFetchVapidPublicKeyNotifyOpen(true);
+        fetchVapidPublicKeyOutputData(
+            fetchVapidPublicKeyError,
+            fetchVapidPublicKeyResponse
+        );
 
-        }
-    }, [fetchVapidPublicKeyResponse]);
+        setFetchVapidPublicKeyNotifyOpen(fetchVapidPublicKeyError !== false);
+
+    }, [
+        fetchVapidPublicKeyResponse,
+        fetchVapidPublicKeyError,
+        fetchVapidPublicKeyOutputData,
+        setFetchVapidPublicKeyNotifyOpen
+    ]);
 
     useEffect(() => {
         handleFetchVapidPublicKeyRequest();
-    }, [])
+    }, [handleFetchVapidPublicKeyRequest])
 
 
     const [isDialogConfirmButtonDisabled, setDialogConfirmButtonDisabled] = useState(false);
@@ -52,23 +60,37 @@ const PWAPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetc
     };
 
 
-    const { subscribeToPushNotificationsError, subscribeToPushNotificationsResponse, isUserSubscribed, handleSubscribeToPushNotificationsRequest } = SendSubscribeToPushNotificationsRequest(vapidPublicKey);
+    const { subscribeToPushNotificationsError, subscribeToPushNotificationsResponse, isUserSubscribed, handleSubscribeToPushNotificationsRequest } = SendSubscribeToPushNotificationsRequest();
 
     useEffect(() => {
-        subscribeToPushNotificationsOutputData(subscribeToPushNotificationsError, subscribeToPushNotificationsResponse);
-    }, [subscribeToPushNotificationsError, subscribeToPushNotificationsResponse]);
+        subscribeToPushNotificationsOutputData(
+            subscribeToPushNotificationsError,
+            subscribeToPushNotificationsResponse
+        );
+    }, [
+        subscribeToPushNotificationsError,
+        subscribeToPushNotificationsResponse,
+        subscribeToPushNotificationsOutputData
+    ]);
 
     const handleSubscribeUser = async () => {
-        await handleSubscribeToPushNotificationsRequest();
+        await handleSubscribeToPushNotificationsRequest({ publicKey: vapidPublicKey });
         setSubscribeToPushNotificationsNotifyOpen(true);
     }
 
 
-    const { configureWebPushNotificationsError, configureWebPushNotificationsResponse, handleConfigureWebPushNotificationsRequest } = SendConfigureWebPushNotificationsRequest(webPushEnabled);
+    const { configureWebPushNotificationsError, configureWebPushNotificationsResponse, handleConfigureWebPushNotificationsRequest } = SendConfigureWebPushNotificationsRequest();
 
     useEffect(() => {
-        configureWebPushNotificationsOutputData(configureWebPushNotificationsError, configureWebPushNotificationsResponse);
-    }, [configureWebPushNotificationsError, configureWebPushNotificationsResponse]);
+        configureWebPushNotificationsOutputData(
+            configureWebPushNotificationsError,
+            configureWebPushNotificationsResponse
+        );
+    }, [
+        configureWebPushNotificationsError,
+        configureWebPushNotificationsResponse,
+        configureWebPushNotificationsOutputData
+    ]);
 
 
     const handleDialogSettingsConfirm = async () => {
@@ -78,7 +100,7 @@ const PWAPush = ({ userData, dialogSettingsOpen, handleDialogSettingsClose, fetc
     const handleDialogConfirm = async () => {
         setDialogConfirmButtonDisabled(true);
 
-        await handleConfigureWebPushNotificationsRequest();
+        await handleConfigureWebPushNotificationsRequest({ webPushEnabled });
         setConfigureWebPushNotificationsNotifyOpen(true);
 
         setDialogConfirmButtonDisabled(false);

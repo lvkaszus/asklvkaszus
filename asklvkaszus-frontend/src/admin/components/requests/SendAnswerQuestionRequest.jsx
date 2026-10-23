@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendAnswerQuestionRequest = (questionId, answerText) => {
+export const SendAnswerQuestionRequest = () => {
   const [answerQuestionError, setAnswerQuestionError] = useState(false);
   const [answerQuestionResponse, setAnswerQuestionResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitAnswerQuestionRequest = async () => {
+  const handleAnswerQuestionRequest = useCallback(async ({ questionId, answerText }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -55,11 +55,7 @@ export const SendAnswerQuestionRequest = (questionId, answerText) => {
           console.error("An error occurred while sending answer to a question!", error);
         }
     }
-  };
-
-  const handleAnswerQuestionRequest = async () => {
-    await submitAnswerQuestionRequest();
-  };
+  }, [navigate]);
 
   return {
     answerQuestionError,

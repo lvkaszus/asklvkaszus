@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
 import { useTheme, Card, CardContent, Typography, Button, Alert, Box, Divider, LinearProgress, TextField } from "@mui/material";
@@ -14,126 +14,114 @@ import CaptchaDialog from "../components/captcha/CaptchaDialog";
 const yourNickname = import.meta.env.VITE_YOUR_NICKNAME || '@me';
 
 const AdminRegister = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNotificationOpen, adminAppSettingsError, adminAppSettingsResponse, handleAdminAppSettingsNotificationClose }) => {
-    const theme = useTheme();
+  const theme = useTheme();
 
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    useEffect(() => {
-      // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
-      document.title = `${t('register-pagetitle')} - Ask ${yourNickname}!`;
-    }, [yourNickname]);
+  useEffect(() => {
+    document.title = `${t('register-pagetitle')} - Ask ${yourNickname}!`;
+  }, [t]);
 
-    const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
 
-    useEffect(() => {
-      if (!adminAppSettingsError) {
-        handleFetchAdminAppSettingsRequest();
-      }
-    }, [adminAppSettingsError])
+  useEffect(() => {
+    if (!adminAppSettingsError) {
+      handleFetchAdminAppSettingsRequest();
+    }
+  }, [adminAppSettingsError, handleFetchAdminAppSettingsRequest]);
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [usernameError, setUsernameError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
 
-    const [passwordStrength, setPasswordStrength] = useState({
-      length: false,
-      uppercase: false,
-      digit: false,
-      specialChar: false,
-      allowedChars: false
-    });
+  const [passwordStrength, setPasswordStrength] = useState({
+    length: false,
+    uppercase: false,
+    digit: false,
+    specialChar: false,
+    allowedChars: false
+  });
 
-    const { registerError, registerResponse, handleRegisterRequest } = SendRegisterRequest(username, password, confirmPassword);
-    const [isSubmitNotificationOpen, setSubmitNotificationOpen] = useState(false);
+  const { registerError, registerResponse, handleRegisterRequest } = SendRegisterRequest();
+  const [isSubmitNotificationOpen, setSubmitNotificationOpen] = useState(false);
 
-    const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
+  const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
 
-    const [isButtonDisabled, setButtonDisabled] = useState(false);
-    
-    const { handleCheckSessionRequest } = SendCheckSessionRequest();
-
-    const { registrationEnabledResponse, handleRegistrationInfoRequest } = SendRegistrationEnabledRequest();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isButtonDisabled =
+    !!usernameError ||
+    Object.values(passwordStrength).some(value => value === false) ||
+    password !== confirmPassword ||
+    !password ||
+    !confirmPassword ||
+    isSubmitting;
   
-    const handleRequests = async () => {
+  const { handleCheckSessionRequest } = SendCheckSessionRequest();
+
+  const { registrationEnabledResponse, handleRegistrationInfoRequest } = SendRegistrationEnabledRequest();
+  
+  useEffect(() => {
+    const run = async () => {
       await handleCheckSessionRequest();
       await handleRegistrationInfoRequest();
-
       setLoading(false);
+    };
+
+    run();
+  }, [handleCheckSessionRequest, handleRegistrationInfoRequest]);
+
+  const validateUsername = (username) => {
+    if (username.length < 4) {
+      setUsernameError(t('register-username-toofewusernamecharacters'));
+    } else if (username.length > 32) {
+      setUsernameError(t('register-username-toomuchusernamecharacters'));
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      setUsernameError(t('register-username-forbiddenusernamecharacters'));
+    } else if (/(-{2,}|_{2,})/.test(username)) {
+      setUsernameError(t('register-username-consecutivecharacters'));
+    } else {
+      setUsernameError('');
     }
-    
-    useEffect(() => {
-      handleRequests();
-    }, []);
+  };
 
-    const validateUsername = (username) => {
-      if (username.length < 4) {
-        setUsernameError(t('register-username-toofewusernamecharacters'));
-      } else if (username.length > 32) {
-        setUsernameError(t('register-username-toomuchusernamecharacters'));
-      } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
-        setUsernameError(t('register-username-forbiddenusernamecharacters'));
-      } else if (/(-{2,}|_{2,})/.test(username)) {
-        setUsernameError(t('register-username-consecutivecharacters'));
-      } else {
-        setUsernameError('');
-      }
-    };
+  const checkPasswordStrength = (value) => {
+    const lengthRegex = /^.{12,}$/;
+    const uppercaseRegex = /[A-Z]/;
+    const digitRegex = /\d/;
+    const specialCharRegex = /[!@#$%^&*]/;
+    const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
 
-    const checkPasswordStrength = (value) => {
-      const lengthRegex = /^.{12,}$/;
-      const uppercaseRegex = /[A-Z]/;
-      const digitRegex = /\d/;
-      const specialCharRegex = /[!@#$%^&*]/;
-      const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
-  
-      setPasswordStrength({
-        length: lengthRegex.test(value),
-        uppercase: uppercaseRegex.test(value),
-        digit: digitRegex.test(value),
-        specialChar: specialCharRegex.test(value),
-        allowedChars: allowedCharsRegex.test(value)
-      });
-    };
+    setPasswordStrength({
+      length: lengthRegex.test(value),
+      uppercase: uppercaseRegex.test(value),
+      digit: digitRegex.test(value),
+      specialChar: specialCharRegex.test(value),
+      allowedChars: allowedCharsRegex.test(value)
+    });
+  };
 
-    useEffect(() => {
-      checkPasswordStrength(password);
-  
-      const isAnyPasswordRequirementFalse = Object.values(passwordStrength).some(value => value === false);
-      const isNewPasswordEntered = password.length > 0;
-      const isConfirmNewPasswordEntered = confirmPassword.length > 0;
-      const areNewPasswordsSame = password === confirmPassword;
-  
-      if (isAnyPasswordRequirementFalse || !isNewPasswordEntered || !isConfirmNewPasswordEntered || !areNewPasswordsSame || usernameError) {
-        setButtonDisabled(true);
+  const handleUsernameValue = (event) => {
+    setUsername(event.target.value);
+  };
 
-      } else {
-        setButtonDisabled(false);
+  const handlePasswordValue = (event) => {
+      setPassword(event.target.value);
+      checkPasswordStrength(event.target.value);
+  };
 
-      }
-  }, [username, password, confirmPassword]);
+  const handleConfirmPasswordValue = (event) => {
+      setConfirmPassword(event.target.value);
+  };
 
-    const handleUsernameValue = (event) => {
-      setUsername(event.target.value);
-    };
+  const handleCaptchaDialogOpen = () => {
+    setCaptchaDialogOpen(true);
+  }
 
-    const handlePasswordValue = (event) => {
-        setPassword(event.target.value);
-        checkPasswordStrength(event.target.value);
-    };
-
-    const handleConfirmPasswordValue = (event) => {
-        setConfirmPassword(event.target.value);
-    };
-
-    const handleCaptchaDialogOpen = () => {
-      setCaptchaDialogOpen(true);
-    }
-
-    const handleCaptchaDialogClose = () => {
-      setCaptchaDialogOpen(false);
-    }
+  const handleCaptchaDialogClose = () => {
+    setCaptchaDialogOpen(false);
+  }
 
   const handleRegisterFormSubmit = async (event) => {
     event.preventDefault();
@@ -145,19 +133,37 @@ const AdminRegister = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsN
     }
   }
 
-    const handleRegister = async (captcha_token) => {
-      setButtonDisabled(true);
-      await handleRegisterRequest(captcha_token);
-      setUsername('');
-      setPassword('');
-      setConfirmPassword('');
-      setSubmitNotificationOpen(true);
-      setButtonDisabled(false);
-    };
+  const handleRegister = useCallback(async (captcha_token) => {
+    try {
+      setIsSubmitting(true);
 
-    const handleSubmitNotificationClose = () => {
-      setSubmitNotificationOpen(false);
-    };
+      const result = await handleRegisterRequest({
+        username,
+        password,
+        confirmPassword,
+        captcha_token
+      });
+
+      if (result?.success) {
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
+      }
+
+      setSubmitNotificationOpen(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [handleRegisterRequest, username, password, confirmPassword]);
+
+  const handleCaptchaVerify = useCallback((token) => {
+    handleCaptchaDialogClose();
+    handleRegister(token);
+  }, [handleRegister]);
+
+  const handleSubmitNotificationClose = () => {
+    setSubmitNotificationOpen(false);
+  };
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', textAlign: 'center' }}>
@@ -435,7 +441,7 @@ const AdminRegister = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsN
 
         <CheckFetchAdminAppSettingsResult open={isAdminAppSettingsNotificationOpen} error={adminAppSettingsError} response={adminAppSettingsResponse} onClose={handleAdminAppSettingsNotificationClose} />
 
-        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={(token) => {handleCaptchaDialogClose(); handleRegister(token)}} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
+        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={handleCaptchaVerify} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
 
         <CheckRegisterResult open={isSubmitNotificationOpen} error={registerError} response={registerResponse} onClose={handleSubmitNotificationClose}/>
       </Box>

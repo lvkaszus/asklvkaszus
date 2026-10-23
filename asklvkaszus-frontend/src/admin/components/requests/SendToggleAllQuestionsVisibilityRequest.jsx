@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
@@ -11,7 +11,7 @@ export const SendToggleAllQuestionsVisibilityRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitToggleAllQuestionsVisibilityRequest = async () => {
+  const handleToggleAllQuestionsVisibilityRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -55,11 +55,7 @@ export const SendToggleAllQuestionsVisibilityRequest = () => {
           console.error('An error occurred when sending a request to change the visibility of all questions!', error);
         }
     }
-  };
-
-  const handleToggleAllQuestionsVisibilityRequest = async () => {
-    await submitToggleAllQuestionsVisibilityRequest();
-  };
+  }, [navigate]);
 
   return {
     toggleAllQuestionsVisibilityError,

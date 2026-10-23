@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendBlockSenderRequest = (senderIp) => {
+export const SendBlockSenderRequest = () => {
   const [blockSenderError, setBlockSenderError] = useState(false);
   const [blockSenderResponse, setBlockSenderResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitBlockSenderRequest = async () => {
+  const handleBlockSenderRequest = useCallback(async ({ senderIp }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -54,11 +54,7 @@ export const SendBlockSenderRequest = (senderIp) => {
           console.error('An error occurred while sending a request to block the sender!', error);
         }
     }
-  };
-
-  const handleBlockSenderRequest = async () => {
-    await submitBlockSenderRequest();
-  };
+  }, [navigate]);
 
   return {
     blockSenderError,

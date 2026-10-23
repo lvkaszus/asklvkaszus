@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import PreAuthNavbar from "./components/navbar/PreAuthNavbar";
@@ -9,7 +9,6 @@ import { SendLoginRequest } from "./components/requests/SendLoginRequest";
 import CheckLoginResult from "./components/results/CheckLoginResult";
 import { SendCheckSessionRequest } from "./components/requests/SendCheckSessionRequest";
 import { SendRegistrationEnabledRequest } from "./components/requests/SendRegistrationEnabledRequest";
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import CheckFetchAdminAppSettingsResult from "./components/results/CheckFetchAdminAppSettingsResult";
 import CaptchaDialog from "../components/captcha/CaptchaDialog";
@@ -20,9 +19,8 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `${t('login-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -30,7 +28,7 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
     if (!adminAppSettingsError) {
       handleFetchAdminAppSettingsRequest();
     }
-  }, [adminAppSettingsError])
+  }, [adminAppSettingsError, handleFetchAdminAppSettingsRequest]);
 
   const [isRecoverPasswordDialogOpen, setRecoverPasswordDialogOpen] = useState(false);
 
@@ -44,22 +42,22 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
 
   const [isCaptchaDialogOpen, setCaptchaDialogOpen] = useState(false);
 
-  const [isButtonDisabled, setButtonDisabled] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isButtonDisabled = !!usernameError || !!passwordError || isSubmitting;
   
   const { handleCheckSessionRequest } = SendCheckSessionRequest();
 
   const { registrationEnabledResponse, handleRegistrationInfoRequest } = SendRegistrationEnabledRequest();
 
-  const handleRequests = async () => {
-    await handleCheckSessionRequest();
-    await handleRegistrationInfoRequest();
-
-    setLoading(false);
-  }
-  
   useEffect(() => {
-    handleRequests();
-  }, []);
+    const run = async () => {
+      await handleCheckSessionRequest();
+      await handleRegistrationInfoRequest();
+      setLoading(false);
+    };
+
+    run();
+  }, [handleCheckSessionRequest, handleRegistrationInfoRequest]);
 
   const validateUsername = (username) => {
     if (username.length > 32) {
@@ -83,17 +81,7 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
     }
   };
 
-  useEffect(() => {
-    if (usernameError || passwordError) {
-      setButtonDisabled(true);
-
-    } else {
-      setButtonDisabled(false);
-
-    }
-  }, [username, password]);
-
-  const { loginError, loginResponse, handleLoginRequest } = SendLoginRequest(username, password);
+  const { loginError, loginResponse, handleLoginRequest } = SendLoginRequest();
 
   const handleUsernameValue = (event) => {
     setUsername(event.target.value);
@@ -121,14 +109,27 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
     }
   }
 
-  const handleLogin = async (captcha_token) => {
-    setButtonDisabled(true);
-    await handleLoginRequest(captcha_token);
-    setUsername('');
-    setPassword('');
-    setSubmitNotificationOpen(true);
-    setButtonDisabled(false);
-  };
+  const handleLogin = useCallback(async (captcha_token) => {
+    try {
+      setIsSubmitting(true);
+
+      const result = await handleLoginRequest({ username, password, captcha_token });
+
+      if (result?.success) {
+        setUsername('');
+        setPassword('');
+      }
+
+      setSubmitNotificationOpen(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [handleLoginRequest, username, password]);
+
+  const handleCaptchaVerify = useCallback((token) => {
+    handleCaptchaDialogClose();
+    handleLogin(token);
+  }, [handleLogin]);
 
   const handleRecoverPasswordDialogOpen = () => {
     setRecoverPasswordDialogOpen(true);
@@ -236,7 +237,7 @@ const AdminLogin = ({ handleFetchAdminAppSettingsRequest, isAdminAppSettingsNoti
 
         <RecoverPasswordDescription open={isRecoverPasswordDialogOpen} onClose={handleRecoverPasswordDialogClose} />
 
-        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={(token) => {handleCaptchaDialogClose(); handleLogin(token)}} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
+        <CaptchaDialog open={isCaptchaDialogOpen} onClose={handleCaptchaDialogClose} onVerify={handleCaptchaVerify} captchaProvider={adminAppSettingsResponse?.captcha_provider} captchaSiteKey={adminAppSettingsResponse?.captcha_site_key} />
 
         <CheckLoginResult open={isSubmitNotificationOpen} error={loginError} response={loginResponse} onClose={handleSubmitNotificationClose}/>
       </Box>

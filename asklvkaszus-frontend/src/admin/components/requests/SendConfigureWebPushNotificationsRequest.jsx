@@ -1,24 +1,24 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendConfigureWebPushNotificationsRequest = (WebpushEnabled) => {
+export const SendConfigureWebPushNotificationsRequest = () => {
   const [configureWebPushNotificationsError, setConfigureWebPushNotificationsError] = useState(false);
   const [configureWebPushNotificationsResponse, setConfigureWebPushNotificationsResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitConfigureWebPushNotificationsRequest = async () => {
+  const handleConfigureWebPushNotificationsRequest = useCallback(async ({ webPushEnabled }) => {
     try {
       const csrfToken = await SendFetchCsrfTokenRequest();
 
         const response = await axios.put(
           `${domain}/api/app/admin/configure_notifications`,
           {
-            webpush_enabled: WebpushEnabled,
+            webpush_enabled: webPushEnabled,
           },
           {
             headers: {
@@ -58,11 +58,7 @@ export const SendConfigureWebPushNotificationsRequest = (WebpushEnabled) => {
           console.error('An error occurred while sending a request to change the notification configuration!', error)
         }
     }
-  };
-
-  const handleConfigureWebPushNotificationsRequest = async () => {
-    await submitConfigureWebPushNotificationsRequest();
-  };
+  }, [navigate]);
 
   return {
     configureWebPushNotificationsError,

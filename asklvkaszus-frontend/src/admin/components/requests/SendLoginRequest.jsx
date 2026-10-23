@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendLoginRequest = (username, password) => {
+export const SendLoginRequest = () => {
   const [loginError, setLoginError] = useState(false);
   const [loginResponse, setLoginResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitLoginRequest = async (captcha_token) => {
+  const handleLoginRequest = useCallback(async ({ username, password, captcha_token }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -38,6 +38,8 @@ export const SendLoginRequest = (username, password) => {
           navigate('/admin/home');
         }, 1000);
 
+        return { success: true };
+
     } catch (error) {
         if (error.response) {
             const { error: responseError } = error.response.data;
@@ -45,19 +47,18 @@ export const SendLoginRequest = (username, password) => {
             setLoginResponse(responseError);
             setLoginError(true);
 
+            return { success: false, error: responseError };
+
           } else {
             setLoginResponse('');
             setLoginError(true);
 
             console.error('There was an error when sending the account login request!', error);
 
+            return { success: false };
           }
     }
-  };
-
-  const handleLoginRequest = async (captcha_token) => {
-    await submitLoginRequest(captcha_token);
-  };
+  }, [navigate]);
 
   return {
     loginError,

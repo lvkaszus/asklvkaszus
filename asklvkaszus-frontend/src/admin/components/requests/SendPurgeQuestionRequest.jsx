@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendPurgeQuestionRequest = (questionId) => {
+export const SendPurgeQuestionRequest = () => {
   const [purgeQuestionError, setPurgeQuestionError] = useState(false);
   const [purgeQuestionResponse, setPurgeQuestionResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitPurgeQuestionRequest = async () => {
+  const handlePurgeQuestionRequest = useCallback(async ({ questionId }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -59,11 +59,7 @@ export const SendPurgeQuestionRequest = (questionId) => {
 
         }
     }
-  };
-
-  const handlePurgeQuestionRequest = async () => {
-    await submitPurgeQuestionRequest();
-  };
+  }, [navigate]);
 
   return {
     purgeQuestionError,

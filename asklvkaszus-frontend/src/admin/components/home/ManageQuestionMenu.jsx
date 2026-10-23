@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Menu, MenuItem, Dialog, DialogContent, IconButton, Typography, Box, Divider } from "@mui/material";
 import { InfoRounded, Close, Delete, Visibility, Settings, Block } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -27,37 +27,37 @@ const ManageQuestionMenu = ({ question_id, sender_ip, purgeQuestionOutputData, P
         setDialogOpen(true);
     };
 
-    const { purgeQuestionError, purgeQuestionResponse, handlePurgeQuestionRequest } = SendPurgeQuestionRequest(question_id);
+    const { purgeQuestionError, purgeQuestionResponse, handlePurgeQuestionRequest } = SendPurgeQuestionRequest();
 
     useEffect(() => {
         purgeQuestionOutputData(purgeQuestionError, purgeQuestionResponse);
-    }, [purgeQuestionError, purgeQuestionResponse]);
+    }, [purgeQuestionError, purgeQuestionResponse, purgeQuestionOutputData]);
 
-    const { toggleQuestionVisibilityError, toggleQuestionVisibilityResponse, handleToggleQuestionVisibilityRequest } = SendToggleQuestionVisibilityRequest(question_id);
+    const { toggleQuestionVisibilityError, toggleQuestionVisibilityResponse, handleToggleQuestionVisibilityRequest } = SendToggleQuestionVisibilityRequest();
 
     useEffect(() => {
         toggleQuestionVisibilityOutputData(toggleQuestionVisibilityError, toggleQuestionVisibilityResponse);
-    }, [toggleQuestionVisibilityError, toggleQuestionVisibilityResponse]);
+    }, [toggleQuestionVisibilityError, toggleQuestionVisibilityResponse, toggleQuestionVisibilityOutputData]);
 
-    const { blockSenderError, blockSenderResponse, handleBlockSenderRequest } = SendBlockSenderRequest(sender_ip);
+    const { blockSenderError, blockSenderResponse, handleBlockSenderRequest } = SendBlockSenderRequest();
 
     useEffect(() => {
         blockSenderOutputData(blockSenderError, blockSenderResponse, sender_ip);
-    }, [blockSenderError, blockSenderResponse]);
+    }, [blockSenderError, blockSenderResponse, blockSenderOutputData, sender_ip]);
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);
 
         if (actionType === "delete") {
-            await handlePurgeQuestionRequest();
+            await handlePurgeQuestionRequest({ questionId: question_id });
             PurgeQuestionNotifyOpen(true);
 
         } else if (actionType === "toggleVisibility") {
-            await handleToggleQuestionVisibilityRequest();
+            await handleToggleQuestionVisibilityRequest({ questionId: question_id });
             ToggleQuestionVisibilityNotifyOpen(true);
 
         } else {
-            await handleBlockSenderRequest();
+            await handleBlockSenderRequest({ senderIp: sender_ip });
             BlockSenderNotifyOpen(true);
 
         }

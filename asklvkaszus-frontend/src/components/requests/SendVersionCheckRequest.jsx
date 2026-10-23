@@ -11,46 +11,29 @@ export const SendVersionCheckRequest = () => {
 
   const frontendVersion = currentVersion();
 
-  const fetchLatestGitVersion = async () => {
-    try {
-      const gitData = await axios.get('https://api.github.com/repos/lvkaszus/asklvkaszus/releases/latest');
-      const latestGitVersion = gitData.data.tag_name;
-
-      setLatestGitVersion(latestGitVersion);
-
-    } catch (error) {
-      setLatestGitVersion(frontendVersion);
-
-      console.error('An error occurred while downloading the latest version of the app from GitHub!', error);
-
-    }
-  };
-
-  const fetchBackendVersion = async () => {
-    try {
-      const backendData = await axios.get(`${domain}/api/app/user/fetch_backend_version`);
-      const backendVersion = backendData.data.backend_version;
-
-      setBackendVersion(backendVersion);
-
-      
-    } catch (error) {
-      setBackendVersion('?');
-
-      console.error('An error occurred while downloading the currently running version of the application backend!', error);
-
-    }
-  };
-
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchVersionNumbers = async () => {
       setVersionLoading(true);
-      await fetchBackendVersion()
-      await fetchLatestGitVersion()
+
+      try {
+        const backendData = await axios.get(`${domain}/api/app/user/fetch_backend_version`);
+        setBackendVersion(backendData.data.backend_version);
+      } catch {
+        setBackendVersion('?');
+      }
+
+      try {
+        const gitData = await axios.get('https://api.github.com/repos/lvkaszus/asklvkaszus/releases/latest');
+        setLatestGitVersion(gitData.data.tag_name);
+      } catch {
+        setLatestGitVersion(frontendVersion);
+      }
+
       setVersionLoading(false);
     };
-    fetchAll();
-  }, []);
+
+    fetchVersionNumbers();
+  }, [frontendVersion]);
 
   const isLatestGitVersion = frontendVersion === latestGitVersion;
 

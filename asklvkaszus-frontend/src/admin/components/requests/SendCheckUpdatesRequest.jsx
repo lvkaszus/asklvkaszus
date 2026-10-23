@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ export const SendCheckUpdatesRequest = () => {
 
   const navigate = useNavigate();
 
-  const submitCheckUpdatesRequest = async () => {
+  const handleCheckUpdatesRequest = useCallback(async () => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -67,11 +67,7 @@ export const SendCheckUpdatesRequest = () => {
 
           }
     }
-  };
-
-  const handleCheckUpdatesRequest = async () => {
-    await submitCheckUpdatesRequest();
-  };
+  }, [navigate]);
 
   return {
     checkUpdatesStatus,

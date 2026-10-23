@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { SendFetchCsrfTokenRequest } from './SendFetchCsrfTokenRequest';
 
 const domain = import.meta.env.VITE_DOMAIN || 'https://ask.lvkasz.us';
 
-export const SendUnblockSenderRequest = (senderIp) => {
+export const SendUnblockSenderRequest = () => {
   const [unblockSenderError, setUnblockSenderError] = useState(false);
   const [unblockSenderResponse, setUnblockSenderResponse] = useState('');
 
   const navigate = useNavigate();
 
-  const submitUnblockSenderRequest = async () => {
+  const handleUnblockSenderRequest = useCallback(async ({ senderIp }) => {
     try {
         const csrfToken = await SendFetchCsrfTokenRequest();
 
@@ -57,11 +57,7 @@ export const SendUnblockSenderRequest = (senderIp) => {
           console.error('An error occurred while sending a request to unblock the sender!', error);
         }
     }
-  };
-
-  const handleUnblockSenderRequest = async () => {
-    await submitUnblockSenderRequest();
-  };
+  }, [navigate]);
 
   return {
     unblockSenderError,

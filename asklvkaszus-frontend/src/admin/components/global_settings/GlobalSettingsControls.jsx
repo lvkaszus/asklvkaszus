@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, Typography, FormControlLabel, Switch, Divider, CardContent, Button, Dialog, DialogContent, IconButton } from "@mui/material";
 import { SendUpdateAppSettingsRequest } from "../requests/SendUpdateAppSettingsRequest";
 import CheckUpdateAppSettingsResult from "../results/CheckUpdateAppSettingsResult";
@@ -18,16 +18,20 @@ const GlobalSettingsControls = ({ appSettings, forceDataFetch }) => {
 
     const [isUpdateAppSettingsNotificationOpen, setUpdateAppSettingsNotificationOpen] = useState(false);
 
-    useEffect(() => {
+    const [prevAppSettings, setPrevAppSettings] = useState(null);
+
+    if (appSettings !== prevAppSettings) {
+        setPrevAppSettings(appSettings);
+
         if (appSettings) {
             setGlobalApiEnabled(appSettings.global_api_enabled || false);
             setMarkdownAdminEnabled(appSettings.markdown_admin_enabled || false);
             setMarkdownFrontendEnabled(appSettings.markdown_frontend_enabled || false);
             setQuestionsNeedApproval(appSettings.approve_questions_first || false);
         }
-    }, [appSettings]);
+    }
 
-    const { updateAppSettingsError, updateAppSettingsResponse, handleUpdateAppSettingsRequest } = SendUpdateAppSettingsRequest(globalApiEnabled, markdownFrontendEnabled, markdownAdminEnabled, questionsNeedApproval);
+    const { updateAppSettingsError, updateAppSettingsResponse, handleUpdateAppSettingsRequest } = SendUpdateAppSettingsRequest();
 
     const handleOpenConfirmDialog = () => {
         setDialogOpen(true);
@@ -35,7 +39,12 @@ const GlobalSettingsControls = ({ appSettings, forceDataFetch }) => {
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);
-        await handleUpdateAppSettingsRequest();
+        await handleUpdateAppSettingsRequest({
+            globalApiEnabled,
+            markdownFrontendEnabled,
+            markdownAdminEnabled,
+            approveQuestionsFirst: questionsNeedApproval
+        });
         forceDataFetch();
         setUpdateAppSettingsNotificationOpen(true);
         setDialogYesButtonDisabled(false);

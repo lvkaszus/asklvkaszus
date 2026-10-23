@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTheme, Box, Button, Card, CardContent, Dialog, DialogContent, Divider, IconButton, TextField, Typography } from "@mui/material";
 import { Close, Done, InfoOutlined, LockReset, Warning } from "@mui/icons-material";
 import { SendChangePasswordRequest } from "../requests/SendChangePasswordRequest";
@@ -16,15 +16,21 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
-    const [passwordStrength, setPasswordStrength] = useState({
-        length: false,
-        uppercase: false,
-        digit: false,
-        specialChar: false,
-        allowedChars: false
-    });
+    const passwordStrength = {
+        length: /^.{12,}$/.test(newPassword),
+        uppercase: /[A-Z]/.test(newPassword),
+        digit: /\d/.test(newPassword),
+        specialChar: /[!@#$%^&*]/.test(newPassword),
+        allowedChars: /^[a-zA-Z0-9!@#$%^&*]+$/.test(newPassword)
+    };
 
-    const [isDialogChangePasswordConfirmButtonDisabled, setDialogChangePasswordConfirmButtonDisabled] = useState(true);
+    const isDialogChangePasswordConfirmButtonDisabled =
+        Object.values(passwordStrength).some(value => value === false) ||
+        oldPassword.length === 0 ||
+        newPassword.length === 0 ||
+        confirmNewPassword.length === 0 ||
+        newPassword !== confirmNewPassword;
+
     const [isDialogConfirmButtonDisabled, setDialogConfirmButtonDisabled] = useState(false);
 
     const handleOldPasswordValue = (event) => {
@@ -33,46 +39,11 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
 
     const handleNewPasswordValue = (event) => {
         setNewPassword(event.target.value);
-        checkPasswordStrength(event.target.value);
     }
 
     const handleConfirmNewPasswordValue = (event) => {
         setConfirmNewPassword(event.target.value);
     }
-
-    const checkPasswordStrength = (value) => {
-        const lengthRegex = /^.{12,}$/;
-        const uppercaseRegex = /[A-Z]/;
-        const digitRegex = /\d/;
-        const specialCharRegex = /[!@#$%^&*]/;
-        const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
-    
-        setPasswordStrength({
-          length: lengthRegex.test(value),
-          uppercase: uppercaseRegex.test(value),
-          digit: digitRegex.test(value),
-          specialChar: specialCharRegex.test(value),
-          allowedChars: allowedCharsRegex.test(value)
-        });
-      };
-  
-    useEffect(() => {
-        checkPasswordStrength(newPassword);
-    
-        const isAnyPasswordRequirementFalse = Object.values(passwordStrength).some(value => value === false);
-        const isOldPasswordEntered = oldPassword.length > 0;
-        const isNewPasswordEntered = newPassword.length > 0;
-        const isConfirmNewPasswordEntered = confirmNewPassword.length > 0;
-        const areNewPasswordsSame = newPassword === confirmNewPassword;
-    
-        if (isAnyPasswordRequirementFalse || !isOldPasswordEntered || !isNewPasswordEntered || !isConfirmNewPasswordEntered || !areNewPasswordsSame) {
-          setDialogChangePasswordConfirmButtonDisabled(true);
-
-        } else {
-          setDialogChangePasswordConfirmButtonDisabled(false);
-
-        }
-    }, [oldPassword, newPassword, confirmNewPassword]);
 
     const handleDialogChangePasswordOpen = () => {
         setOldPassword('');
@@ -82,11 +53,11 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
         setDialogChangePasswordOpen(true);
     };
     
-    const { changePasswordError, changePasswordResponse, handleChangePasswordRequest } = SendChangePasswordRequest(oldPassword, newPassword, confirmNewPassword);
+    const { changePasswordError, changePasswordResponse, handleChangePasswordRequest } = SendChangePasswordRequest();
 
     useEffect(() => {
         changePasswordOutputData(changePasswordError, changePasswordResponse);
-    }, [changePasswordError, changePasswordResponse]);
+    }, [changePasswordError, changePasswordResponse, changePasswordOutputData]);
 
     const handleDialogChangePasswordConfirm = async () => {
         setDialogConfirmOpen(true);
@@ -95,7 +66,11 @@ const ChangePassword = ({ changePasswordOutputData, setChangePasswordNotifyOpen,
     const handleDialogConfirm = async () => {
         setDialogConfirmButtonDisabled(true);
 
-        await handleChangePasswordRequest();
+        await handleChangePasswordRequest({
+            oldPassword,
+            newPassword,
+            confirmNewPassword
+        });
         setChangePasswordNotifyOpen(true);
 
         setOldPassword('');
