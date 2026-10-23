@@ -1,7 +1,7 @@
 from flask import jsonify
 from ....modules.response_handler import jsonify_on_steroids
 from ....models.questions import Questions
-import html
+from ....modules.text_escape import escape_for_output
 
 def api_admin_fetch_all_questions():
     response_headers = {
@@ -18,8 +18,8 @@ def api_admin_fetch_all_questions():
             formatted_questions.append({
                 'id': question.id,
                 'date': question.date,
-                'question': html.escape(question.question),
-                'answer': html.escape(question.answer),
+                'question': escape_for_output(question.question),
+                'answer': escape_for_output(question.answer),
                 'hidden': question.hidden,
                 'ip_address': question.ip_address
             })

@@ -36,6 +36,23 @@
 
 ---
 
+## ⚠️ Client IP Address (`X-Forwarded-For`)
+
+> Keep the `X-Forwarded-For` lines in the configurations below exactly as they are!
+
+The application uses the IP address of the client for rate limiting, blocking senders and audit logs. It takes the address from the `X-Forwarded-For` header, so your reverse proxy has to **overwrite** this header with the real address of the client instead of adding to what the client has sent:
+
+- NGINX: `proxy_set_header X-Forwarded-For $remote_addr;`
+- Apache2: `RequestHeader set X-Forwarded-For %{REMOTE_ADDR}s`
+
+A few things to keep in mind:
+
+- Do not use `$proxy_add_x_forwarded_for` in NGINX. It appends the address to the header sent by the client, so anyone could make up the address in it.
+- The backend (port `3030`) must not be reachable directly from the internet, only through the reverse proxy. Otherwise anyone can send their own `X-Forwarded-For` header.
+- If there is another proxy or a CDN (for example Cloudflare) in front of your reverse proxy, `$remote_addr` is the address of that CDN and not of your visitors. Restore the real address first (in NGINX with the `ngx_http_realip_module`: `set_real_ip_from` and `real_ip_header`), and only then pass it on as shown in the configurations below.
+
+---
+
 <div id="nginx" align="center"> 
 <h2>Using NGINX as a Reverse Proxy</h2>
 <p>NGINX is a good choice for using it not only as a web server, but also as a reverse proxy. This method is ideal if you want a streamlined setup with clear directives and configurations for handling web traffic, all managed through a single or multiple configuration files depending on your current configuration.</p>

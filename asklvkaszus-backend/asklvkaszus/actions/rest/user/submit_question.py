@@ -1,6 +1,7 @@
 from flask import current_app, request
 from ....modules.response_handler import jsonify_on_steroids
 import bleach
+import html
 from ....modules.fields import safe_get
 from ....extensions import sql
 from ....models.blocked_senders import BlockedSenders
@@ -75,8 +76,10 @@ def api_user_submit_question():
     notify_user = RegisteredUsers.query.first()
 
     if notify_user:
-        send_push_notification(notify_user.username, sanitized_question, now, senders_ip_address)
-        send_telegram_notification(notify_user.username, sanitized_question, now, senders_ip_address)
+        notification_question = html.unescape(sanitized_question)
+
+        send_push_notification(notify_user.username, notification_question, now, senders_ip_address)
+        send_telegram_notification(notify_user.username, notification_question, now, senders_ip_address)
 
 
     current_app.logger.info("asklvkaszus/actions/rest/user/submit_question module: Some user sent an anonymous message!")

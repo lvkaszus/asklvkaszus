@@ -92,8 +92,7 @@ def send_telegram_notification(recipient, question, date, ip_address):
         telegram_api_url = f"https://api.telegram.org/bot{user.telegram_bot_token}/sendMessage"
         telegram_api_params = {
             'chat_id': user.telegram_bot_chat_id,
-            'text': message,
-            'parse_mode': 'Markdown'
+            'text': message
         }
 
         thread = threading.Thread(target=send_telegram_request_thread, args=(app, telegram_api_url, telegram_api_params), daemon=True)

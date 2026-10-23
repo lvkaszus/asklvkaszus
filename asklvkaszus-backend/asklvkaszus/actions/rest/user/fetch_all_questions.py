@@ -1,6 +1,6 @@
 from ....modules.response_handler import jsonify_on_steroids
 from ....models.questions import Questions
-import html
+from ....modules.text_escape import escape_for_output
 
 def api_user_fetch_all_questions():
     questions = Questions.query.order_by(Questions.date.desc()).all()
@@ -12,8 +12,8 @@ def api_user_fetch_all_questions():
                 formatted_questions.append({
                     'id': question.id,
                     'date': question.date,
-                    'question': html.escape(question.question),
-                    'answer': html.escape(question.answer),
+                    'question': escape_for_output(question.question),
+                    'answer': escape_for_output(question.answer),
                 })
 
     response_headers = {

@@ -2,6 +2,7 @@ from flask import current_app ,request
 from ...modules.captcha_verification import verify_captcha
 from ...modules.response_handler import jsonify_on_steroids
 import bleach
+import html
 from ...modules.fields import safe_get
 from ...extensions import csrf, sql
 from ...models.blocked_senders import BlockedSenders
@@ -84,8 +85,10 @@ def user_submit_question():
     notify_user = RegisteredUsers.query.first()
 
     if notify_user:
-        send_push_notification(notify_user.username, sanitized_question, now, senders_ip_address)
-        send_telegram_notification(notify_user.username, sanitized_question, now, senders_ip_address)
+        notification_question = html.unescape(sanitized_question)
+
+        send_push_notification(notify_user.username, notification_question, now, senders_ip_address)
+        send_telegram_notification(notify_user.username, notification_question, now, senders_ip_address)
 
 
     current_app.logger.info("asklvkaszus/functions/submit_question module: Some user sent an anonymous message!")

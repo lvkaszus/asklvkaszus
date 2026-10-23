@@ -305,6 +305,9 @@ Fix?
 <p>This method allows you to use your own SSL/TLS certificates.</p>
 </div>
 
+> The configurations below overwrite the `X-Forwarded-For` header with the real address of the client. Keep these lines as they are!  
+> Read why in the [Client IP Address section of the Reverse Proxy guide](./Reverse_Proxy_Setup.md).
+
 1. **Place your certificate files on the server.**
 
    Example:

@@ -1,6 +1,7 @@
 from flask import request
 
 def get_remote_address():
-    remote_addr = request.headers.get('X-Forwarded-For', request.remote_addr)
-    remote_addr = remote_addr.split(',')[0].strip() if remote_addr else '127.0.0.1'
-    return remote_addr
+    # ProxyFix (see asklvkaszus/__init__.py) already sets request.remote_addr from the LAST address
+    # in X-Forwarded-For, which is the one added by the trusted reverse proxy. The first address can
+    # be set by the client itself, so X-Forwarded-For must not be read manually here.
+    return request.remote_addr or '127.0.0.1'
