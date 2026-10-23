@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { Close, Warning, GroupRemove } from "@mui/icons-material";
 import { SendUnblockAllSendersRequest } from "../requests/SendUnblockAllSendersRequest";
@@ -18,7 +18,7 @@ const UnblockAllSendersButton = ({ unblockAllSendersOutputData, setUnblockAllSen
 
     useEffect(() => {
         unblockAllSendersOutputData(unblockAllSendersError, unblockAllSendersResponse);
-    }, [unblockAllSendersError, unblockAllSendersResponse]);
+    }, [unblockAllSendersError, unblockAllSendersResponse, unblockAllSendersOutputData]);
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);

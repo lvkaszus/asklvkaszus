@@ -8,9 +8,8 @@ const SuspenseFallback = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
         document.title = `Ask ${yourNickname}!`;
-    }, [yourNickname]);
+    }, []);
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>

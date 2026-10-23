@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
@@ -14,9 +14,8 @@ const AdminGlobalSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminApp
   const { t } = useTranslation();
 
   useEffect(() => {
-      // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
-      document.title = `${t('admin-globalsettings-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+    document.title = `${t('admin-globalsettings-pagetitle')} - Ask ${yourNickname}!`;
+  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -24,7 +23,11 @@ const AdminGlobalSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminApp
     if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
       handleFetchAdminAppSettingsRequest();
     }
-  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
+  }, [
+    adminAppSettingsError,
+    forceAdminAppSettingsDataFetch,
+    handleFetchAdminAppSettingsRequest
+  ]);
 
   const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
@@ -32,7 +35,7 @@ const AdminGlobalSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminApp
 
   const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-  const handleRequests = async () => {
+  const handleRequests = useCallback(async () => {
     await handleSetSessionRequest();
 
     if (updateChecks < 1) {
@@ -42,11 +45,21 @@ const AdminGlobalSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminApp
     }
 
     setLoading(false);
-  }
+  }, [
+    handleSetSessionRequest,
+    handleCheckUpdatesRequest,
+    updateChecks,
+    setUpdateChecks
+  ]);
+
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
     handleRequests();
-  }, []);
+  }, [handleRequests]);
 
   const handleCheckUpdatesNotificationClose = () => {
     setCheckUpdatesNotificationOpen(false);

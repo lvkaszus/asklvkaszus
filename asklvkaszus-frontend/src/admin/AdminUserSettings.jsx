@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
@@ -16,9 +16,8 @@ const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSe
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `${t('admin-usersettings-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -26,7 +25,7 @@ const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSe
     if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
       handleFetchAdminAppSettingsRequest();
     }
-  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
+  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch, handleFetchAdminAppSettingsRequest]);
 
   const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
@@ -36,7 +35,7 @@ const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSe
 
   const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-  const handleRequests = async () => {
+  const handleRequests = useCallback(async () => {
     await handleSetSessionRequest();
 
     if (updateChecks < 1) {
@@ -46,11 +45,21 @@ const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSe
     }
 
     setLoading(false);
-  }
+  }, [
+    handleSetSessionRequest,
+    handleCheckUpdatesRequest,
+    updateChecks,
+    setUpdateChecks
+  ]);
+
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
     handleRequests();
-  }, []);
+  }, [handleRequests]);
 
   const handleCheckUpdatesNotificationClose = () => {
     setCheckUpdatesNotificationOpen(false);
@@ -60,19 +69,19 @@ const AdminUserSettings = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSe
 
   const { userDataError, userDataResponse, handleFetchUserDataRequest } = SendFetchUserDataRequest();
 
-  useEffect(() => {
+  const [prevUserDataError, setPrevUserDataError] = useState(userDataError);
+
+  if (userDataError !== prevUserDataError) {
+    setPrevUserDataError(userDataError);
+
     if (userDataError) {
       setUserDataNotificationOpen(true);
     }
-  }, [userDataError])
+  }
 
   useEffect(() => {
-    if (forceUserDataFetch) {
-      handleFetchUserDataRequest();
-    } else {
-      handleFetchUserDataRequest();
-    }
-  }, [forceUserDataFetch])
+    handleFetchUserDataRequest();
+  }, [forceUserDataFetch, handleFetchUserDataRequest]);
 
   const handleUserDataUpdate = () => {
     setForceUserDataFetch((prev) => !prev);

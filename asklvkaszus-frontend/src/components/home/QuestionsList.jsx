@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Alert, Box, Card, CardContent, Divider, LinearProgress, Typography } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
 import MessageIcon from '@mui/icons-material/Message';
@@ -16,17 +16,14 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, forceDat
   useEffect(() => {
     if (forceDataFetch) {
       handleFetchAllQuestionsRequest();
-
     } else {
       handleFetchAllQuestionsRequest();
 
       const interval = setInterval(handleFetchAllQuestionsRequest, 360000);
-    
-      return () => {
-        clearInterval(interval);
-      };
+
+      return () => clearInterval(interval);
     }
-  }, [forceDataFetch]);
+  }, [forceDataFetch, handleFetchAllQuestionsRequest]);
   
   return (
     fetchAllQuestionsError ? (

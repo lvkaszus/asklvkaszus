@@ -4,7 +4,6 @@ import YouTube from "react-youtube";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 
 const MarkdownRenderer = ({ content }) => {

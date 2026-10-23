@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useCallback } from "react";
 import { Card, CardContent, Typography, Divider, Box } from "@mui/material";
 import ToggleAdminApi from "./ToggleAdminApi";
 import CheckToggleAdminApiResult from "../results/CheckToggleAdminApiResult";
@@ -53,74 +53,74 @@ const UserSettingsList = ({ userData, handleUserDataUpdate }) => {
     const [changePasswordResponse, setChangePasswordResponse] = useState('');
     const [isChangePasswordNotifyOpen, setChangePasswordNotifyOpen] = useState(false);
 
-    const toggleAdminApiOutputData = (status, response, username) => {
+    const toggleAdminApiOutputData = useCallback((status, response, username) => {
         setToggleAdminApiStatus(status);
         setToggleAdminApiResponse(response);
         setUsername(username);
-    };
+    }, []);
 
     const handleToggleAdminApiNotifyClose = () => {
         setToggleAdminApiNotifyOpen(false);
     };
 
-    const toggleUserApiOutputData = (status, response) => {
+    const toggleUserApiOutputData = useCallback((status, response) => {
         setToggleUserApiStatus(status);
         setToggleUserApiResponse(response);
-    };
+    }, []);
 
     const handleToggleUserApiNotifyClose = () => {
         setToggleUserApiNotifyOpen(false);
     };
 
-    const refreshAdminApiKeyOutputData = (status, response) => {
+    const refreshAdminApiKeyOutputData = useCallback((status, response) => {
         setRefreshAdminApiKeyStatus(status);
         setRefreshAdminApiKeyResponse(response);
-    };
+    }, []);
 
     const handleRefreshAdminApiKeyNotifyClose = () => {
         setRefreshAdminApiKeyNotifyOpen(false);
     };
 
-    const fetchVapidPublicKeyOutputData = (status, response) => {
+    const fetchVapidPublicKeyOutputData = useCallback((status, response) => {
         setFetchVapidPublicKeyStatus(status);
         setFetchVapidPublicKeyResponse(response);
-    };
+    }, []);
 
     const handleFetchVapidPublicKeyNotifyClose = () => {
         setFetchVapidPublicKeyNotifyOpen(false);
     };
 
-    const subscribeToPushNotificationsOutputData = (status, response) => {
+    const subscribeToPushNotificationsOutputData = useCallback((status, response) => {
         setSubscribeToPushNotificationsStatus(status);
         setSubscribeToPushNotificationsResponse(response);
-    };
+    }, []);
 
     const handleSubscribeToPushNotificationsNotifyClose = () => {
         setSubscribeToPushNotificationsNotifyOpen(false);
     };
 
-    const configureWebPushNotificationsOutputData = (status, response) => {
+    const configureWebPushNotificationsOutputData = useCallback((status, response) => {
         setConfigureWebPushNotificationsStatus(status);
         setConfigureWebPushNotificationsResponse(response);
-    };
+    }, []);
 
     const handleConfigureWebPushNotificationsNotifyClose = () => {
         setConfigureWebPushNotificationsNotifyOpen(false);
     };
 
-    const configureTelegramNotificationsOutputData = (status, response) => {
+    const configureTelegramNotificationsOutputData = useCallback((status, response) => {
         setConfigureTelegramNotificationsStatus(status);
         setConfigureTelegramNotificationsResponse(response);
-    };
+    }, []);
 
     const handleConfigureTelegramNotificationsNotifyClose = () => {
         setConfigureTelegramNotificationsNotifyOpen(false);
     };
 
-    const changePasswordOutputData = (status, response) => {
+    const changePasswordOutputData = useCallback((status, response) => {
         setChangePasswordStatus(status);
         setChangePasswordResponse(response);
-    };
+    }, []);
 
     const handleChangePasswordNotifyClose = () => {
         setChangePasswordNotifyOpen(false);

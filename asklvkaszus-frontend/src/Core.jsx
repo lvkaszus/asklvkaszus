@@ -101,18 +101,22 @@ const Core = () => {
         }
       }
     },
-  }));
+  }), [prefersDarkMode]);
 
 
   const [isUserAppSettingsNotificationOpen, setUserAppSettingsNotificationOpen] = useState(false);
 
   const { userAppSettingsError, userAppSettingsResponse, handleFetchUserAppSettingsRequest } = SendFetchUserAppSettingsRequest();
 
-  useEffect(() => {
+  const [prevUserAppSettingsError, setPrevUserAppSettingsError] = useState(userAppSettingsError);
+
+  if (userAppSettingsError !== prevUserAppSettingsError) {
+    setPrevUserAppSettingsError(userAppSettingsError);
+
     if (userAppSettingsError) {
       setUserAppSettingsNotificationOpen(true);
     }
-  }, [userAppSettingsError])
+  }
 
   const handleUserAppSettingsNotificationClose = () => {
     setUserAppSettingsNotificationOpen(false);
@@ -124,11 +128,15 @@ const Core = () => {
 
   const { adminAppSettingsError, adminAppSettingsResponse, handleFetchAdminAppSettingsRequest } = SendFetchAdminAppSettingsRequest();
 
-  useEffect(() => {
+  const [prevAdminAppSettingsError, setPrevAdminAppSettingsError] = useState(adminAppSettingsError);
+
+  if (adminAppSettingsError !== prevAdminAppSettingsError) {
+    setPrevAdminAppSettingsError(adminAppSettingsError);
+
     if (adminAppSettingsError) {
       setAdminAppSettingsNotificationOpen(true);
     }
-  }, [adminAppSettingsError])
+  }
 
   const handleAdminAppSettingsNotificationClose = () => {
     setAdminAppSettingsNotificationOpen(false);
@@ -157,7 +165,6 @@ const Core = () => {
               <Router>
                 <Suspense fallback={<SuspenseFallback />}>
                   <Routes>
-
                     {/* User Panel Routes */}
 
                     <Route exact path="/" element={<Home handleFetchUserAppSettingsRequest={handleFetchUserAppSettingsRequest} isUserAppSettingsNotificationOpen={isUserAppSettingsNotificationOpen} userAppSettingsError={userAppSettingsError} userAppSettingsResponse={userAppSettingsResponse} handleUserAppSettingsNotificationClose={handleUserAppSettingsNotificationClose} />} />

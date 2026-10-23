@@ -5,6 +5,11 @@ const CloudflareTurnstile = ({ captchaSiteKey, onVerify }) => {
     const widgetRef = useRef(null);
     const widgetIdRef = useRef(null);
     const scriptLoaded = useRef(false);
+    const onVerifyRef = useRef(onVerify);
+
+    useEffect(() => {
+        onVerifyRef.current = onVerify;
+    }, [onVerify]);
 
     useEffect(() => {
         const renderTurnstile = () => {
@@ -16,7 +21,7 @@ const CloudflareTurnstile = ({ captchaSiteKey, onVerify }) => {
                 const id = window.turnstile.render(widgetRef.current, {
                     sitekey: captchaSiteKey,
                     callback: (token) => {
-                        onVerify(token);
+                        onVerifyRef.current(token);
                     },
                     'expired-callback': () => {
                         widgetIdRef.current = null;

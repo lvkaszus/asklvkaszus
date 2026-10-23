@@ -12,7 +12,7 @@ const Info = () =>{
   useEffect(() => {
     // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `${t('info-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, [t]);
 
   const { versionLoading, frontendVersion, backendVersion, latestGitVersion, isLatestGitVersion } = SendVersionCheckRequest();
 

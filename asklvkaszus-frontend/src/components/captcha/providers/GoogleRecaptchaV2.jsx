@@ -5,6 +5,11 @@ const GoogleRecaptchaV2 = ({ captchaSiteKey, onVerify }) => {
     const widgetRef = useRef(null);
     const widgetIdRef = useRef(null);
     const scriptLoaded = useRef(false);
+    const onVerifyRef = useRef(onVerify);
+
+    useEffect(() => {
+        onVerifyRef.current = onVerify;
+    }, [onVerify]);
 
     useEffect(() => {
         const renderRecaptcha = () => {
@@ -15,7 +20,9 @@ const GoogleRecaptchaV2 = ({ captchaSiteKey, onVerify }) => {
 
                 widgetIdRef.current = window.grecaptcha.render(widgetRef.current, {
                     sitekey: captchaSiteKey,
-                    callback: onVerify,
+                    callback: (token) => {
+                        onVerifyRef.current(token);
+                    },
                     "expired-callback": () => {
                         widgetIdRef.current = null;
                     }
@@ -45,7 +52,7 @@ const GoogleRecaptchaV2 = ({ captchaSiteKey, onVerify }) => {
             }
             
         };
-    }, [captchaSiteKey, onVerify]);
+    }, [captchaSiteKey]);
 
     return (
         <Box ref={widgetRef} sx={{ display: 'flex', justifyContent: 'center' }} />

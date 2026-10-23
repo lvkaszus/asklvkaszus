@@ -14,13 +14,13 @@ const Home = ({ handleFetchUserAppSettingsRequest, isUserAppSettingsNotification
   useEffect(() => {
     // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, []);
 
   useEffect(() => {
     if (!userAppSettingsError) {
       handleFetchUserAppSettingsRequest();
     }
-  }, [userAppSettingsError]);
+  }, [userAppSettingsError, handleFetchUserAppSettingsRequest]);
 
   const [forceQuestionsListDataFetch, setForceQuestionsListDataFetch] = useState(false);
 

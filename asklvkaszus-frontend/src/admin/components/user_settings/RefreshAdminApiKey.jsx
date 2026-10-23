@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { Close, Warning, Refresh, CheckCircle, Key } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,11 @@ const RefreshAdminApiKey = ({ refreshAdminApiKeyOutputData, setRefreshAdminApiKe
 
     useEffect(() => {
         refreshAdminApiKeyOutputData(refreshAdminApiKeyError, refreshAdminApiKeyResponse);
-    }, [refreshAdminApiKeyError, refreshAdminApiKeyResponse]);
+    }, [
+        refreshAdminApiKeyError,
+        refreshAdminApiKeyResponse,
+        refreshAdminApiKeyOutputData
+    ]);
 
     const handleConfirmAccept = async () => {
         setConfirmDialogYesButtonDisabled(true);
@@ -51,7 +55,7 @@ const RefreshAdminApiKey = ({ refreshAdminApiKeyOutputData, setRefreshAdminApiKe
             await navigator.clipboard.writeText(newAdminApiKey || "");
             
             setAdminApiKeyCopyError(false);
-        } catch (err) {
+        } catch {
             setAdminApiKeyCopyError(true);
         }
 

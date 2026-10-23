@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
@@ -17,9 +17,8 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `${t('admin-management-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -27,7 +26,11 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
     if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
       handleFetchAdminAppSettingsRequest();
     }
-  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
+  }, [
+    adminAppSettingsError,
+    forceAdminAppSettingsDataFetch,
+    handleFetchAdminAppSettingsRequest
+  ]);
 
   const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
@@ -37,7 +40,7 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
 
   const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-  const handleRequests = async () => {
+  const handleRequests = useCallback(async () => {
     await handleSetSessionRequest();
 
     if (updateChecks < 1) {
@@ -47,11 +50,21 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
     }
 
     setLoading(false);
-  }
+  }, [
+    handleSetSessionRequest,
+    handleCheckUpdatesRequest,
+    updateChecks,
+    setUpdateChecks
+  ]);
+
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
     handleRequests();
-  }, []);
+  }, [handleRequests]);
 
   const handleCheckUpdatesNotificationClose = () => {
     setCheckUpdatesNotificationOpen(false);
@@ -60,12 +73,8 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
   const { isBlockedSendersLoading, blockedSendersError, blockedSendersResponse, handleFetchBlockedSendersRequest } = SendFetchBlockedSendersRequest();
   
   useEffect(() => {
-    if (forceBlockedSendersDataFetch) {
-      handleFetchBlockedSendersRequest();
-    } else {
-      handleFetchBlockedSendersRequest();
-    }
-  }, [forceBlockedSendersDataFetch])
+    handleFetchBlockedSendersRequest();
+  }, [forceBlockedSendersDataFetch, handleFetchBlockedSendersRequest]);
     
   const handleBlockedSendersDataUpdate = () => {
     setForceBlockedSendersDataFetch((prev) => !prev);
@@ -74,10 +83,10 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
   const [unblockAllSendersStatus, setUnblockAllSendersStatus] = useState('');
   const [unblockAllSendersResponse, setUnblockAllSendersResponse] = useState('');
   
-  const unblockAllSendersOutputData = (status, response) => {
+  const unblockAllSendersOutputData = useCallback((status, response) => {
     setUnblockAllSendersStatus(status);
     setUnblockAllSendersResponse(response);
-  };
+  }, []);
 
   const [isUnblockAllSendersNotificationOpen, setUnblockAllSendersNotificationOpen] = useState(false);
 
@@ -89,11 +98,11 @@ const AdminManagement = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSett
   const [unblockSenderResponse, setUnblockSenderResponse] = useState('');
   const [senderIp, setSenderIp] = useState('');
   
-  const unblockSenderOutputData = (status, response, sender_ip) => {
-    setUnblockSenderStatus(status);
-    setUnblockSenderResponse(response);
-    setSenderIp(sender_ip);
-  };
+  const unblockSenderOutputData = useCallback((status, response, sender_ip) => {
+      setUnblockSenderStatus(status);
+      setUnblockSenderResponse(response);
+      setSenderIp(sender_ip);
+  }, []);
 
   const [isUnblockSenderNotificationOpen, setUnblockSenderNotificationOpen] = useState(false);
 

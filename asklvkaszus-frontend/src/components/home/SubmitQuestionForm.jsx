@@ -4,7 +4,6 @@ import { TextField, Typography, Button, Box } from '@mui/material';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import MarkdownDescription from '../markdown/MarkdownDescription';
 import CheckSubmitQuestionResult from '../results/CheckSubmitQuestionResult';
-/** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { SendSubmitQuestionRequest } from '../requests/SendSubmitQuestionRequest';
 import { Link } from 'react-router-dom';

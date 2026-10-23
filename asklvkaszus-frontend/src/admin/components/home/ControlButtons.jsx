@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Delete, Visibility, Close, InfoRounded } from "@mui/icons-material";
@@ -24,11 +24,11 @@ const ControlButtons = ({ purgeAllQuestionsOutputData, PAQNotifyOpen, toggleAllQ
 
     useEffect(() => {
         purgeAllQuestionsOutputData(purgeAllQuestionsError, purgeAllQuestionsResponse);
-    }, [purgeAllQuestionsError, purgeAllQuestionsResponse]);
+    }, [purgeAllQuestionsError, purgeAllQuestionsResponse, purgeAllQuestionsOutputData]);
 
     useEffect(() => {
         toggleAllQuestionsVisibilityOutputData(toggleAllQuestionsVisibilityError, toggleAllQuestionsVisibilityResponse);
-    }, [toggleAllQuestionsVisibilityError, toggleAllQuestionsVisibilityResponse]);
+    }, [toggleAllQuestionsVisibilityError, toggleAllQuestionsVisibilityResponse, toggleAllQuestionsVisibilityOutputData]);
 
     const handleConfirm = async () => {
         if (actionType === "delete") {

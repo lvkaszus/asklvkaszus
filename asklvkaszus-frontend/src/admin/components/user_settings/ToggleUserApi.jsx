@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { Close, Person, PersonOff, Warning } from "@mui/icons-material";
 import { SendToggleUserApiRequest } from "../requests/SendToggleUserApiRequest";
@@ -18,7 +18,7 @@ const ToggleUserApi = ({ userApiEnabled, toggleUserApiOutputData, setToggleUserA
 
     useEffect(() => {
         toggleUserApiOutputData(toggleUserApiError, toggleUserApiResponse);
-    }, [toggleUserApiError, toggleUserApiResponse]);
+    }, [toggleUserApiError, toggleUserApiResponse, toggleUserApiOutputData]);
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);

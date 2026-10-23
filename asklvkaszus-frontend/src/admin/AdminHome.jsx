@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import AdminNavbar from "./components/navbar/AdminNavbar";
 import { Box, LinearProgress, Typography } from "@mui/material";
@@ -20,9 +20,8 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Using `document.title` here, because <title> HTML tag in React 19 don't work with JavaScript variables.
     document.title = `${t('admin-home-pagetitle')} - Ask ${yourNickname}!`;
-  }, [yourNickname]);
+  }, [t]);
 
   const [isLoading, setLoading] = useState(true);
 
@@ -30,7 +29,11 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
     if (!adminAppSettingsError || forceAdminAppSettingsDataFetch) {
       handleFetchAdminAppSettingsRequest();
     }
-  }, [adminAppSettingsError, forceAdminAppSettingsDataFetch])
+  }, [
+    adminAppSettingsError,
+    forceAdminAppSettingsDataFetch,
+    handleFetchAdminAppSettingsRequest
+  ]);
 
   const [isCheckUpdatesNotificationOpen, setCheckUpdatesNotificationOpen] = useState(false);
 
@@ -38,7 +41,7 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
 
   const { checkUpdatesStatus, checkUpdatesResponse, latestVersion, currentVersion, handleCheckUpdatesRequest } = SendCheckUpdatesRequest();
 
-  const handleRequests = async () => {
+  const handleRequests = useCallback(async () => {
     await handleSetSessionRequest();
 
     if (updateChecks < 1) {
@@ -48,11 +51,21 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
     }
 
     setLoading(false);
-  }
+  }, [
+    handleSetSessionRequest,
+    handleCheckUpdatesRequest,
+    updateChecks,
+    setUpdateChecks
+  ]);
+
+  const hasRequestedRef = useRef(false);
 
   useEffect(() => {
+    if (hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
     handleRequests();
-  }, []);
+  }, [handleRequests]);
 
   const handleCheckUpdatesNotificationClose = () => {
     setCheckUpdatesNotificationOpen(false);
@@ -67,10 +80,10 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [purgeAllQuestionsStatus, setPurgeAllQuestionsStatus] = useState('');
   const [purgeAllQuestionsResponse, setPurgeAllQuestionsResponse] = useState('');
 
-  const purgeAllQuestionsOutputData = (status, response) => {
+  const purgeAllQuestionsOutputData = useCallback((status, response) => {
     setPurgeAllQuestionsStatus(status);
     setPurgeAllQuestionsResponse(response);
-  };
+  }, []);
 
   const [isPurgeAllQuestionsNotificationOpen, setPurgeAllQuestionsNotificationOpen] = useState(false);
 
@@ -81,10 +94,10 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [toggleAllQuestionsVisibilityStatus, setToggleAllQuestionsVisibilityStatus] = useState('');
   const [toggleAllQuestionsVisibilityResponse, setToggleAllQuestionsVisibilityResponse] = useState('');
 
-  const toggleAllQuestionsVisibilityOutputData = (status, response) => {
+  const toggleAllQuestionsVisibilityOutputData = useCallback((status, response) => {
     setToggleAllQuestionsVisibilityStatus(status);
     setToggleAllQuestionsVisibilityResponse(response);
-  };
+  }, []);
     
   const [isToggleQuestionsVisibilityNotificationOpen, setToggleQuestionsVisibilityNotificationOpen] = useState(false);
 
@@ -95,10 +108,10 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [answerQuestionStatus, setAnswerQuestionStatus] = useState('');
   const [answerQuestionResponse, setAnswerQuestionResponse] = useState('');
 
-  const answerQuestionOutputData = (status, response) => {
+  const answerQuestionOutputData = useCallback((status, response) => {
     setAnswerQuestionStatus(status);
     setAnswerQuestionResponse(response);
-  };
+  }, []);
 
   const [isAnswerQuestionNotificationOpen, setAnswerQuestionNotificationOpen] = useState(false);
 
@@ -109,10 +122,10 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [purgeQuestionStatus, setPurgeQuestionStatus] = useState('');
   const [purgeQuestionResponse, setPurgeQuestionResponse] = useState('');
 
-  const purgeQuestionOutputData = (status, response) => {
-    setPurgeQuestionStatus(status);
-    setPurgeQuestionResponse(response);
-  };
+  const purgeQuestionOutputData = useCallback((status, response) => {
+      setPurgeQuestionStatus(status);
+      setPurgeQuestionResponse(response);
+  }, []);
 
   const [isPurgeQuestionNotificationOpen, setPurgeQuestionNotificationOpen] = useState(false);
     
@@ -123,10 +136,10 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [toggleQuestionVisibilityStatus, setToggleQuestionVisibilityStatus] = useState('');
   const [toggleQuestionVisibilityResponse, setToggleQuestionVisibilityResponse] = useState('');
 
-  const toggleQuestionVisibilityOutputData = (status, response) => {
-    setToggleQuestionVisibilityStatus(status);
-    setToggleQuestionVisibilityResponse(response);
-  };
+  const toggleQuestionVisibilityOutputData = useCallback((status, response) => {
+      setToggleQuestionVisibilityStatus(status);
+      setToggleQuestionVisibilityResponse(response);
+  }, []);
 
   const [isToggleQuestionVisibilityNotificationOpen, setToggleQuestionVisibilityNotificationOpen] = useState(false);
 
@@ -138,11 +151,11 @@ const AdminHome = ({ handleFetchAdminAppSettingsRequest, forceAdminAppSettingsDa
   const [blockSenderResponse, setBlockSenderResponse] = useState('');
   const [blockSenderIp, setBlockSenderIp] = useState('');
 
-  const blockSenderOutputData = (status, response, sender_ip) => {
-    setBlockSenderStatus(status);
-    setBlockSenderResponse(response);
-    setBlockSenderIp(sender_ip);
-  };
+  const blockSenderOutputData = useCallback((status, response, sender_ip) => {
+      setBlockSenderStatus(status);
+      setBlockSenderResponse(response);
+      setBlockSenderIp(sender_ip);
+  }, []);
 
   const [isBlockSenderNotificationOpen, setBlockSenderNotificationOpen] = useState(false);
 

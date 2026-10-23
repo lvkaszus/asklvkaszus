@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { Close, AdminPanelSettings, DoNotDisturb, InfoRounded } from "@mui/icons-material";
 import { SendToggleAdminApiRequest } from "../requests/SendToggleAdminApiRequest";
@@ -18,7 +18,12 @@ const ToggleAdminApi = ({ adminApiEnabled, toggleAdminApiOutputData, setToggleAd
 
     useEffect(() => {
         toggleAdminApiOutputData(toggleAdminApiError, toggleAdminApiResponse, username);
-    }, [toggleAdminApiError, toggleAdminApiResponse]);
+    }, [
+        toggleAdminApiError,
+        toggleAdminApiResponse,
+        toggleAdminApiOutputData,
+        username
+    ]);
 
     const handleConfirm = async () => {
         setDialogYesButtonDisabled(true);

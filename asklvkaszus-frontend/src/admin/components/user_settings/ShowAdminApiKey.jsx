@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Button, Dialog, DialogContent, Divider, IconButton, Typography } from "@mui/material";
 import { Close, Warning, Refresh, CheckCircle, Key } from "@mui/icons-material";
 
@@ -36,7 +36,7 @@ const ShowAdminApiKey = ({ adminApiKey }) => {
             await navigator.clipboard.writeText(adminApiKey || "");
             
             setAdminApiKeyCopyError(false);
-        } catch (err) {
+        } catch {
             setAdminApiKeyCopyError(true);
         }
 
