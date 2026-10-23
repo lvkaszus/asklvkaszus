@@ -202,9 +202,20 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 - `cd /var/lib/docker/volumes/asklvkaszus_asklvkaszus_config_data/_data`
 
-14. **Copy existing example configuration file as a new application main configuration file.**
+14. **Copy existing example configuration file as a new application main configuration file and set its owner and permissions.**
 
 - `sudo cp config.example.yml config.yml`
+- `sudo chown 10001:10001 config.yml`
+- `sudo chmod 600 config.yml`
+
+> The application does not run as `root` inside the container. It runs as an unprivileged user with the fixed UID and GID `10001`, so the configuration file has to be readable by this user.  
+> `chown` makes this user the owner of the file and `chmod 600` allows only the owner (and `root`) to read it, which is what you want, because the file contains your database password and other secrets.  
+> If you restrict the permissions without changing the owner, the application will not be able to read `config.yml` and will not start (`Permission denied`)!  
+> `root` can always edit the file, but some editors save it by replacing it with a new file, which makes `root` its owner again. If the application cannot read `config.yml` after you edited it, run the two commands above once more.  
+>
+> Why `10001`? It is a high ID that does not belong to any normal account on your server (those usually start at `1000`), so the user in the container does not match anyone real on the host. It is also the same in every installation, so the commands in this guide work as they are written.  
+>
+> Updating an existing installation? If you have already restricted the permissions of `config.yml`, run the two commands above once. If you use the `logfile` option, the folder of that file has to be writable by the same user.
 
 15. **Open `config.yml` file with your favourite text editor.**
 
@@ -396,9 +407,20 @@ user YOUR_REDIS_USERNAME on >YOUR_REDIS_PASSWORD ~* +@all
 
 - `cd /var/lib/docker/volumes/asklvkaszus_config_data/_data`
 
-17. **Copy existing example configuration file as a new application main configuration file.**
+17. **Copy existing example configuration file as a new application main configuration file and set its owner and permissions.**
 
 - `sudo cp config.example.yml config.yml`
+- `sudo chown 10001:10001 config.yml`
+- `sudo chmod 600 config.yml`
+
+> The application does not run as `root` inside the container. It runs as an unprivileged user with the fixed UID and GID `10001`, so the configuration file has to be readable by this user.  
+> `chown` makes this user the owner of the file and `chmod 600` allows only the owner (and `root`) to read it, which is what you want, because the file contains your database password and other secrets.  
+> If you restrict the permissions without changing the owner, the application will not be able to read `config.yml` and will not start (`Permission denied`)!  
+> `root` can always edit the file, but some editors save it by replacing it with a new file, which makes `root` its owner again. If the application cannot read `config.yml` after you edited it, run the two commands above once more.  
+>
+> Why `10001`? It is a high ID that does not belong to any normal account on your server (those usually start at `1000`), so the user in the container does not match anyone real on the host. It is also the same in every installation, so the commands in this guide work as they are written.  
+>
+> Updating an existing installation? If you have already restricted the permissions of `config.yml`, run the two commands above once. If you use the `logfile` option, the folder of that file has to be writable by the same user.
 
 18. **Open `config.yml` file with your favourite text editor.**
 

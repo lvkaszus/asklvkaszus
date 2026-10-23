@@ -6,4 +6,4 @@ GUNICORN_TIMEOUT="${GUNICORN_TIMEOUT:-60}"
 
 flask db upgrade
 
-gunicorn -w "$GUNICORN_WORKERS" --threads "$GUNICORN_THREADS" -t "$GUNICORN_TIMEOUT" -b 0.0.0.0:3030 wsgi:asklvkaszus_backend
+gunicorn -w "$GUNICORN_WORKERS" --threads "$GUNICORN_THREADS" -t "$GUNICORN_TIMEOUT" --no-control-socket -b 0.0.0.0:3030 wsgi:asklvkaszus_backend

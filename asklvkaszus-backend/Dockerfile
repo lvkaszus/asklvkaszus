@@ -4,9 +4,16 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /asklvkaszus/backend
 
-COPY . .
+# The application runs as an unprivileged user instead of root.
+RUN addgroup -S -g 10001 asklvkaszus \
+    && adduser -S -D -H -u 10001 -G asklvkaszus asklvkaszus \
+    && chown asklvkaszus:asklvkaszus /asklvkaszus/backend
+
+COPY --chown=asklvkaszus:asklvkaszus . .
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+USER asklvkaszus
 
 ENV TZ="Europe/Warsaw"
 
