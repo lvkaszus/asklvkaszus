@@ -42,7 +42,7 @@ const QuestionsList = ({ markdownFrontendEnabled, markdownAdminEnabled, question
           <Alert severity='error' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '16px' }}>{t('error-fetchquestionslist')}</Alert>
         )
       ) : (
-        <Box maxWidth='lg' sx={{ width: '100%' }} className="fade-in">
+        <Box sx={{ width: '100%', maxWidth: 'lg' }} className="fade-in">
           <Typography variant="subtitle1" component='h1' sx={{ fontSize: '24px', fontWeight: '500', textAlign: 'center' }}>{t('admin-ql-title')}</Typography>
 
           <Typography component='p' sx={{ marginTop: '4px', marginBottom: '8px', fontWeight: 300, textAlign: 'center' }}>{t('admin-ql-description')}</Typography>

@@ -40,7 +40,7 @@ const Info = () =>{
                   <Typography component="span">
                     @lvkaszus -{' '}
                   </Typography>
-                  <Typography component="span" fontWeight={300}>
+                  <Typography component="span" sx={{ fontWeight: 300 }}>
                     {t('info-author1-work')}
                   </Typography>
                 </ListItem>
@@ -48,7 +48,7 @@ const Info = () =>{
                   <Typography component="span">
                     {yourNickname} -{' '}
                   </Typography>
-                  <Typography component="span" fontWeight={300}>
+                  <Typography component="span" sx={{ fontWeight: 300 }}>
                     {t('info-author2-work')}
                   </Typography>
                 </ListItem>
@@ -66,7 +66,7 @@ const Info = () =>{
 
                     {!isLatestGitVersion && (
                       <Box>
-                        <Typography variant='h6' component='h6' color="aqua">{t('info-newupdateavailable', { new_version: latestGitVersion})}</Typography>
+                        <Typography variant='h6' component='h6' sx={{ color: 'aqua' }}>{t('info-newupdateavailable', { new_version: latestGitVersion})}</Typography>
                       </Box>
                     )}
                   </>

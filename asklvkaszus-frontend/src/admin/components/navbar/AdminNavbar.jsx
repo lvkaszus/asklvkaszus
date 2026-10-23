@@ -81,7 +81,7 @@ const AdminNavbar = ({ displayName }) => {
                 onClick={handleCloseNavMenu}
               >
                 <Home />
-                <Typography textAlign="center">
+                <Typography sx={{ textAlign: 'center' }}>
                   {t("admin-navbar-home")}
                 </Typography>
               </MenuItem>
@@ -92,7 +92,7 @@ const AdminNavbar = ({ displayName }) => {
                 onClick={handleCloseNavMenu}
               >
                 <Settings />
-                <Typography textAlign="center">
+                <Typography sx={{ textAlign: 'center' }}>
                   {t("admin-navbar-globalsettings")}
                 </Typography>
               </MenuItem>
@@ -103,7 +103,7 @@ const AdminNavbar = ({ displayName }) => {
                 onClick={handleCloseNavMenu}
               >
                 <ManageAccounts />
-                <Typography textAlign="center">
+                <Typography sx={{ textAlign: 'center' }}>
                   {t("admin-navbar-usersettings")}
                 </Typography>
               </MenuItem>
@@ -114,7 +114,7 @@ const AdminNavbar = ({ displayName }) => {
                 onClick={handleCloseNavMenu}
               >
                 <AdminPanelSettings />
-                <Typography textAlign="center">
+                <Typography sx={{ textAlign: 'center' }}>
                   {t("admin-navbar-management")}
                 </Typography>
               </MenuItem>
@@ -207,7 +207,7 @@ const AdminNavbar = ({ displayName }) => {
 
             <Button variant="outlined" onClick={handleLogoutButton}>
               <Logout />
-              <Typography textAlign="center">
+              <Typography sx={{ textAlign: 'center' }}>
                 {t("admin-navbar-logout")}
               </Typography>
             </Button>

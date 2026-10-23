@@ -85,7 +85,7 @@ class GlobalErrorBoundary extends Component {
                 {t('error-whattodo-description', { username: yourNickname })}
               </Typography>
 
-              <Stack spacing={2} justifyContent="center" sx={{ mb: 2 }}>
+              <Stack spacing={2} sx={{ justifyContent: 'center', mb: 2 }}>
                 <Button variant="outlined" color="primary" startIcon={<Refresh />} onClick={this.resetError}>
                   {t('error-tryagain')}
                 </Button>
@@ -108,7 +108,7 @@ class GlobalErrorBoundary extends Component {
 
               <Collapse in={this.state.expanded} sx={{ mt: 2 }}>
                 <Paper variant="outlined" sx={{ p: 2, textAlign: 'left', bgcolor: 'background.default' }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', mb: 1, display: 'block' }}>
                     {t('error-technicaldetails-title')}
                   </Typography>
 
@@ -125,7 +125,7 @@ class GlobalErrorBoundary extends Component {
                     {this.state.errorTitle}: {this.state.errorDescription}
                   </Typography>
 
-                  <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', mt: 2, display: 'block' }}>
                     {t('error-technicaldetails-description', { username: yourNickname })}
                   </Typography>
                 </Paper>
